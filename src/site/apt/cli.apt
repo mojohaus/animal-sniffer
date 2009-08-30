@@ -1,0 +1,39 @@
+-----
+Animal Sniffer CLI
+-----
+
+What is this?
+
+    This simple command line tool looks at Java class files and determine
+    the format version number. The common use case of this tool is to figure
+    out what is the offending jar file when you see <<<UnsupportedClassVersionError>>>.
+
+Usage
+
+    This tool can accept any number of:
+
+    * Class files
+
+    * Jar files
+    
+    * Directories
+
+    []
+    
+    When directories are given, they are recursively scanned for class files and jar files.
+    When jar files are given, class files in it is examined.
+
+    The tool produces output like the following, so use the grep command to filter out the list:
+
+-----------------------------
+% java -jar target/animal-sniffer-1.0-SNAPSHOT.jar tmp
+50.0 tmp/streambuffer-0.7.jar:com/sun/xml/stream/buffer/AbstractCreator.class
+50.0 tmp/streambuffer-0.7.jar:com/sun/xml/stream/buffer/AbstractCreatorProcessor.class
+50.0 tmp/streambuffer-0.7.jar:com/sun/xml/stream/buffer/AbstractProcessor.class
+50.0 tmp/streambuffer-0.7.jar:com/sun/xml/stream/buffer/AttributesHolder.class
+50.0 tmp/streambuffer-0.7.jar:com/sun/xml/stream/buffer/FragmentedArray.class
+50.0 tmp/streambuffer-0.7.jar:com/sun/xml/stream/buffer/MutableXMLStreamBuffer.class
+50.0 tmp/streambuffer-0.7.jar:com/sun/xml/stream/buffer/XMLStreamBuffer.class
+50.0 tmp/streambuffer-0.7.jar:com/sun/xml/stream/buffer/XMLStreamBufferException.class
+-----------------------------
+

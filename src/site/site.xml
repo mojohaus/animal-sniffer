@@ -1,0 +1,18 @@
+<?xml version="1.0" ?>
+<project name="Animal Sniffer">
+  <skin>
+    <groupId>org.jvnet.maven-javanet-skin</groupId>
+    <artifactId>maven-javanet-skin</artifactId>
+    <version>1.0</version>
+  </skin>
+
+  <body>
+    <menu name="Animal Sniffer">
+      <item name="Introduction" href="index.html" />
+      <item name="Download" href="https://maven2-repository.dev.java.net/source/browse/maven2-repository/trunk/www/repository/org/jvnet/animal-sniffer/" />
+      <item name="Mailing list" href="https://animal-sniffer.dev.java.net/servlets/ProjectMailingListList" />
+      <item name="Issue tracker" href="https://animal-sniffer.dev.java.net/servlets/ProjectIssues" />
+      <item name="Subversion" href="https://animal-sniffer.dev.java.net/source/browse/animal-sniffer/" />
+    </menu>
+  </body>
+</project>
