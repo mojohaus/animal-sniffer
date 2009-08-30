@@ -1,4 +1,4 @@
-package org.jvnet.animal_sniffer;
+package org.codehaus.mojo.animal_sniffer;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.Documented;
