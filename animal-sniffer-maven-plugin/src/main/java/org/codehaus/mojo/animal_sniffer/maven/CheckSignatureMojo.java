@@ -1,4 +1,4 @@
-package org.jvnet.animal_sniffer.maven;
+package org.codehaus.mojo.animal_sniffer.maven;
 
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -11,9 +11,9 @@ import org.apache.maven.artifact.repository.ArtifactRepository;
 import org.apache.maven.artifact.factory.ArtifactFactory;
 import org.apache.maven.artifact.*;
 import org.apache.maven.project.MavenProject;
-import org.jvnet.animal_sniffer.SignatureChecker;
-import org.jvnet.animal_sniffer.PackageListBuilder;
-import org.jvnet.animal_sniffer.ClassFileVisitor;
+import org.codehaus.mojo.animal_sniffer.SignatureChecker;
+import org.codehaus.mojo.animal_sniffer.PackageListBuilder;
+import org.codehaus.mojo.animal_sniffer.ClassFileVisitor;
 
 import java.util.List;
 import java.util.Iterator;

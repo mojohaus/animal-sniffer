@@ -1,4 +1,4 @@
-package org.jvnet.animal_sniffer.maven;
+package org.codehaus.mojo.animal_sniffer.maven;
 
 import org.apache.maven.artifact.factory.ArtifactFactory;
 

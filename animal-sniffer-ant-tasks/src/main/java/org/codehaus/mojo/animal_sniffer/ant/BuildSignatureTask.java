@@ -1,8 +1,8 @@
-package org.jvnet.animal_sniffer.ant;
+package org.codehaus.mojo.animal_sniffer.ant;
 
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Task;
-import org.jvnet.animal_sniffer.SignatureBuilder;
+import org.codehaus.mojo.animal_sniffer.SignatureBuilder;
 
 import java.io.File;
 import java.io.FileOutputStream;
