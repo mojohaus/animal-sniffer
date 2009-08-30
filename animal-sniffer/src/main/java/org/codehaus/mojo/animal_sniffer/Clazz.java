@@ -1,4 +1,4 @@
-package org.jvnet.animal_sniffer;
+package org.codehaus.mojo.animal_sniffer;
 
 import java.util.Set;
 import java.io.Serializable;

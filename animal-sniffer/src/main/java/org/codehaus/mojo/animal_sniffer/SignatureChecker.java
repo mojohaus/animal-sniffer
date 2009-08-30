@@ -1,4 +1,4 @@
-package org.jvnet.animal_sniffer;
+package org.codehaus.mojo.animal_sniffer;
 
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.MethodVisitor;
@@ -32,6 +32,7 @@ public class SignatureChecker extends ClassFileVisitor {
     public static void main(String[] args) throws Exception {
         Set ignoredPackages = new HashSet();
         ignoredPackages.add("org/jvnet/animal_sniffer");
+        ignoredPackages.add("org/codehaus/mojo/animal_sniffer");
         ignoredPackages.add("org/objectweb/*");
         new SignatureChecker(new FileInputStream("signature"),ignoredPackages).process(new File("target/classes"));
     }
@@ -65,6 +66,8 @@ public class SignatureChecker extends ClassFileVisitor {
 
                     public AnnotationVisitor visitAnnotation(String desc, boolean visible) {
                         if(desc.equals("Lorg/jvnet/animal_sniffer/IgnoreJRERequirement;"))
+                            ignoreError = true;
+                        if(desc.equals("Lorg/codehaus/mojo/animal_sniffer/IgnoreJRERequirement;"))
                             ignoreError = true;
                         return super.visitAnnotation(desc, visible);
                     }

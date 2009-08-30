@@ -21,6 +21,7 @@
 
   <modules>
     <module>animal-sniffer-annotations</module>
+    <module>animal-sniffer</module>
     <module>animal-sniffer-maven-plugin</module>
     <module>animal-sniffer-ant-tasks</module>
   </modules>

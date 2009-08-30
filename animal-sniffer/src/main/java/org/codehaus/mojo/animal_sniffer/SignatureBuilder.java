@@ -1,4 +1,4 @@
-package org.jvnet.animal_sniffer;
+package org.codehaus.mojo.animal_sniffer;
 
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.FieldVisitor;

@@ -1,4 +1,4 @@
-package org.jvnet.animal_sniffer;
+package org.codehaus.mojo.animal_sniffer;
 
 import java.io.File;
 import java.io.IOException;
