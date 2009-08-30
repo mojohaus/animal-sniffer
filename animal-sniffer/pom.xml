@@ -17,7 +17,7 @@
   <description>
     Animal Sniffer.
   </description>
- 
+
   <dependencies>
     <dependency>
       <groupId>junit</groupId>

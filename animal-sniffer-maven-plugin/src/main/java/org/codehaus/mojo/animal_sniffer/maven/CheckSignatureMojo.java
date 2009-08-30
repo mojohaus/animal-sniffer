@@ -1,27 +1,24 @@
 package org.codehaus.mojo.animal_sniffer.maven;
 
+import org.apache.maven.artifact.factory.ArtifactFactory;
+import org.apache.maven.artifact.repository.ArtifactRepository;
+import org.apache.maven.artifact.resolver.AbstractArtifactResolutionException;
+import org.apache.maven.artifact.resolver.ArtifactResolver;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
-import org.apache.maven.artifact.resolver.ArtifactResolver;
-import org.apache.maven.artifact.resolver.ArtifactResolutionException;
-import org.apache.maven.artifact.resolver.ArtifactNotFoundException;
-import org.apache.maven.artifact.resolver.AbstractArtifactResolutionException;
-import org.apache.maven.artifact.repository.ArtifactRepository;
-import org.apache.maven.artifact.factory.ArtifactFactory;
-import org.apache.maven.artifact.*;
 import org.apache.maven.project.MavenProject;
-import org.codehaus.mojo.animal_sniffer.SignatureChecker;
-import org.codehaus.mojo.animal_sniffer.PackageListBuilder;
 import org.codehaus.mojo.animal_sniffer.ClassFileVisitor;
+import org.codehaus.mojo.animal_sniffer.PackageListBuilder;
+import org.codehaus.mojo.animal_sniffer.SignatureChecker;
 
-import java.util.List;
-import java.util.Iterator;
-import java.util.Set;
 import java.io.File;
-import java.io.IOException;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Checks the classes compiled by this module.
@@ -31,7 +28,9 @@ import java.io.InputStream;
  * @requiresDependencyResolution compile
  * @goal check
  */
-public class CheckSignatureMojo extends AbstractMojo {
+public class CheckSignatureMojo
+    extends AbstractMojo
+{
 
     /**
      * Project classpath.
@@ -83,49 +82,68 @@ public class CheckSignatureMojo extends AbstractMojo {
      */
     protected ArtifactFactory artifactFactory;
 
-    public void execute() throws MojoExecutionException, MojoFailureException {
-        try {
-            getLog().info("Checking unresolved references to "+signature);
+    public void execute()
+        throws MojoExecutionException, MojoFailureException
+    {
+        try
+        {
+            getLog().info( "Checking unresolved references to " + signature );
             final boolean[] hadError = new boolean[1];
 
-            org.apache.maven.artifact.Artifact a = signature.createArtifact(artifactFactory);
-            resolver.resolve(a,project.getRemoteArtifactRepositories(), localRepository);
+            org.apache.maven.artifact.Artifact a = signature.createArtifact( artifactFactory );
+            resolver.resolve( a, project.getRemoteArtifactRepositories(), localRepository );
             // just check code from this module
-            new SignatureChecker(new FileInputStream(a.getFile()),buildPackageList()) {
-                protected void reportError(String msg) {
+            new SignatureChecker( new FileInputStream( a.getFile() ), buildPackageList() )
+            {
+                protected void reportError( String msg )
+                {
                     hadError[0] = true;
-                    getLog().error(msg);
+                    getLog().error( msg );
                 }
 
-                protected void process(String name, InputStream image) throws IOException {
-                    getLog().debug(name);
-                    super.process(name, image);
+                protected void process( String name, InputStream image )
+                    throws IOException
+                {
+                    getLog().debug( name );
+                    super.process( name, image );
                 }
-            }.process(outputDirectory);
+            }.process( outputDirectory );
 
-            if(hadError[0])
-                throw new MojoExecutionException("Signature errors found. Verify them and put @IgnoreJRERequirement on them.");
-        } catch (IOException e) {
-            throw new MojoExecutionException("Failed to check signatures",e);
-        } catch (AbstractArtifactResolutionException e) {
-            throw new MojoExecutionException("Failed to obtain signature: "+signature,e);
+            if ( hadError[0] )
+            {
+                throw new MojoExecutionException(
+                    "Signature errors found. Verify them and put @IgnoreJRERequirement on them." );
+            }
+        }
+        catch ( IOException e )
+        {
+            throw new MojoExecutionException( "Failed to check signatures", e );
+        }
+        catch ( AbstractArtifactResolutionException e )
+        {
+            throw new MojoExecutionException( "Failed to obtain signature: " + signature, e );
         }
     }
 
     /**
      * List of packages defined in the application.
      */
-    private Set buildPackageList() throws IOException {
+    private Set buildPackageList()
+        throws IOException
+    {
         PackageListBuilder plb = new PackageListBuilder();
-        apply(plb);
+        apply( plb );
         return plb.packages;
     }
 
-    private void apply(ClassFileVisitor v) throws IOException {
-        v.process(outputDirectory);
-        for (Iterator itr = classpathElements.iterator(); itr.hasNext();) {
+    private void apply( ClassFileVisitor v )
+        throws IOException
+    {
+        v.process( outputDirectory );
+        for ( Iterator itr = classpathElements.iterator(); itr.hasNext(); )
+        {
             String path = (String) itr.next();
-            v.process(new File(path));
+            v.process( new File( path ) );
         }
     }
 }

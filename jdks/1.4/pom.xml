@@ -1,6 +1,6 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <relativePath>../pom.xml</relativePath>
@@ -11,7 +11,7 @@
   <artifactId>java1.4</artifactId>
   <version>1.0</version>
   <name>Java 1.4 signature for animal-sniffer</name>
-    
+
   <build>
     <plugins>
       <plugin>
@@ -19,9 +19,9 @@
         <artifactId>maven-antrun-extended-plugin</artifactId>
         <configuration>
           <tasks>
-            <taskdef name="build-sig" classname="org.jvnet.animal_sniffer.ant.BuildSignatureTask" />
-            <build-sig javaHome="/usr/local/java1.4/jre" dest="jdk.sig" />
-            <attachArtifact file="jdk.sig" />
+            <taskdef name="build-sig" classname="org.jvnet.animal_sniffer.ant.BuildSignatureTask"/>
+            <build-sig javaHome="/usr/local/java1.4/jre" dest="jdk.sig"/>
+            <attachArtifact file="jdk.sig"/>
           </tasks>
         </configuration>
         <!-- configured in ../pom.xml -->
