@@ -47,7 +47,8 @@ public class BuildSignaturesMojo
     /**
      * The java home to generate the signatures of.
      *
-     * @parameter expression="${java.home}"
+     * @parameter expression="${javaHome}"
+     * @required
      * @since 1.3
      */
     private String javaHome;
@@ -105,6 +106,7 @@ public class BuildSignaturesMojo
         try
         {
             outputDirectory.mkdirs();
+            getLog().info("Parsing signatures from java home: " + javaHome);
             SignatureBuilder builder = new SignatureBuilder( new FileOutputStream( sigFile ) );
             process( builder, "lib/rt.jar" );
             process( builder, "lib/jce.jar" );
