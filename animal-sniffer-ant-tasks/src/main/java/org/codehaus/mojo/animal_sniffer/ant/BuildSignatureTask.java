@@ -3,7 +3,7 @@ package org.codehaus.mojo.animal_sniffer.ant;
 /*
  * The MIT License
  *
- * Copyright (c) 2008 Kohsuke Kawaguchi and The Codehaus
+ * Copyright (c) 2008 Kohsuke Kawaguchi and codehaus.org.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
