@@ -30,8 +30,8 @@
 
   <licenses>
     <license>
-      <name>Common Development and Distribution License</name>
-      <url>http://www.opensource.org/licenses/cddl1.php</url>
+      <name>MIT license</name>
+      <url>http://www.opensource.org/licenses/mit-license.php</url>
       <distribution>repo</distribution>
     </license>
   </licenses>
