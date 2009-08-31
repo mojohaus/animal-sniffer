@@ -25,13 +25,12 @@ package org.codehaus.mojo.animal_sniffer.maven;
  *
  */
 
+import org.apache.maven.artifact.Artifact;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
-import org.apache.maven.project.MavenProjectHelper;
 import org.apache.maven.project.MavenProject;
-import org.apache.maven.artifact.*;
-import org.apache.maven.artifact.Artifact;
+import org.apache.maven.project.MavenProjectHelper;
 import org.codehaus.mojo.animal_sniffer.SignatureBuilder;
 
 import java.io.File;
