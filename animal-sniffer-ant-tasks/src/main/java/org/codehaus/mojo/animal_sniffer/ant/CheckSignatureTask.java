@@ -32,6 +32,7 @@ import org.apache.tools.ant.Task;
 import org.apache.tools.ant.types.FileSet;
 import org.apache.tools.ant.types.Path;
 import org.apache.tools.ant.types.Reference;
+import org.apache.tools.ant.types.resources.FileResource;
 import org.codehaus.mojo.animal_sniffer.ClassFileVisitor;
 import org.codehaus.mojo.animal_sniffer.PackageListBuilder;
 import org.codehaus.mojo.animal_sniffer.SignatureChecker;
@@ -82,9 +83,12 @@ public class CheckSignatureTask
         }
     }
 
-    public void setClasspathRef( Reference r ) {
-        if (this.classpath == null)
+    public void setClasspathRef( Reference r )
+    {
+        if ( this.classpath == null )
+        {
             this.classpath = new Path( getProject() );
+        }
         this.classpath.createPath().setRefid( r );
     }
 
@@ -113,9 +117,10 @@ public class CheckSignatureTask
             // just check code from this module
             final SignatureChecker signatureChecker =
                 new SignatureChecker( new FileInputStream( signature ), buildPackageList(), new AntLogger( this ) );
-            for ( Enumeration i = filesets.elements(); i.hasMoreElements(); )
+            Iterator i = filesets.iterator();
+            while ( i.hasNext() )
             {
-                FileSet fs = (FileSet) i.nextElement();
+                FileSet fs = (FileSet) i.next();
                 DirectoryScanner ds = fs.getDirectoryScanner( getProject() );
                 File baseDir = fs.getDir( getProject() );
                 final String[] files = ds.getIncludedFiles();
@@ -127,8 +132,8 @@ public class CheckSignatureTask
 
             if ( signatureChecker.isSignatureBroken() )
             {
-                throw new BuildException(
-                    "Signature errors found. Verify them and put @IgnoreJRERequirement on them.", getLocation() );
+                throw new BuildException( "Signature errors found. Verify them and put @IgnoreJRERequirement on them.",
+                                          getLocation() );
             }
         }
         catch ( IOException e )
@@ -160,6 +165,18 @@ public class CheckSignatureTask
             for ( int j = 0; j < files.length; j++ )
             {
                 v.process( new File( baseDir, files[j] ) );
+            }
+        }
+        if ( classpath != null )
+        {
+            final Iterator i = classpath.createPath().iterator();
+            while ( i.hasNext() )
+            {
+                Object next = i.next();
+                if ( next instanceof FileResource )
+                {
+                    v.process( ( (FileResource) next ).getFile() );
+                }
             }
         }
     }
