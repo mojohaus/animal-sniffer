@@ -29,6 +29,8 @@ import org.objectweb.asm.AnnotationVisitor;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.commons.EmptyVisitor;
+import org.codehaus.mojo.animal_sniffer.logging.Logger;
+import org.codehaus.mojo.animal_sniffer.logging.PrintWriterLogger;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -51,11 +53,15 @@ public class SignatureChecker
 {
     private final Map/*<String, Clazz>*/ classes = new HashMap();
 
+    private final Logger logger;
+
     /**
      * Classes in this packages are considered to be resolved elsewhere and
      * thus not a subject of the error checking when referenced.
      */
     private final Set ignoredPackages;
+
+    private boolean hadError = false;
 
     public static void main( String[] args )
         throws Exception
@@ -64,14 +70,15 @@ public class SignatureChecker
         ignoredPackages.add( "org/jvnet/animal_sniffer" );
         ignoredPackages.add( "org/codehaus/mojo/animal_sniffer" );
         ignoredPackages.add( "org/objectweb/*" );
-        new SignatureChecker( new FileInputStream( "signature" ), ignoredPackages ).process(
+        new SignatureChecker( new FileInputStream( "signature" ), ignoredPackages, new PrintWriterLogger( System.out ) ).process(
             new File( "target/classes" ) );
     }
 
-    public SignatureChecker( InputStream in, Set ignoredPackages )
+    public SignatureChecker( InputStream in, Set ignoredPackages, Logger logger )
         throws IOException
     {
         this.ignoredPackages = ignoredPackages;
+        this.logger = logger;
         try
         {
             ObjectInputStream ois = new ObjectInputStream( new GZIPInputStream( in ) );
@@ -243,16 +250,17 @@ public class SignatureChecker
 
             private void error( String msg )
             {
+                hadError = true;
                 if ( warned.add( msg ) )
                 {
-                    reportError( msg + " in " + name );
+                    logger.error( msg + " in " + name );
                 }
             }
         }, 0 );
     }
 
-    protected void reportError( String msg )
+    public boolean isSignatureBroken()
     {
-        System.err.println( msg );
+        return hadError;
     }
 }

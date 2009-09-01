@@ -36,7 +36,7 @@ import java.io.IOException;
 /**
  * @author Kohsuke Kawaguchi
  */
-public class BuildSignatureTask
+public class BuildSignaturesTask
     extends Task
 {
 
@@ -59,7 +59,7 @@ public class BuildSignatureTask
     {
         try
         {
-            SignatureBuilder builder = new SignatureBuilder( new FileOutputStream( dest ) );
+            SignatureBuilder builder = new SignatureBuilder( new FileOutputStream( dest ), new AntLogger( this ) );
             process( builder, "lib/rt.jar" );
             process( builder, "lib/jce.jar" );
             process( builder, "lib/jsse.jar" );

@@ -29,6 +29,8 @@ import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.FieldVisitor;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.commons.EmptyVisitor;
+import org.codehaus.mojo.animal_sniffer.logging.PrintWriterLogger;
+import org.codehaus.mojo.animal_sniffer.logging.Logger;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -49,19 +51,23 @@ public class SignatureBuilder
 {
     private boolean foundSome;
 
+    private final Logger logger;
+
     public static void main( String[] args )
         throws IOException
     {
-        SignatureBuilder builder = new SignatureBuilder( new FileOutputStream( "signature" ) );
+        SignatureBuilder builder = new SignatureBuilder( new FileOutputStream( "signature" ), new PrintWriterLogger(
+            System.out ) );
         builder.process( new File( System.getProperty( "java.home" ), "lib/rt.jar" ) );
         builder.close();
     }
 
     private final ObjectOutputStream oos;
 
-    public SignatureBuilder( OutputStream out )
+    public SignatureBuilder( OutputStream out, Logger logger )
         throws IOException
     {
+        this.logger = logger;
         oos = new ObjectOutputStream( new GZIPOutputStream( out ) );
     }
 
@@ -79,7 +85,7 @@ public class SignatureBuilder
     protected void process( String name, InputStream image )
         throws IOException
     {
-        System.out.println( name );
+        logger.info( name );
         foundSome = true;
         ClassReader cr = new ClassReader( image );
         SignatureVisitor v = new SignatureVisitor();

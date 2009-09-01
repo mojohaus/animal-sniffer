@@ -107,7 +107,7 @@ public class BuildSignaturesMojo
         {
             outputDirectory.mkdirs();
             getLog().info("Parsing signatures from java home: " + javaHome);
-            SignatureBuilder builder = new SignatureBuilder( new FileOutputStream( sigFile ) );
+            SignatureBuilder builder = new SignatureBuilder( new FileOutputStream( sigFile ), new MavenLogger( getLog() ) );
             process( builder, "lib/rt.jar" );
             process( builder, "lib/jce.jar" );
             process( builder, "lib/jsse.jar" );

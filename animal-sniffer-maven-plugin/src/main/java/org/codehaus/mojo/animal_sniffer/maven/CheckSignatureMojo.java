@@ -40,7 +40,6 @@ import org.codehaus.mojo.animal_sniffer.SignatureChecker;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -113,30 +112,19 @@ public class CheckSignatureMojo
         try
         {
             getLog().info( "Checking unresolved references to " + signature );
-            final boolean[] hadError = new boolean[1];
 
             org.apache.maven.artifact.Artifact a = signature.createArtifact( artifactFactory );
+
             resolver.resolve( a, project.getRemoteArtifactRepositories(), localRepository );
             // just check code from this module
-            new SignatureChecker( new FileInputStream( a.getFile() ), buildPackageList() )
-            {
-                protected void reportError( String msg )
-                {
-                    hadError[0] = true;
-                    getLog().error( msg );
-                }
+            final SignatureChecker signatureChecker =
+                new SignatureChecker( new FileInputStream( a.getFile() ), buildPackageList(),
+                                      new MavenLogger( getLog() ) );
+            signatureChecker.process( outputDirectory );
 
-                protected void process( String name, InputStream image )
-                    throws IOException
-                {
-                    getLog().debug( name );
-                    super.process( name, image );
-                }
-            }.process( outputDirectory );
-
-            if ( hadError[0] )
+            if ( signatureChecker.isSignatureBroken() )
             {
-                throw new MojoExecutionException(
+                throw new MojoFailureException(
                     "Signature errors found. Verify them and put @IgnoreJRERequirement on them." );
             }
         }
@@ -165,7 +153,8 @@ public class CheckSignatureMojo
         throws IOException
     {
         v.process( outputDirectory );
-        for ( Iterator itr = classpathElements.iterator(); itr.hasNext(); )
+        Iterator itr = classpathElements.iterator();
+        while ( itr.hasNext() )
         {
             String path = (String) itr.next();
             v.process( new File( path ) );
