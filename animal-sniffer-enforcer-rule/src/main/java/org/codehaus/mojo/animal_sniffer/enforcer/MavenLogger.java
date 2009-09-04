@@ -3,7 +3,7 @@ package org.codehaus.mojo.animal_sniffer.enforcer;
 /*
  * The MIT License
  *
- * Copyright (c) 2009, codehaus.org
+ * Copyright (c) 2008 Kohsuke Kawaguchi and codehaus.org.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,8 +25,8 @@ package org.codehaus.mojo.animal_sniffer.enforcer;
  *
  */
 
-import org.codehaus.mojo.animal_sniffer.logging.Logger;
 import org.apache.maven.plugin.logging.Log;
+import org.codehaus.mojo.animal_sniffer.logging.Logger;
 
 /**
  * An animal sniffer logger that delegates to a maven log.
