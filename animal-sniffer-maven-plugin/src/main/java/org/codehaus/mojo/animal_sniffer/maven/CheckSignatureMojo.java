@@ -80,7 +80,7 @@ public class CheckSignatureMojo
      * @required
      * @parameter
      */
-    protected Artifact signature;
+    protected Signature signature;
 
     /**
      * @component

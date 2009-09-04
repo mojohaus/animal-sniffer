@@ -92,7 +92,6 @@ public class CheckSignatureTask
         this.classpath.createPath().setRefid( r );
     }
 
-    @Override
     public void execute()
         throws BuildException
     {

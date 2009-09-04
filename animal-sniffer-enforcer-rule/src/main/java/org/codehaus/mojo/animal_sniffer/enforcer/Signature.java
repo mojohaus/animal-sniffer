@@ -1,4 +1,4 @@
-package org.codehaus.mojo.animal_sniffer.maven;
+package org.codehaus.mojo.animal_sniffer.enforcer;
 
 /*
  * The MIT License
@@ -33,7 +33,7 @@ import org.apache.maven.artifact.factory.ArtifactFactory;
  *
  * @author Kohsuke Kawaguchi
  */
-public class Artifact
+public class Signature
 {
     private String groupId;
 
