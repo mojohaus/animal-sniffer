@@ -1,0 +1,14 @@
+<project name="log-events-ant-tasks" default="test" xmlns:log-events="urn:animal-sniffer">
+  <target name="initTaskDefs">
+    <xmlproperty file="../../../pom.xml" prefix="pom.xml"/>
+    <path id="animal-sniffer.classpath"
+          path="../../../target/${pom.xml.project.artifactId}-${pom.xml.project.parent.version}.jar"/>
+    <typedef resource="org/codehaus/mojo/animal_sniffer/ant/antlib.xml" uri="urn:animal-sniffer"
+             classpathref="animal-sniffer.classpath"/>
+  </target>
+
+  <target name="test" depends="initTaskDefs">
+    <animal-sniffer:build-signatures javaHome="/usr/local/java1.4/jre" dest="jdk.sig"/>
+
+  </target>
+</project>
