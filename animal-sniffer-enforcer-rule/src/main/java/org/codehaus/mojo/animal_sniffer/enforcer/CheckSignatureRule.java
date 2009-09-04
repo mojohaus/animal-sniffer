@@ -71,7 +71,7 @@ public class CheckSignatureRule
         {
             List classpathElements = (List) helper.evaluate( "${project.compileClasspathElements}" );
 
-            File outputDirectory = (File) helper.evaluate( "${project.build.outputDirectory}" );
+            File outputDirectory = new File( (String) helper.evaluate( "${project.build.outputDirectory}" ) );
 
             ArtifactResolver resolver = (ArtifactResolver) helper.getComponent( ArtifactResolver.class );
 

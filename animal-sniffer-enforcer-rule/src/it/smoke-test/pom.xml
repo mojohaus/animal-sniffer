@@ -94,7 +94,7 @@
             </goals>
             <configuration>
               <rules>
-                <checkSignatureRule implementation="org.codehaus.mojo.animal_sniffer.enforcer">
+                <checkSignatureRule implementation="org.codehaus.mojo.animal_sniffer.enforcer.CheckSignatureRule">
                   <signature>
                     <!-- todo add in a ref to a 1.4 signature -->
                     <groupId>foo</groupId>
