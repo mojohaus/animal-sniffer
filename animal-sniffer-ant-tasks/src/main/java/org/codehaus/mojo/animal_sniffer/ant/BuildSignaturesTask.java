@@ -26,12 +26,18 @@ package org.codehaus.mojo.animal_sniffer.ant;
  */
 
 import org.apache.tools.ant.BuildException;
+import org.apache.tools.ant.DirectoryScanner;
+import org.apache.tools.ant.Project;
 import org.apache.tools.ant.Task;
+import org.apache.tools.ant.types.FileSet;
+import org.apache.tools.ant.types.Path;
 import org.codehaus.mojo.animal_sniffer.SignatureBuilder;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Iterator;
+import java.util.Vector;
 
 /**
  * @author Kohsuke Kawaguchi
@@ -40,29 +46,49 @@ public class BuildSignaturesTask
     extends Task
 {
 
-    private File dest;
+    private File destfile;
 
-    private File javaHome;
+    private Vector paths = new Vector();
 
-    public void setDest( File dest )
+    public void setDestfile( File dest )
     {
-        this.dest = dest;
+        this.destfile = dest;
     }
 
-    public void setJavaHome( File javaHome )
+    public void addPath( Path path )
     {
-        this.javaHome = javaHome;
+        paths.add( path );
+    }
+
+    protected void validate()
+    {
+        if ( destfile == null )
+        {
+            throw new BuildException( "destfile not set" );
+        }
+        if (paths.size() < 1) {
+            throw new BuildException( "path not set");
+        }
     }
 
     public void execute()
         throws BuildException
     {
+        validate();
         try
         {
-            SignatureBuilder builder = new SignatureBuilder( new FileOutputStream( dest ), new AntLogger( this ) );
-            process( builder, "lib/rt.jar" );
-            process( builder, "lib/jce.jar" );
-            process( builder, "lib/jsse.jar" );
+            SignatureBuilder builder = new SignatureBuilder( new FileOutputStream( destfile ), new AntLogger( this ) );
+            Iterator i = paths.iterator();
+            while ( i.hasNext() )
+            {
+                Path path = (Path) i.next();
+                final String[] files = path.list();
+                for ( int j = 0; j < files.length; j++ )
+                {
+                    log( "Capturing signatures from " + files[j], Project.MSG_INFO );
+                    process( builder, new File( files[j] ) );
+                }
+            }
             builder.close();
         }
         catch ( IOException e )
@@ -71,14 +97,9 @@ public class BuildSignaturesTask
         }
     }
 
-    private void process( SignatureBuilder builder, String name )
+    private void process( SignatureBuilder builder, File f )
         throws IOException
     {
-        if ( javaHome == null )
-        {
-            javaHome = new File( System.getProperty( "java.home" ) );
-        }
-        File f = new File( javaHome, name );
         if ( f.exists() )
         {
             builder.process( f );

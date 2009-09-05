@@ -22,8 +22,8 @@
   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
   THE SOFTWARE.
 -->
-<project name="log-events-ant-tasks" default="test" xmlns:animal-sniffer="urn:animal-sniffer">
-  <target name="initTaskDefs">
+<project name="smoke-test" default="test" xmlns:animal-sniffer="urn:animal-sniffer">
+  <target name="init">
     <xmlproperty file="../../../pom.xml" prefix="pom.xml"/>
     <path id="animal-sniffer.classpath"
           path="../../../target/${pom.xml.project.artifactId}-${pom.xml.project.parent.version}.jar"/>
@@ -31,8 +31,34 @@
              classpathref="animal-sniffer.classpath"/>
   </target>
 
-  <target name="test" depends="initTaskDefs">
-    <animal-sniffer:build-signatures javaHome="/usr/local/java1.4/jre" dest="jdk.sig"/>
+  <target name="clean">
+      <delete dir="${basedir}/build"/>
+  </target>
+
+  <target name="compile">
+      <mkdir dir="${basedir}/build/classes"/>
+      <javac srcdir="${basedir}/src/main/java" destdir="${basedir}/build/classes"/>
+  </target>
+
+  <target name="package" depends="compile" >
+      <mkdir dir="${basedir}/build"/>
+      <jar destfile="build/${ant.project.name}.jar" basedir="${basedir}/build/classes"/>
+  </target>
+
+  <target name="verify" depends="init, package">
+    <animal-sniffer:check-signature>
+      <classpath path="build/${ant.project.name}.jar"/>      
+    </animal-sniffer:check-signature>
+  </target>
+
+  <target name="build-signatures" depends="init">
+    <animal-sniffer:build-signatures destfile="${basedir}/build/jdk.sig">
+      <path>
+        <fileset dir="${java.home}" includes="lib/rt.jar"/>
+        <fileset dir="${java.home}" includes="lib/jce.jar"/>
+        <fileset dir="${java.home}" includes="lib/jsse.jar"/>
+      </path>
+    </animal-sniffer:build-signatures>
 
   </target>
 </project>
