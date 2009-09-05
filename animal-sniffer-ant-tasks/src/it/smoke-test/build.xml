@@ -23,6 +23,12 @@
   THE SOFTWARE.
 -->
 <project name="smoke-test" default="test" xmlns:animal-sniffer="urn:animal-sniffer">
+  <path id="jre">
+    <fileset dir="${java.home}" includes="lib/rt.jar"/>
+    <fileset dir="${java.home}" includes="lib/jce.jar"/>
+    <fileset dir="${java.home}" includes="lib/jsse.jar"/>
+  </path>
+
   <target name="init">
     <xmlproperty file="../../../pom.xml" prefix="pom.xml"/>
     <path id="animal-sniffer.classpath"
@@ -32,22 +38,26 @@
   </target>
 
   <target name="clean">
-      <delete dir="${basedir}/build"/>
+    <delete dir="${basedir}/build"/>
   </target>
 
-  <target name="compile">
-      <mkdir dir="${basedir}/build/classes"/>
-      <javac srcdir="${basedir}/src/main/java" destdir="${basedir}/build/classes"/>
+  <target name="compile" depends="package-api2">
+    <mkdir dir="${basedir}/build/classes"/>
+    <javac srcdir="${basedir}/src/main/java" destdir="${basedir}/build/classes">
+      <classpath>
+        <path path="${basedir}/build/api2.jar"/>
+      </classpath>
+    </javac>
   </target>
 
-  <target name="package" depends="compile" >
-      <mkdir dir="${basedir}/build"/>
-      <jar destfile="build/${ant.project.name}.jar" basedir="${basedir}/build/classes"/>
+  <target name="package" depends="compile">
+    <mkdir dir="${basedir}/build"/>
+    <jar destfile="${basedir}/build/${ant.project.name}.jar" basedir="${basedir}/build/classes"/>
   </target>
 
   <target name="verify" depends="init, package">
     <animal-sniffer:check-signature>
-      <classpath path="build/${ant.project.name}.jar"/>      
+      <classpath path="${basedir}/build/${ant.project.name}.jar"/>
     </animal-sniffer:check-signature>
   </target>
 
@@ -59,6 +69,64 @@
         <fileset dir="${java.home}" includes="lib/jsse.jar"/>
       </path>
     </animal-sniffer:build-signatures>
-
   </target>
+
+  <target name="compile-api1">
+    <mkdir dir="${basedir}/build/api1"/>
+    <javac srcdir="${basedir}/src/api1/java" destdir="${basedir}/build/api1"/>
+  </target>
+
+  <target name="compile-api2">
+    <mkdir dir="${basedir}/build/api2"/>
+    <javac srcdir="${basedir}/src/api2/java" destdir="${basedir}/build/api2"/>
+  </target>
+
+  <target name="package-api1" depends="compile-api1">
+    <mkdir dir="${basedir}/build"/>
+    <jar destfile="${basedir}/build/api1.jar" basedir="${basedir}/build/api1"/>
+  </target>
+
+  <target name="package-api2" depends="compile-api2">
+    <mkdir dir="${basedir}/build"/>
+    <jar destfile="${basedir}/build/api2.jar" basedir="${basedir}/build/api2"/>
+  </target>
+
+  <target name="build-signatures-api1" depends="init, package-api1">
+    <animal-sniffer:build-signatures destfile="${basedir}/build/api1.sig">
+      <path>
+        <fileset dir="${basedir}/build" includes="api1.jar"/>
+      </path>
+    </animal-sniffer:build-signatures>
+  </target>
+
+  <target name="build-signatures-api2" depends="init, package-api2">
+    <animal-sniffer:build-signatures destfile="${basedir}/build/api2.sig">
+      <path>
+        <fileset dir="${basedir}/build" includes="api2.jar"/>
+      </path>
+    </animal-sniffer:build-signatures>
+  </target>
+
+  <target name="check-signatures-api1" depends="init, package, build-signatures-api1">
+    <!--
+      in this case we are checking signatures not of the jdk, but of our API
+      so we need to add the classpath of the jdk, or else we will have
+      an error due to java.lang.Object being undefined
+      -->
+    <animal-sniffer:check-signature signature="${basedir}/build/api1.sig" classpathRef="jre">
+      <path path="${basedir}/build/${ant.project.name}.jar"/>
+    </animal-sniffer:check-signature>
+  </target>
+
+  <target name="check-signatures-api2" depends="init, package, build-signatures-api2">
+    <!--
+      in this case we are checking signatures not of the jdk, but of our API
+      so we need to add the classpath of the jdk, or else we will have
+      an error due to java.lang.Object being undefined
+      -->
+    <animal-sniffer:check-signature signature="${basedir}/build/api2.sig" classpathRef="jre">
+      <path path="${basedir}/build/${ant.project.name}.jar"/>
+    </animal-sniffer:check-signature>
+  </target>
+
 </project>

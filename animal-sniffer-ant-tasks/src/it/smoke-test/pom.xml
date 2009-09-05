@@ -95,44 +95,6 @@
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-dependency-plugin</artifactId>
-        <executions>
-          <execution>
-            <!--
-            Ideally I'd have maven ant tasks do the download of the signatures from within
-            the build.xml file.  However, this is only an integration test of our ant tasks
-            we have to assume that maven ant tasks works, and in fact there is nothing to
-            stop the end user from keeping their signature in SVN and not in a maven repo.
-            Also, they could always use IVY to download the signatures.
-
-            We will just download the signatures and hand over to ANT
-            -->
-            <id>copy-signature</id>
-            <phase>generate-sources</phase>
-            <goals>
-              <goal>copy</goal>
-            </goals>
-            <configuration>
-              <artifactItems>
-                <artifactItem>
-                  <!-- todo add in a ref to a 1.4 signature -->
-                  <groupId>foo</groupId>
-                  <artifactId>bar</artifactId>
-                  <version>1</version>
-                  <type>jresig</type>
-                  <overWrite>false</overWrite>
-                  <outputDirectory>${project.build.directory}</outputDirectory>
-                  <destFileName>java-1.4.jresig</destFileName>
-                </artifactItem>
-              </artifactItems>
-              <overWriteReleases>false</overWriteReleases>
-              <overWriteSnapshots>true</overWriteSnapshots>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-antrun-plugin</artifactId>
         <executions>
           <execution>
@@ -142,7 +104,7 @@
             </goals>
             <configuration>
               <tasks>
-                <ant antfile="build.xml"/>
+                <ant antfile="build.xml" target="check-signatures-api2"/>
               </tasks>
             </configuration>
           </execution>

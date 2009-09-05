@@ -127,7 +127,7 @@ public class CheckSignatureRule
     {
         PackageListBuilder plb = new PackageListBuilder();
         apply( plb, outputDirectory, classpathElements );
-        return plb.packages;
+        return plb.getPackages();
     }
 
     private void apply( ClassFileVisitor v, File outputDirectory, List classpathElements )

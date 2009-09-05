@@ -26,10 +26,8 @@ package org.codehaus.mojo.animal_sniffer.ant;
  */
 
 import org.apache.tools.ant.BuildException;
-import org.apache.tools.ant.DirectoryScanner;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.Task;
-import org.apache.tools.ant.types.FileSet;
 import org.apache.tools.ant.types.Path;
 import org.apache.tools.ant.types.Reference;
 import org.apache.tools.ant.types.resources.FileResource;
@@ -40,7 +38,6 @@ import org.codehaus.mojo.animal_sniffer.SignatureChecker;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.Vector;
@@ -59,20 +56,38 @@ public class CheckSignatureTask
 
     private Path classpath;
 
-    private Vector filesets = new Vector();
+    private Vector paths = new Vector();
+
+    private Vector ignores = new Vector();
+
+    public void addPath( Path path )
+    {
+        paths.add( path );
+    }
+
+    public void addIgnore( String ignore )
+    {
+        ignores.add( ignore );
+    }
 
     public void setSignature( File signature )
     {
         this.signature = signature;
     }
 
-    public void addFileset( FileSet set )
+    public Path createClasspath()
     {
-        filesets.addElement( set );
+        log( "In createClasspath", Project.MSG_INFO );
+        if ( this.classpath == null )
+        {
+            this.classpath = new Path( getProject() );
+        }
+        return this.classpath.createPath();
     }
 
     public void setClasspath( Path classpath )
     {
+        log( "In setClasspath", Project.MSG_INFO );
         if ( this.classpath == null )
         {
             this.classpath = classpath;
@@ -85,25 +100,14 @@ public class CheckSignatureTask
 
     public void setClasspathRef( Reference r )
     {
-        if ( this.classpath == null )
-        {
-            this.classpath = new Path( getProject() );
-        }
-        this.classpath.createPath().setRefid( r );
+        log( "In setClasspathRef", Project.MSG_INFO );
+        createClasspath().setRefid( r );
     }
 
     public void execute()
         throws BuildException
     {
-        if ( signature == null )
-        {
-            throw new BuildException( "The signature to check must be specified the 'signature' attribute" );
-        }
-        if ( filesets.isEmpty() )
-        {
-            log( "Nothing to do", Project.MSG_INFO );
-            return;
-        }
+        validate();
         try
         {
             log( "Checking unresolved references to " + signature, Project.MSG_INFO );
@@ -113,19 +117,26 @@ public class CheckSignatureTask
                 throw new BuildException( "Could not find signature: " + signature );
             }
 
-            // just check code from this module
-            final SignatureChecker signatureChecker =
-                new SignatureChecker( new FileInputStream( signature ), buildPackageList(), new AntLogger( this ) );
-            Iterator i = filesets.iterator();
+            final Set ignoredPackages = buildPackageList();
+
+            Iterator i = ignores.iterator();
             while ( i.hasNext() )
             {
-                FileSet fs = (FileSet) i.next();
-                DirectoryScanner ds = fs.getDirectoryScanner( getProject() );
-                File baseDir = fs.getDir( getProject() );
-                final String[] files = ds.getIncludedFiles();
+                String clazz = (String) i.next();
+                ignoredPackages.add( clazz.replace( '.', '/' ) );
+            }
+
+            final SignatureChecker signatureChecker =
+                new SignatureChecker( new FileInputStream( signature ), ignoredPackages, new AntLogger( this ) );
+
+            i = paths.iterator();
+            while ( i.hasNext() )
+            {
+                Path path = (Path) i.next();
+                final String[] files = path.list();
                 for ( int j = 0; j < files.length; j++ )
                 {
-                    signatureChecker.process( new File( baseDir, files[j] ) );
+                    signatureChecker.process( new File( files[j] ) );
                 }
             }
 
@@ -141,6 +152,19 @@ public class CheckSignatureTask
         }
     }
 
+    protected void validate()
+    {
+        if ( signature == null )
+        {
+            throw new BuildException( "signature not set" );
+        }
+        if ( paths.size() < 1 )
+        {
+            throw new BuildException( "path not set" );
+        }
+
+    }
+
     /**
      * List of packages defined in the application.
      */
@@ -149,32 +173,34 @@ public class CheckSignatureTask
     {
         PackageListBuilder plb = new PackageListBuilder();
         apply( plb );
-        return plb.packages;
+        return plb.getPackages();
     }
 
     private void apply( ClassFileVisitor v )
         throws IOException
     {
-        for ( Enumeration i = filesets.elements(); i.hasMoreElements(); )
+        Iterator i = paths.iterator();
+        while ( i.hasNext() )
         {
-            FileSet fs = (FileSet) i.nextElement();
-            DirectoryScanner ds = fs.getDirectoryScanner( getProject() );
-            File baseDir = fs.getDir( getProject() );
-            final String[] files = ds.getIncludedFiles();
+            Path path = (Path) i.next();
+            final String[] files = path.list();
             for ( int j = 0; j < files.length; j++ )
             {
-                v.process( new File( baseDir, files[j] ) );
+                log( "Ignoring the signatures from file to be checked: " + files[j], Project.MSG_INFO );
+                v.process( new File( files[j] ) );
             }
         }
         if ( classpath != null )
         {
-            final Iterator i = classpath.createPath().iterator();
+            i = classpath.iterator();
             while ( i.hasNext() )
             {
                 Object next = i.next();
                 if ( next instanceof FileResource )
                 {
-                    v.process( ( (FileResource) next ).getFile() );
+                    final File file = ( (FileResource) next ).getFile();
+                    log( "Ignoring the signatures from classpath: " + file, Project.MSG_INFO );
+                    v.process( file );
                 }
             }
         }

@@ -146,7 +146,7 @@ public class CheckSignatureMojo
     {
         PackageListBuilder plb = new PackageListBuilder();
         apply( plb );
-        return plb.packages;
+        return plb.getPackages();
     }
 
     private void apply( ClassFileVisitor v )

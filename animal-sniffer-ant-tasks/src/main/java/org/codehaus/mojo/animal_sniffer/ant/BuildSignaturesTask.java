@@ -26,10 +26,8 @@ package org.codehaus.mojo.animal_sniffer.ant;
  */
 
 import org.apache.tools.ant.BuildException;
-import org.apache.tools.ant.DirectoryScanner;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.Task;
-import org.apache.tools.ant.types.FileSet;
 import org.apache.tools.ant.types.Path;
 import org.codehaus.mojo.animal_sniffer.SignatureBuilder;
 
@@ -66,8 +64,9 @@ public class BuildSignaturesTask
         {
             throw new BuildException( "destfile not set" );
         }
-        if (paths.size() < 1) {
-            throw new BuildException( "path not set");
+        if ( paths.size() < 1 )
+        {
+            throw new BuildException( "path not set" );
         }
     }
 

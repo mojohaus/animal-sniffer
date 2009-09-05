@@ -41,7 +41,12 @@ import java.util.Set;
 public class PackageListBuilder
     extends ClassFileVisitor
 {
-    public final Set packages;
+    private final Set packages;
+
+    public Set getPackages()
+    {
+        return packages;
+    }
 
     public PackageListBuilder( Set packages )
     {
