@@ -104,7 +104,9 @@
             </goals>
             <configuration>
               <tasks>
-                <ant antfile="build.xml" target="check-signatures-api2"/>
+                <ant antfile="build.xml" target="check-signatures-api2">
+                  <property name="java.home" value="${env.JAVA_HOME}"/>
+                </ant>
               </tasks>
             </configuration>
           </execution>

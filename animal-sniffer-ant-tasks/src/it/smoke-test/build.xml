@@ -23,6 +23,9 @@
   THE SOFTWARE.
 -->
 <project name="smoke-test" default="test" xmlns:animal-sniffer="urn:animal-sniffer">
+
+  <property environment="env"/>
+
   <path id="jre">
     <fileset dir="${java.home}" includes="lib/rt.jar"/>
     <fileset dir="${java.home}" includes="lib/jce.jar"/>
@@ -43,7 +46,7 @@
 
   <target name="compile" depends="package-api2">
     <mkdir dir="${basedir}/build/classes"/>
-    <javac srcdir="${basedir}/src/main/java" destdir="${basedir}/build/classes">
+    <javac srcdir="${basedir}/src/main/java" destdir="${basedir}/build/classes" fork="true">
       <classpath>
         <path path="${basedir}/build/api2.jar"/>
       </classpath>
@@ -73,12 +76,12 @@
 
   <target name="compile-api1">
     <mkdir dir="${basedir}/build/api1"/>
-    <javac srcdir="${basedir}/src/api1/java" destdir="${basedir}/build/api1"/>
+    <javac srcdir="${basedir}/src/api1/java" destdir="${basedir}/build/api1" fork="true"/>
   </target>
 
   <target name="compile-api2">
     <mkdir dir="${basedir}/build/api2"/>
-    <javac srcdir="${basedir}/src/api2/java" destdir="${basedir}/build/api2"/>
+    <javac srcdir="${basedir}/src/api2/java" destdir="${basedir}/build/api2" fork="true"/>
   </target>
 
   <target name="package-api1" depends="compile-api1">
@@ -115,6 +118,8 @@
       -->
     <animal-sniffer:check-signature signature="${basedir}/build/api1.sig" classpathRef="jre">
       <path path="${basedir}/build/${ant.project.name}.jar"/>
+      <ignore className="java.*"/>
+      <ignore className="javax.*"/>
     </animal-sniffer:check-signature>
   </target>
 
@@ -126,6 +131,8 @@
       -->
     <animal-sniffer:check-signature signature="${basedir}/build/api2.sig" classpathRef="jre">
       <path path="${basedir}/build/${ant.project.name}.jar"/>
+      <ignore className="java.*"/>
+      <ignore className="javax.*"/>
     </animal-sniffer:check-signature>
   </target>
 
