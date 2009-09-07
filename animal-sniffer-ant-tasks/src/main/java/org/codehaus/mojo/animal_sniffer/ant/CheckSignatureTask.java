@@ -65,9 +65,11 @@ public class CheckSignatureTask
         paths.add( path );
     }
 
-    public void addIgnore( String ignore )
+    public Ignore createIgnore( )
     {
-        ignores.add( ignore );
+        final Ignore result = new Ignore();
+        ignores.add( result );
+        return result;
     }
 
     public void setSignature( File signature )
@@ -122,8 +124,9 @@ public class CheckSignatureTask
             Iterator i = ignores.iterator();
             while ( i.hasNext() )
             {
-                String clazz = (String) i.next();
-                ignoredPackages.add( clazz.replace( '.', '/' ) );
+                Ignore ignore = (Ignore) i.next();
+                if (ignore == null|| ignore.getClassName()== null) continue;
+                ignoredPackages.add( ignore.getClassName().replace( '.', '/' ) );
             }
 
             final SignatureChecker signatureChecker =
