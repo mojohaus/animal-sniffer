@@ -64,6 +64,13 @@ public class CheckSignatureRule
      */
     protected Signature signature;
 
+    /**
+     * Class names to ignore signatures for (wildcards accepted).
+     *
+     * @parameter
+     */
+    protected String[] ignores;
+
     public void execute( EnforcerRuleHelper helper )
         throws EnforcerRuleException
     {
@@ -87,10 +94,22 @@ public class CheckSignatureRule
 
             resolver.resolve( a, project.getRemoteArtifactRepositories(), localRepository );
             // just check code from this module
-            final SignatureChecker signatureChecker = new SignatureChecker( new FileInputStream( a.getFile() ),
-                                                                            buildPackageList( outputDirectory,
-                                                                                              classpathElements ),
-                                                                            new MavenLogger( helper.getLog() ) );
+
+            final Set ignoredPackages = buildPackageList( outputDirectory, classpathElements );
+
+            for ( int i = 0; i < ignores.length; i++ )
+            {
+                String ignore = ignores[i];
+                if ( ignore == null )
+                {
+                    continue;
+                }
+                ignoredPackages.add( ignore.replace( '.', '/' ) );
+            }
+
+            final SignatureChecker signatureChecker =
+                new SignatureChecker( new FileInputStream( a.getFile() ), ignoredPackages,
+                                      new MavenLogger( helper.getLog() ) );
             signatureChecker.process( outputDirectory );
 
             if ( signatureChecker.isSignatureBroken() )
