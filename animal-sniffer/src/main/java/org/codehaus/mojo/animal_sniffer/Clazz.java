@@ -26,6 +26,8 @@ package org.codehaus.mojo.animal_sniffer;
  */
 
 import java.io.Serializable;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -48,6 +50,37 @@ public class Clazz
         this.signatures = signatures;
         this.superClass = superClass;
         this.superInterfaces = superInterfaces;
+    }
+
+    public Clazz( Clazz defA, Clazz defB )
+    {
+        if ( !defA.name.equals( defB.name ) )
+        {
+            // nothing we can do... this is an invalid argument
+            throw new ClassCastException( "Cannot merge different classes: " + defA.name + " and " + defB.name );
+        }
+        if ( !defA.superClass.equals( defB.superClass ) )
+        {
+            // nothing we can do... this is a breaking change
+            throw new ClassCastException( "Cannot merger class " + defB.name + " as it has changed superclass:" );
+        }
+        Set superInterfaces = new HashSet();
+        if ( defA.superInterfaces != null )
+        {
+            superInterfaces.addAll( Arrays.asList( defA.superInterfaces ) );
+        }
+        if ( defB.superInterfaces != null )
+        {
+            superInterfaces.addAll( Arrays.asList( defB.superInterfaces ) );
+        }
+        Set signatures = new HashSet();
+        signatures.addAll( defA.signatures );
+        signatures.addAll( defB.signatures );
+        this.name = defA.name;
+        this.signatures = signatures;
+        this.superClass = defA.superClass;
+        this.superInterfaces = (String[]) superInterfaces.toArray( new String[superInterfaces.size()] );
+
     }
 
     private static final long serialVersionUID = 1L;

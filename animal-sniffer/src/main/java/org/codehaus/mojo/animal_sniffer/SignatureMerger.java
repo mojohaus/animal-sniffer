@@ -83,26 +83,7 @@ public class SignatureMerger
                     }
                     else
                     {
-                        if ( !cur.superClass.equals( c.superClass ) )
-                        {
-                            // nothing we can do... this is a breaking change
-                            throw new IOException( "Class " + c.name + " has changed superclass" );
-                        }
-                        Set interfaces = new HashSet();
-                        if ( cur.superInterfaces != null )
-                        {
-                            interfaces.addAll( Arrays.asList( cur.superInterfaces ) );
-                        }
-                        if ( c.superInterfaces != null )
-                        {
-                            interfaces.addAll( Arrays.asList( c.superInterfaces ) );
-                        }
-                        Set signatures = new HashSet();
-                        signatures.addAll( cur.signatures );
-                        signatures.addAll( c.signatures );
-                        classes.put( c.name, new Clazz( c.name, signatures, cur.superClass,
-                                                        (String[]) interfaces.toArray(
-                                                            new String[interfaces.size()] ) ) );
+                        classes.put( c.name, new Clazz( c, cur) );
                     }
                 }
             }

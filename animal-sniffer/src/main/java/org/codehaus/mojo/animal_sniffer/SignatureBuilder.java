@@ -39,6 +39,9 @@ import java.io.InputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.util.HashSet;
+import java.util.Map;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.zip.GZIPOutputStream;
 
 /**
@@ -52,6 +55,8 @@ public class SignatureBuilder
     private boolean foundSome;
 
     private final Logger logger;
+    
+    private final Map classes = new HashMap( );
 
     public static void main( String[] args )
         throws IOException
@@ -74,6 +79,13 @@ public class SignatureBuilder
     public void close()
         throws IOException
     {
+        Iterator i = classes.entrySet().iterator();
+        while ( i.hasNext() )
+        {
+            Map.Entry entry = (Map.Entry) i.next();
+            logger.info( (String) entry.getKey() );
+            oos.writeObject( entry.getValue() );
+        }        
         oos.writeObject( null );   // EOF marker
         oos.close();
         if ( !foundSome )
@@ -96,7 +108,7 @@ public class SignatureBuilder
     private class SignatureVisitor
         extends EmptyVisitor
     {
-        Clazz clazz;
+        private Clazz clazz;
 
         public void visit( int version, int access, String name, String signature, String superName,
                            String[] interfaces )
@@ -107,7 +119,15 @@ public class SignatureBuilder
         public void end()
             throws IOException
         {
-            oos.writeObject( clazz );
+            Clazz cur = (Clazz) classes.get( clazz.name );
+            if ( cur == null )
+            {
+                classes.put( clazz.name, clazz );
+            }
+            else
+            {
+                classes.put( clazz.name, new Clazz( clazz, cur) );
+            }
         }
 
         public MethodVisitor visitMethod( int access, String name, String desc, String signature, String[] exceptions )
