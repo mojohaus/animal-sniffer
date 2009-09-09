@@ -73,6 +73,7 @@
                     <ignore>java.*</ignore>
                     <ignore>javax.*</ignore> 
                   </ignores>
+                  <ignoreDependencies>false</ignoreDependencies>
                 </configuration>
               </execution>
             </executions>
@@ -105,6 +106,7 @@
                     <ignore>java.*</ignore>
                     <ignore>javax.*</ignore> 
                   </ignores>
+                  <ignoreDependencies>false</ignoreDependencies>
                 </configuration>
               </execution>
             </executions>

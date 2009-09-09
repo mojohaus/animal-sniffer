@@ -90,6 +90,13 @@ public class CheckSignatureMojo
     protected String[] ignores;
 
     /**
+     * Should dependencies be ignored.
+     *
+     * @parameter default-value="true"
+     */
+    protected boolean ignoreDependencies;
+
+    /**
      * @component
      * @readonly
      */
@@ -175,11 +182,14 @@ public class CheckSignatureMojo
         throws IOException
     {
         v.process( outputDirectory );
-        Iterator itr = classpathElements.iterator();
-        while ( itr.hasNext() )
+        if ( ignoreDependencies )
         {
-            String path = (String) itr.next();
-            v.process( new File( path ) );
+            Iterator itr = classpathElements.iterator();
+            while ( itr.hasNext() )
+            {
+                String path = (String) itr.next();
+                v.process( new File( path ) );
+            }
         }
     }
 }
