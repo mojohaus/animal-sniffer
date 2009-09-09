@@ -32,23 +32,30 @@ import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.MavenProjectHelper;
 import org.codehaus.mojo.animal_sniffer.SignatureBuilder;
+import org.codehaus.plexus.util.StringUtils;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * @author Stephen Connolly
  * @goal build
+ * @requiresDependencyResolution compile
  */
 public class BuildSignaturesMojo
     extends AbstractMojo
 {
     /**
-     * The java home to generate the signatures of.
+     * The java home to generate the signatures of, if not specified only the signatures of dependencies will be 
+     * included.
      *
      * @parameter expression="${javaHome}"
-     * @required
      * @since 1.3
      */
     private String javaHome;
@@ -106,12 +113,37 @@ public class BuildSignaturesMojo
         try
         {
             outputDirectory.mkdirs();
-            getLog().info( "Parsing signatures from java home: " + javaHome );
+            List baseSignatures = new ArrayList();
+            for ( Iterator i = project.getArtifacts().iterator(); i.hasNext(); )
+            {
+                Artifact artifact = (Artifact) i.next();
+                if ( StringUtils.equals( "jresig", artifact.getType() ) )
+                {
+                    getLog().info( "Importing sigantures from " + artifact.getFile() );
+                    baseSignatures.add( new FileInputStream( artifact.getFile() ) );
+                }
+
+            }
             SignatureBuilder builder =
-                new SignatureBuilder( null, new FileOutputStream( sigFile ), new MavenLogger( getLog() ) );
-            process( builder, "lib/rt.jar" );
-            process( builder, "lib/jce.jar" );
-            process( builder, "lib/jsse.jar" );
+                new SignatureBuilder( (InputStream[]) baseSignatures.toArray( new InputStream[baseSignatures.size()] ),
+                                      new FileOutputStream( sigFile ), new MavenLogger( getLog() ) );
+            for ( Iterator i = project.getArtifacts().iterator(); i.hasNext(); )
+            {
+                Artifact artifact = (Artifact) i.next();
+                if ( StringUtils.equals( "jar", artifact.getType() ) )
+                {
+                    getLog().info( "Parsing sigantures from " + artifact.getFile() );
+                    builder.process( artifact.getFile() );
+                }
+
+            }
+            if ( javaHome != null && new File( javaHome ).exists() )
+            {
+                getLog().debug( "Parsing sigantures from " + javaHome);
+                process( builder, "lib/rt.jar" );
+                process( builder, "lib/jce.jar" );
+                process( builder, "lib/jsse.jar" );
+            }
             builder.close();
             String classifier = this.classifier;
             if ( classifier != null )

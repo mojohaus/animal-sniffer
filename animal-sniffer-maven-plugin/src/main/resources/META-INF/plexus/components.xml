@@ -25,6 +25,7 @@
         <type>jresig</type>
         <extension>jresig</extension>
         <includesDependencies>true</includesDependencies>
+        <isAddedToClasspath>false</isAddedToClasspath>
       </configuration>
     </component>
 
