@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  The MIT License
+
+  Copyright (c) 2009 codehaus.org.
+
+  Permission is hereby granted, free of charge, to any person obtaining a copy
+  of this software and associated documentation files (the "Software"), to deal
+  in the Software without restriction, including without limitation the rights
+  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+  copies of the Software, and to permit persons to whom the Software is
+  furnished to do so, subject to the following conditions:
+
+  The above copyright notice and this permission notice shall be included in
+  all copies or substantial portions of the Software.
+
+  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+  THE SOFTWARE.
+-->
+<project name="smoke-test" default="test" xmlns:animal-sniffer="urn:animal-sniffer">
+
+  <property environment="env"/>
+
+  <path id="jre">
+    <fileset dir="${java.home}" includes="lib/rt.jar"/>
+    <fileset dir="${java.home}" includes="lib/jce.jar"/>
+    <fileset dir="${java.home}" includes="lib/jsse.jar"/>
+  </path>
+
+  <target name="init">
+    <xmlproperty file="../../../pom.xml" prefix="pom.xml"/>
+    <path id="animal-sniffer.classpath"
+          path="../../../target/${pom.xml.project.artifactId}-${pom.xml.project.parent.version}.jar"/>
+    <typedef resource="org/codehaus/mojo/animal_sniffer/ant/antlib.xml" uri="urn:animal-sniffer"
+             classpathref="animal-sniffer.classpath"/>
+  </target>
+
+  <target name="clean">
+    <delete dir="${basedir}/build"/>
+  </target>
+
+  <target name="compile" depends="package-api2, package-api3">
+    <mkdir dir="${basedir}/build/classes"/>
+    <javac srcdir="${basedir}/src/main/java" destdir="${basedir}/build/classes" fork="true">
+      <classpath>
+        <path path="${basedir}/build/api2.jar"/>
+        <path path="${basedir}/build/api3.jar"/>
+      </classpath>
+    </javac>
+  </target>
+
+  <target name="package" depends="compile">
+    <mkdir dir="${basedir}/build"/>
+    <jar destfile="${basedir}/build/${ant.project.name}.jar" basedir="${basedir}/build/classes"/>
+  </target>
+
+  <target name="verify" depends="init, package">
+    <animal-sniffer:check-signature>
+      <classpath path="${basedir}/build/${ant.project.name}.jar"/>
+    </animal-sniffer:check-signature>
+  </target>
+
+  <target name="build-signatures" depends="init">
+    <animal-sniffer:build-signatures destfile="${basedir}/build/jdk.sig">
+      <path>
+        <fileset dir="${java.home}" includes="lib/rt.jar"/>
+        <fileset dir="${java.home}" includes="lib/jce.jar"/>
+        <fileset dir="${java.home}" includes="lib/jsse.jar"/>
+      </path>
+    </animal-sniffer:build-signatures>
+  </target>
+
+  <target name="compile-api1">
+    <mkdir dir="${basedir}/build/api1"/>
+    <javac srcdir="${basedir}/src/api1/java" destdir="${basedir}/build/api1" fork="true"/>
+  </target>
+
+  <target name="compile-api2">
+    <mkdir dir="${basedir}/build/api2"/>
+    <javac srcdir="${basedir}/src/api2/java" destdir="${basedir}/build/api2" fork="true"/>
+  </target>
+
+  <target name="compile-api3">
+    <mkdir dir="${basedir}/build/api3"/>
+    <javac srcdir="${basedir}/src/api3/java" destdir="${basedir}/build/api3" fork="true"/>
+  </target>
+
+  <target name="package-api1" depends="compile-api1">
+    <mkdir dir="${basedir}/build"/>
+    <jar destfile="${basedir}/build/api1.jar" basedir="${basedir}/build/api1"/>
+  </target>
+
+  <target name="package-api2" depends="compile-api2">
+    <mkdir dir="${basedir}/build"/>
+    <jar destfile="${basedir}/build/api2.jar" basedir="${basedir}/build/api2"/>
+  </target>
+
+  <target name="package-api3" depends="compile-api3">
+    <mkdir dir="${basedir}/build"/>
+    <jar destfile="${basedir}/build/api3.jar" basedir="${basedir}/build/api3"/>
+  </target>
+
+  <target name="build-signatures-api1" depends="init, package-api1">
+    <animal-sniffer:build-signatures destfile="${basedir}/build/api1.sig">
+      <path>
+        <fileset dir="${basedir}/build" includes="api1.jar"/>
+      </path>
+    </animal-sniffer:build-signatures>
+  </target>
+
+  <target name="build-signatures-api2" depends="init, package-api2">
+    <animal-sniffer:build-signatures destfile="${basedir}/build/api2.sig">
+      <path>
+        <fileset dir="${basedir}/build" includes="api2.jar"/>
+      </path>
+    </animal-sniffer:build-signatures>
+  </target>
+
+  <target name="build-signatures-api3" depends="init, package-api3, build-signatures-api2">
+    <animal-sniffer:build-signatures destfile="${basedir}/build/api3.sig">
+      <path>
+        <fileset dir="${basedir}/build" includes="api3.jar"/>
+      </path>
+      <signature src="${basedir}/build/api2.sig"/>
+    </animal-sniffer:build-signatures>
+  </target>
+
+  <target name="check-signatures-api1" depends="init, package, build-signatures-api1">
+    <!--
+      in this case we are checking signatures not of the jdk, but of our API
+      so we need to add the classpath of the jdk, or else we will have
+      an error due to java.lang.Object being undefined
+      -->
+    <animal-sniffer:check-signature signature="${basedir}/build/api1.sig" classpathRef="jre">
+      <path path="${basedir}/build/${ant.project.name}.jar"/>
+      <ignore className="java.*"/>
+      <ignore className="javax.*"/>
+    </animal-sniffer:check-signature>
+  </target>
+
+  <target name="check-signatures-api2" depends="init, package, build-signatures-api2">
+    <!--
+      in this case we are checking signatures not of the jdk, but of our API
+      so we need to add the classpath of the jdk, or else we will have
+      an error due to java.lang.Object being undefined
+      -->
+    <animal-sniffer:check-signature signature="${basedir}/build/api2.sig" classpathRef="jre">
+      <path path="${basedir}/build/${ant.project.name}.jar"/>
+      <ignore className="java.*"/>
+      <ignore className="javax.*"/>
+    </animal-sniffer:check-signature>
+  </target>
+
+  <target name="check-signatures-api3" depends="init, package, build-signatures-api3">
+    <!--
+      in this case we are checking signatures not of the jdk, but of our API
+      so we need to add the classpath of the jdk, or else we will have
+      an error due to java.lang.Object being undefined
+      -->
+    <animal-sniffer:check-signature signature="${basedir}/build/api3.sig" classpathRef="jre">
+      <path path="${basedir}/build/${ant.project.name}.jar"/>
+      <ignore className="java.*"/>
+      <ignore className="javax.*"/>
+    </animal-sniffer:check-signature>
+  </target>
+
+</project>

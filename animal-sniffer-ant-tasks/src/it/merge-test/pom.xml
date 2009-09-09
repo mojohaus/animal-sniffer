@@ -26,11 +26,11 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>integration-test</groupId>
-  <artifactId>smoke-test</artifactId>
+  <artifactId>merge-test</artifactId>
   <packaging>pom</packaging>
   <version>1.0-SNAPSHOT</version>
   <description>
-    Test that the basic functionality works (positive test).
+    Check that signature files can be merged.
   </description>
 
   <build>
@@ -104,7 +104,7 @@
             </goals>
             <configuration>
               <tasks>
-                <ant antfile="build.xml" target="check-signatures-api2">
+                <ant antfile="build.xml" target="check-signatures-api3">
                   <property name="java.home" value="${env.JAVA_HOME}"/>
                 </ant>
               </tasks>

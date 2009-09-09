@@ -32,8 +32,10 @@ import org.apache.tools.ant.types.Path;
 import org.codehaus.mojo.animal_sniffer.SignatureBuilder;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Iterator;
 import java.util.Vector;
 
@@ -48,6 +50,8 @@ public class BuildSignaturesTask
 
     private Vector paths = new Vector();
 
+    private Vector signatures = new Vector();
+
     public void setDestfile( File dest )
     {
         this.destfile = dest;
@@ -56,6 +60,13 @@ public class BuildSignaturesTask
     public void addPath( Path path )
     {
         paths.add( path );
+    }
+
+    public Signature createSignature()
+    {
+        Signature signature = new Signature();
+        signatures.add( signature );
+        return signature;
     }
 
     protected void validate()
@@ -68,6 +79,19 @@ public class BuildSignaturesTask
         {
             throw new BuildException( "path not set" );
         }
+        Iterator i = signatures.iterator();
+        while ( i.hasNext() )
+        {
+            Signature signature = (Signature) i.next();
+            if ( signature.getSrc() == null )
+            {
+                throw new BuildException( "signature src not set" );
+            }
+            if ( !signature.getSrc().isFile() )
+            {
+                throw new BuildException( "signature " + signature.getSrc() + " does not exist" );
+            }
+        }
     }
 
     public void execute()
@@ -76,9 +100,19 @@ public class BuildSignaturesTask
         validate();
         try
         {
+            Vector inStreams = new Vector();
+            Iterator i = signatures.iterator();
+            while ( i.hasNext() )
+            {
+                Signature signature = (Signature) i.next();
+                log( "Importing signatures from " + signature.getSrc() );
+                inStreams.add( new FileInputStream( signature.getSrc() ) );
+            }
+
             SignatureBuilder builder =
-                new SignatureBuilder( null, new FileOutputStream( destfile ), new AntLogger( this ) );
-            Iterator i = paths.iterator();
+                new SignatureBuilder( (InputStream[]) inStreams.toArray( new InputStream[inStreams.size()] ),
+                                      new FileOutputStream( destfile ), new AntLogger( this ) );
+            i = paths.iterator();
             while ( i.hasNext() )
             {
                 Path path = (Path) i.next();
