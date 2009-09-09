@@ -4,7 +4,7 @@
 
     <component>
       <role>org.apache.maven.lifecycle.mapping.LifecycleMapping</role>
-      <role-hint>jresig</role-hint>
+      <role-hint>signature</role-hint>
       <implementation>org.apache.maven.lifecycle.mapping.DefaultLifecycleMapping</implementation>
       <configuration>
         <phases>
@@ -19,11 +19,11 @@
 
     <component>
       <role>org.apache.maven.artifact.handler.ArtifactHandler</role>
-      <role-hint>jresig</role-hint>
+      <role-hint>signature</role-hint>
       <implementation>org.apache.maven.artifact.handler.DefaultArtifactHandler</implementation>
       <configuration>
-        <type>jresig</type>
-        <extension>jresig</extension>
+        <type>signature</type>
+        <extension>signature</extension>
         <includesDependencies>true</includesDependencies>
         <isAddedToClasspath>false</isAddedToClasspath>
       </configuration>

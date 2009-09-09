@@ -109,7 +109,7 @@ public class BuildSignaturesMojo
     public void execute()
         throws MojoExecutionException, MojoFailureException
     {
-        File sigFile = getTargetFile( outputDirectory, signaturesName, classifier, "jresig" );
+        File sigFile = getTargetFile( outputDirectory, signaturesName, classifier, "signature" );
         try
         {
             outputDirectory.mkdirs();
@@ -117,7 +117,7 @@ public class BuildSignaturesMojo
             for ( Iterator i = project.getArtifacts().iterator(); i.hasNext(); )
             {
                 Artifact artifact = (Artifact) i.next();
-                if ( StringUtils.equals( "jresig", artifact.getType() ) )
+                if ( StringUtils.equals( "signature", artifact.getType() ) )
                 {
                     getLog().info( "Importing sigantures from " + artifact.getFile() );
                     baseSignatures.add( new FileInputStream( artifact.getFile() ) );
@@ -148,7 +148,7 @@ public class BuildSignaturesMojo
             String classifier = this.classifier;
             if ( classifier != null )
             {
-                projectHelper.attachArtifact( project, "war", classifier, sigFile );
+                projectHelper.attachArtifact( project, "signature", classifier, sigFile );
             }
             else
             {

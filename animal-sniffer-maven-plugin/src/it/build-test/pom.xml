@@ -26,17 +26,46 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>localhost.localdomain</groupId>
-  <artifactId>smoke-test</artifactId>
+  <groupId>localdomain.localhost</groupId>
+  <artifactId>build-test</artifactId>
   <version>1.0-SNAPSHOT</version>
-  <packaging>jar</packaging>
+  <packaging>pom</packaging>
 
-  <name>Smoke Test</name>
+  <name>Build Test</name>
 
   <description>
-    Tests that the enforcer rule works.
+    Tests that signatures can be built and then tested.
   </description>
-
+  
+  <profiles>
+    <profile>
+      <id>setup-1</id>
+      <modules>
+        <module>api-1</module>
+        <module>api-sig-1</module>
+      </modules>
+    </profile>
+    <profile>
+      <id>setup-2</id>
+      <modules>
+        <module>api-2</module>
+        <module>api-sig-2</module>
+      </modules>
+    </profile>
+    <profile>
+      <id>positive-test</id>
+      <modules>
+        <module>client</module>
+      </modules>
+    </profile>
+    <profile>
+      <id>negative-test</id>
+      <modules>
+        <module>client</module>
+      </modules>
+    </profile>
+  </profiles>
+  
   <build>
     <pluginManagement>
       <plugins>
@@ -74,36 +103,15 @@
         </plugin>
       </plugins>
     </pluginManagement>
-    <plugins>
-      <plugin>
-        <groupId>@project.groupId@</groupId>
-        <artifactId>@project.artifactId@</artifactId>
-        <version>@project.version@</version>
-        <executions>
-          <execution>
-            <id>check-jdk</id>
-            <phase>test</phase>
-            <goals>
-              <goal>check-signature</goal>
-            </goals>
-            <configuration>
-              <signature>
-                <!-- todo add in a ref to a 1.4 signature -->
-                <groupId>foo</groupId>
-                <artifactId>bar</artifactId>
-                <version>1</version>
-              </signature>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-    </plugins>
   </build>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.build.outputEncoding>UTF-8</project.build.outputEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    <pluginGroupId>@project.groupId@</pluginGroupId>
+    <pluginArtifactId>@project.artifactId@</pluginArtifactId>
+    <pluginVersion>@project.version@</pluginVersion>
   </properties>
 
 </project>

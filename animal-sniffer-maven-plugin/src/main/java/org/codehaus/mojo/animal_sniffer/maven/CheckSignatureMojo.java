@@ -126,14 +126,17 @@ public class CheckSignatureMojo
             // just check code from this module
             final Set ignoredPackages = buildPackageList();
 
-            for ( int i = 0; i < ignores.length; i++ )
+            if ( ignores != null )
             {
-                String ignore = ignores[i];
-                if ( ignore == null )
+                for ( int i = 0; i < ignores.length; i++ )
                 {
-                    continue;
+                    String ignore = ignores[i];
+                    if ( ignore == null )
+                    {
+                        continue;
+                    }
+                    ignoredPackages.add( ignore.replace( '.', '/' ) );
                 }
-                ignoredPackages.add( ignore.replace( '.', '/' ) );
             }
 
             final SignatureChecker signatureChecker =
