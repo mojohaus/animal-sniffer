@@ -32,12 +32,9 @@ import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Set;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
@@ -76,14 +73,14 @@ public class SignatureMerger
                     {
                         return; // finished
                     }
-                    Clazz cur = (Clazz) classes.get( c.name );
+                    Clazz cur = (Clazz) classes.get( c.getName() );
                     if ( cur == null )
                     {
-                        classes.put( c.name, c );
+                        classes.put( c.getName(), c );
                     }
                     else
                     {
-                        classes.put( c.name, new Clazz( c, cur) );
+                        classes.put( c.getName(), new Clazz( c, cur ) );
                     }
                 }
             }

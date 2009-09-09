@@ -25,23 +25,25 @@ package org.codehaus.mojo.animal_sniffer;
  *
  */
 
+import org.codehaus.mojo.animal_sniffer.logging.Logger;
+import org.codehaus.mojo.animal_sniffer.logging.PrintWriterLogger;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.FieldVisitor;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.commons.EmptyVisitor;
-import org.codehaus.mojo.animal_sniffer.logging.PrintWriterLogger;
-import org.codehaus.mojo.animal_sniffer.logging.Logger;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
-import java.util.HashSet;
-import java.util.Map;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Map;
+import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
 /**
@@ -55,14 +57,14 @@ public class SignatureBuilder
     private boolean foundSome;
 
     private final Logger logger;
-    
-    private final Map classes = new HashMap( );
+
+    private final Map classes = new HashMap();
 
     public static void main( String[] args )
         throws IOException
     {
-        SignatureBuilder builder = new SignatureBuilder( new FileOutputStream( "signature" ), new PrintWriterLogger(
-            System.out ) );
+        SignatureBuilder builder =
+            new SignatureBuilder( new FileOutputStream( "signature" ), new PrintWriterLogger( System.out ) );
         builder.process( new File( System.getProperty( "java.home" ), "lib/rt.jar" ) );
         builder.close();
     }
@@ -72,7 +74,42 @@ public class SignatureBuilder
     public SignatureBuilder( OutputStream out, Logger logger )
         throws IOException
     {
+        this( null, out, logger );
+    }
+
+    public SignatureBuilder( InputStream[] in, OutputStream out, Logger logger )
+        throws IOException
+    {
         this.logger = logger;
+        if ( in != null )
+        {
+            for ( int i = 0; i < in.length; i++ )
+            {
+                ObjectInputStream ois = new ObjectInputStream( new GZIPInputStream( in[i] ) );
+                try
+                {
+                    while ( true )
+                    {
+                        Clazz c = (Clazz) ois.readObject();
+                        if ( c == null )
+                        {
+                            break; // finished
+                        }
+                        classes.put( c.getName(), c );
+                    }
+                }
+                catch ( ClassNotFoundException e )
+                {
+                    final IOException ioException = new IOException( "Could not read base signatures" );
+                    ioException.initCause( e );
+                    throw ioException;
+                }
+                finally
+                {
+                    ois.close();
+                }
+            }
+        }
         oos = new ObjectOutputStream( new GZIPOutputStream( out ) );
     }
 
@@ -85,7 +122,7 @@ public class SignatureBuilder
             Map.Entry entry = (Map.Entry) i.next();
             logger.info( (String) entry.getKey() );
             oos.writeObject( entry.getValue() );
-        }        
+        }
         oos.writeObject( null );   // EOF marker
         oos.close();
         if ( !foundSome )
@@ -119,26 +156,26 @@ public class SignatureBuilder
         public void end()
             throws IOException
         {
-            Clazz cur = (Clazz) classes.get( clazz.name );
+            Clazz cur = (Clazz) classes.get( clazz.getName() );
             if ( cur == null )
             {
-                classes.put( clazz.name, clazz );
+                classes.put( clazz.getName(), clazz );
             }
             else
             {
-                classes.put( clazz.name, new Clazz( clazz, cur) );
+                classes.put( clazz.getName(), new Clazz( clazz, cur ) );
             }
         }
 
         public MethodVisitor visitMethod( int access, String name, String desc, String signature, String[] exceptions )
         {
-            clazz.signatures.add( name + desc );
+            clazz.getSignatures().add( name + desc );
             return null;
         }
 
         public FieldVisitor visitField( int access, String name, String desc, String signature, Object value )
         {
-            clazz.signatures.add( name + "#" + desc );
+            clazz.getSignatures().add( name + "#" + desc );
             return null;
         }
     }

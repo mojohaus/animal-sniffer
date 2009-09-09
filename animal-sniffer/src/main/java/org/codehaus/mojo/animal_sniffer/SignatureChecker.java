@@ -25,12 +25,12 @@ package org.codehaus.mojo.animal_sniffer;
  *
  */
 
+import org.codehaus.mojo.animal_sniffer.logging.Logger;
+import org.codehaus.mojo.animal_sniffer.logging.PrintWriterLogger;
 import org.objectweb.asm.AnnotationVisitor;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.commons.EmptyVisitor;
-import org.codehaus.mojo.animal_sniffer.logging.Logger;
-import org.codehaus.mojo.animal_sniffer.logging.PrintWriterLogger;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -70,8 +70,8 @@ public class SignatureChecker
         ignoredPackages.add( "org/jvnet/animal_sniffer" );
         ignoredPackages.add( "org/codehaus/mojo/animal_sniffer" );
         ignoredPackages.add( "org/objectweb/*" );
-        new SignatureChecker( new FileInputStream( "signature" ), ignoredPackages, new PrintWriterLogger( System.out ) ).process(
-            new File( "target/classes" ) );
+        new SignatureChecker( new FileInputStream( "signature" ), ignoredPackages,
+                              new PrintWriterLogger( System.out ) ).process( new File( "target/classes" ) );
     }
 
     public SignatureChecker( InputStream in, Set ignoredPackages, Logger logger )
@@ -89,7 +89,7 @@ public class SignatureChecker
                 {
                     return; // finished
                 }
-                classes.put( c.name, c );
+                classes.put( c.getName(), c );
             }
         }
         catch ( ClassNotFoundException e )
@@ -218,7 +218,7 @@ public class SignatureChecker
                 {
                     return false;
                 }
-                if ( c.signatures.contains( sig ) )
+                if ( c.getSignatures().contains( sig ) )
                 {
                     return true;
                 }
@@ -229,16 +229,16 @@ public class SignatureChecker
                     return false;
                 }
 
-                if ( find( (Clazz) classes.get( c.superClass ), sig ) )
+                if ( find( (Clazz) classes.get( c.getSuperClass() ), sig ) )
                 {
                     return true;
                 }
 
-                if ( c.superInterfaces != null )
+                if ( c.getSuperInterfaces() != null )
                 {
-                    for ( int i = 0; i < c.superInterfaces.length; i++ )
+                    for ( int i = 0; i < c.getSuperInterfaces().length; i++ )
                     {
-                        if ( find( (Clazz) classes.get( c.superInterfaces[i] ), sig ) )
+                        if ( find( (Clazz) classes.get( c.getSuperInterfaces()[i] ), sig ) )
                         {
                             return true;
                         }

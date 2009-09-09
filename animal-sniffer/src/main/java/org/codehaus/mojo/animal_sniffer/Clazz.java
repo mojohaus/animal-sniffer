@@ -31,27 +31,56 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
+ * Represents a class signature.
+ *
  * @author Kohsuke Kawaguchi
  */
-public class Clazz
+public final class Clazz
     implements Serializable
 {
-    public final String name;
+    /**
+     * The name of the class.
+     */
+    private final String name;
 
-    public final Set signatures;
+    /**
+     * The set of methods and constants that form the signature of the class.
+     */
+    private final Set signatures;
 
-    public final String superClass;
+    /**
+     * The superclass of the class.
+     */
+    private final String superClass;
 
-    public final String[] superInterfaces;
+    /**
+     * The list of interfaces implemented by the class.
+     */
+    private final String[] superInterfaces;
 
+    /**
+     * Creates a new class signature.
+     *
+     * @param name            the name of the class.
+     * @param signatures      the signatures.
+     * @param superClass      the superclass.
+     * @param superInterfaces the interfaces implemented by the class.
+     */
     public Clazz( String name, Set signatures, String superClass, String[] superInterfaces )
     {
         this.name = name;
         this.signatures = signatures;
         this.superClass = superClass;
-        this.superInterfaces = superInterfaces;
+        this.superInterfaces = (String[]) superInterfaces.clone();
     }
 
+    /**
+     * Merges two class instances.
+     *
+     * @param defA the first instance.
+     * @param defB the second instance
+     * @throws ClassCastException if the two instances have different names or if the superclasses differ.
+     */
     public Clazz( Clazz defA, Clazz defB )
     {
         if ( !defA.name.equals( defB.name ) )
@@ -76,11 +105,30 @@ public class Clazz
         Set signatures = new HashSet();
         signatures.addAll( defA.signatures );
         signatures.addAll( defB.signatures );
-        this.name = defA.name;
+        this.name = defA.getName();
         this.signatures = signatures;
         this.superClass = defA.superClass;
         this.superInterfaces = (String[]) superInterfaces.toArray( new String[superInterfaces.size()] );
+    }
 
+    public String getName()
+    {
+        return name;
+    }
+
+    public Set getSignatures()
+    {
+        return signatures;
+    }
+
+    public String getSuperClass()
+    {
+        return superClass;
+    }
+
+    public String[] getSuperInterfaces()
+    {
+        return superInterfaces;
     }
 
     private static final long serialVersionUID = 1L;

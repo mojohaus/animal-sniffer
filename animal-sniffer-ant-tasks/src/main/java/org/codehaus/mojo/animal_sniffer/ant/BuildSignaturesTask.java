@@ -76,7 +76,8 @@ public class BuildSignaturesTask
         validate();
         try
         {
-            SignatureBuilder builder = new SignatureBuilder( new FileOutputStream( destfile ), new AntLogger( this ) );
+            SignatureBuilder builder =
+                new SignatureBuilder( null, new FileOutputStream( destfile ), new AntLogger( this ) );
             Iterator i = paths.iterator();
             while ( i.hasNext() )
             {
