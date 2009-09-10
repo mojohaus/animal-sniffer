@@ -160,7 +160,7 @@ public class CheckSignatureRule
         throws IOException
     {
         v.process( outputDirectory );
-        if ( !ignoreDependencies )
+        if ( ignoreDependencies )
         {
             Iterator itr = classpathElements.iterator();
             while ( itr.hasNext() )
