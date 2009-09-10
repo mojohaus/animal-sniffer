@@ -85,7 +85,7 @@
             <configuration>
               <artifacts>
                 <artifact>
-                  <file>src/main/signatures/api-sig-1-SNAPSHOT.signature</file>
+                  <file>src/main/signatures/api-1-SNAPSHOT.signature</file>
                   <type>signature</type>
                 </artifact>
               </artifacts>
