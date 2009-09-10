@@ -68,6 +68,13 @@ public class BuildSignaturesMojo
     private File outputDirectory;
 
     /**
+     * @parameter expression="${project.build.outputDirectory}"
+     * @required
+     * @since 1.3
+     */
+    private File classesDirectory;
+
+    /**
      * The name of the generated signatures.
      *
      * @parameter expression="${project.build.finalName}"
@@ -83,14 +90,6 @@ public class BuildSignaturesMojo
      * @since 1.3
      */
     private String classifier;
-
-    /**
-     * Whether this is the main artifact being built. Set to <code>false</code> if you don't want to install or
-     * deploy it to the local repository instead of the default one in an execution.
-     *
-     * @parameter expression="${primaryArtifact}" default-value="true"
-     */
-    private boolean primaryArtifact = true;
 
     /**
      * @component
@@ -127,6 +126,10 @@ public class BuildSignaturesMojo
             SignatureBuilder builder =
                 new SignatureBuilder( (InputStream[]) baseSignatures.toArray( new InputStream[baseSignatures.size()] ),
                                       new FileOutputStream( sigFile ), new MavenLogger( getLog() ) );
+            if (classesDirectory.isDirectory()) {
+                getLog().info( "Parsing sigantures from " + classesDirectory );
+                builder.process( classesDirectory );                
+            }
             for ( Iterator i = project.getArtifacts().iterator(); i.hasNext(); )
             {
                 Artifact artifact = (Artifact) i.next();
@@ -145,23 +148,7 @@ public class BuildSignaturesMojo
                 process( builder, "lib/jsse.jar" );
             }
             builder.close();
-            String classifier = this.classifier;
-            if ( classifier != null )
-            {
-                projectHelper.attachArtifact( project, "signature", classifier, sigFile );
-            }
-            else
-            {
-                Artifact artifact = project.getArtifact();
-                if ( primaryArtifact )
-                {
-                    artifact.setFile( sigFile );
-                }
-                else if ( artifact.getFile() == null || artifact.getFile().isDirectory() )
-                {
-                    artifact.setFile( sigFile );
-                }
-            }
+            projectHelper.attachArtifact( project, "signature", classifier, sigFile );
 
         }
         catch ( IOException e )

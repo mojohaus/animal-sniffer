@@ -42,14 +42,12 @@
       <id>setup-1</id>
       <modules>
         <module>api-1</module>
-        <module>api-sig-1</module>
       </modules>
     </profile>
     <profile>
       <id>setup-2</id>
       <modules>
         <module>api-2</module>
-        <module>api-sig-2</module>
       </modules>
     </profile>
     <profile>

@@ -39,4 +39,26 @@
 
   <name>Dummy API</name>
 
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>@project.groupId@</groupId>
+        <artifactId>@project.artifactId@</artifactId>
+        <version>@project.version@</version>
+        <executions>
+          <execution>
+            <id>generate</id>
+            <phase>package</phase>
+            <goals>
+              <goal>build</goal>
+            </goals>
+            <configuration>
+              <primaryArtifact>false</primaryArtifact>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+
 </project>

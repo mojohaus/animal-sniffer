@@ -39,9 +39,7 @@
 
   <modules>
     <module>api</module>
-    <module>api-sig</module>
     <module>other</module>
-    <module>other-sig</module>
   </modules>
 
   <build>

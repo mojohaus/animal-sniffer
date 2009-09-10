@@ -38,5 +38,33 @@
   <packaging>jar</packaging>
 
   <name>Dummy Other API</name>
+  
+  <dependencies>
+    <dependency>
+      <groupId>localdomain.localhost</groupId>
+      <artifactId>api</artifactId>
+      <version>1-SNAPSHOT</version>
+      <type>signature</type>
+    </dependency>
+  </dependencies>  
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>@project.groupId@</groupId>
+        <artifactId>@project.artifactId@</artifactId>
+        <version>@project.version@</version>
+        <executions>
+          <execution>
+            <id>generate</id>
+            <phase>package</phase>
+            <goals>
+              <goal>build</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
 
 </project>
