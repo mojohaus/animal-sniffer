@@ -1,3 +1,5 @@
+package localdomain.localhost;
+
 /*
  * The MIT License
  *
@@ -23,12 +25,9 @@
  *
  */
 
-import localdomain.localhost.Api;
-
-public class JDK15
+public interface Api
 {
-    public void doChecks(Api api)
-    {
-        api.checkVersion2();
-    }
+    void checkVersion1();
+    
+    void checkVersion2();
 }

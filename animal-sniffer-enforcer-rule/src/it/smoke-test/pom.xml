@@ -37,6 +37,14 @@
     Tests that the enforcer rule works.
   </description>
 
+  <dependencies>
+    <dependency>
+      <groupId>localdomain.localhost</groupId>
+      <artifactId>api</artifactId>
+      <version>2-SNAPSHOT</version>
+    </dependency>
+  </dependencies>
+
   <build>
     <pluginManagement>
       <plugins>
@@ -72,9 +80,6 @@
           <artifactId>maven-surefire-plugin</artifactId>
           <version>2.4.2</version>
         </plugin>
-      </plugins>
-    </pluginManagement>
-    <plugins>
       <plugin>
         <artifactId>maven-enforcer-plugin</artifactId>
         <version>1.0-beta-1</version>
@@ -85,31 +90,86 @@
             <version>@project.version@</version>
           </dependency>
         </dependencies>
-        <executions>
-          <execution>
-            <id>check-jdk</id>
-            <phase>test</phase>
-            <goals>
-              <goal>enforce</goal>
-            </goals>
-            <configuration>
-              <rules>
-                <checkSignatureRule implementation="org.codehaus.mojo.animal_sniffer.enforcer.CheckSignatureRule">
-                  <signature>
-                    <!-- todo add in a ref to a 1.4 signature -->
-                    <groupId>foo</groupId>
-                    <artifactId>bar</artifactId>
-                    <version>1</version>
-                  </signature>
-                </checkSignatureRule>
-              </rules>
-            </configuration>
-          </execution>
-        </executions>
       </plugin>
-    </plugins>
+      </plugins>
+    </pluginManagement>
   </build>
 
+  <profiles>
+    <profile>
+      <id>positive-test</id>
+      <build>
+        <plugins>
+          <plugin>
+            <artifactId>maven-enforcer-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>check-jdk</id>
+                <phase>test</phase>
+                <goals>
+                  <goal>enforce</goal>
+                </goals>
+                <configuration>
+                  <rules>
+                    <checkSignatureRule implementation="org.codehaus.mojo.animal_sniffer.enforcer.CheckSignatureRule">
+                      <signature>
+                        <groupId>localdomain.localhost</groupId>
+                        <artifactId>api</artifactId>
+                        <version>2-SNAPSHOT</version>
+                      </signature>
+                      <ignores>
+                        <ignore>java.*</ignore>
+                        <ignore>javax.*</ignore> 
+                      </ignores>
+                      <ignoreDependencies>false</ignoreDependencies>
+                    </checkSignatureRule>
+                  </rules>
+                </configuration>
+              </execution>
+            </executions>            
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile>
+      <id>negative-test</id>
+      <build>
+        <plugins>
+          <plugin>
+            <artifactId>maven-enforcer-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>check-jdk</id>
+                <phase>test</phase>
+                <goals>
+                  <goal>enforce</goal>
+                </goals>
+                <configuration>
+                  <rules>
+                    <checkSignatureRule implementation="org.codehaus.mojo.animal_sniffer.enforcer.CheckSignatureRule">
+                      <signature>
+                        <groupId>localdomain.localhost</groupId>
+                        <artifactId>api</artifactId>
+                        <version>1-SNAPSHOT</version>
+                      </signature>
+                      <ignores>
+                        <ignore>java.*</ignore>
+                        <ignore>javax.*</ignore> 
+                      </ignores>
+                      <ignoreDependencies>false</ignoreDependencies>
+                    </checkSignatureRule>
+                  </rules>
+                </configuration>
+              </execution>
+            </executions>            
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+
+  
+  
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.build.outputEncoding>UTF-8</project.build.outputEncoding>

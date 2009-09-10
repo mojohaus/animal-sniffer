@@ -44,6 +44,7 @@
   <properties>
     <enforcer-api.version>1.0-beta-1</enforcer-api.version>
     <maven.version>2.0.9</maven.version>
+    <build-helper.version>1.4</build-helper.version>
   </properties>
 
   <dependencies>
@@ -103,11 +104,22 @@
           <settingsFile>src/it/settings.xml</settingsFile>
           <showErrors>true</showErrors>
           <streamLogs>true</streamLogs>
+          <setupIncludes>
+            <setupInclude>setup-*/pom.xml</setupInclude>
+          </setupIncludes>
           <pomIncludes>
             <pomInclude>*/pom.xml</pomInclude>
           </pomIncludes>
           <postBuildHookScript>verify.bsh</postBuildHookScript>
+          <filterProperties>
+            <build-helper.version>${build-helper.version}</build-helper.version>
+          </filterProperties>          
         </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+        <version>${build-helper.version}</version>
       </plugin>
     </plugins>
   </build>
