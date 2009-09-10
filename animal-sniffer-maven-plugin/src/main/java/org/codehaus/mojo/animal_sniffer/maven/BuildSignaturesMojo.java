@@ -26,11 +26,14 @@ package org.codehaus.mojo.animal_sniffer.maven;
  */
 
 import org.apache.maven.artifact.Artifact;
+import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.MavenProjectHelper;
+import org.apache.maven.toolchain.Toolchain;
+import org.apache.maven.toolchain.ToolchainManager;
 import org.codehaus.mojo.animal_sniffer.SignatureBuilder;
 import org.codehaus.plexus.util.StringUtils;
 
@@ -46,7 +49,6 @@ import java.util.List;
 /**
  * @author Stephen Connolly
  * @goal build
- * @requiresDependencyResolution compile
  */
 public class BuildSignaturesMojo
     extends AbstractMojo
@@ -105,9 +107,43 @@ public class BuildSignaturesMojo
      */
     private MavenProject project;
 
+    /**
+     * @component
+     */
+    private ToolchainManager toolchainManager;
+
+    /**
+     * The current build session instance. This is used for
+     * toolchain manager API calls.
+     *
+     * @parameter expression="${session}"
+     * @required
+     * @readonly
+     */
+    private MavenSession session;
+
     public void execute()
         throws MojoExecutionException, MojoFailureException
     {
+        //get toolchain from context
+        Toolchain tc = toolchainManager.getToolchainFromBuildContext( "jdk", //NOI18N
+                                                                      session );
+        if ( tc != null )
+        {
+            getLog().info( "Toolchain in animal-sniffer-maven-plugin: " + tc );
+
+            //when the executable to use is explicitly set by user in mojo's parameter, ignore toolchains.
+            if ( javaHome != null )
+            {
+                getLog().warn( "Toolchains are ignored, 'javaHome' parameter is set to " + javaHome );
+            }
+            else
+            {
+                //assign the path to executable from toolchains
+                javaHome = tc.findTool( "jdkHome" ); //NOI18N
+            }
+        }
+
         File sigFile = getTargetFile( outputDirectory, signaturesName, classifier, "signature" );
         try
         {

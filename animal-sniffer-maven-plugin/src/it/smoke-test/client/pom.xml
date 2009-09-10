@@ -53,9 +53,9 @@
       <build>
         <plugins>
           <plugin>
-            <groupId>@project.groupId@</groupId>
-            <artifactId>@project.artifactId@</artifactId>
-            <version>@project.version@</version>
+            <groupId>${pluginGroupId}</groupId>
+            <artifactId>${pluginArtifactId}</artifactId>
+            <version>${pluginVersion}</version>
             <executions>
               <execution>
                 <id>check-jdk</id>

@@ -107,6 +107,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.build.outputEncoding>UTF-8</project.build.outputEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    <!-- workaround for MINVOKER-93 -->
     <pluginGroupId>@project.groupId@</pluginGroupId>
     <pluginArtifactId>@project.artifactId@</pluginArtifactId>
     <pluginVersion>@project.version@</pluginVersion>
