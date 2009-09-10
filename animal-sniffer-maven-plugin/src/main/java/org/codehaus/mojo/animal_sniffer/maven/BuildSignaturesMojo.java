@@ -54,6 +54,53 @@ public class BuildSignaturesMojo
     extends AbstractMojo
 {
     /**
+     * Should the signatures from java home be included.
+     *
+     * @parameter expression="${includeJavaHome}" default-value="true"
+     * @since 1.3
+     */
+    private boolean includeJavaHome;
+
+    /**
+     * Classes to generate signatures of.
+     * @parameter 
+     * @since 1.3
+     */
+    private String[] includeClasses = null;
+    
+    /**
+     * Classes to exclude from generating signatures of.
+     * @parameter 
+     * @since 1.3
+     */
+    private String[] excludeClasses = null;
+
+    /**
+     * A list of artifact patterns to include. Follows the pattern
+     * "groupId:artifactId:type:classifier:version". 
+     *
+     * @parameter
+     * @since 1.3
+     */
+    private String[] includeDependencies = null;
+
+    /**
+     * A list of artifact patterns to exclude. Follows the pattern
+     * "groupId:artifactId:type:classifier:version". 
+     *
+     * @parameter
+     * @since 1.3
+     */
+    private String[] excludeDependencies = null;
+
+    /**
+     * A list of signatures to include.
+     * @parameter
+     * @since 1.3
+     */
+    private Signature[] includeSignatures = null;
+    
+    /**
      * The java home to generate the signatures of, if not specified only the signatures of dependencies will be 
      * included.
      *
@@ -142,6 +189,14 @@ public class BuildSignaturesMojo
                 //assign the path to executable from toolchains
                 javaHome = tc.findTool( "jdkHome" ); //NOI18N
             }
+        }
+        
+        if (includeJavaHome && javaHome == null) {
+            getLog().info( "Cannot include java home if java home is not specified (either " );
+        }
+
+        if (includeJavaHome && !new File(javaHome).isDirectory()) {
+            getLog().info( "Cannot include java home if java home is not specified" );
         }
 
         File sigFile = getTargetFile( outputDirectory, signaturesName, classifier, "signature" );
