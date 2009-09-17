@@ -26,12 +26,15 @@ package org.codehaus.mojo.animal_sniffer.maven;
  */
 
 import org.apache.maven.artifact.Artifact;
+import org.apache.maven.artifact.ArtifactUtils;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.MavenProjectHelper;
+import org.apache.maven.shared.artifact.filter.PatternExcludesArtifactFilter;
+import org.apache.maven.shared.artifact.filter.PatternIncludesArtifactFilter;
 import org.apache.maven.toolchain.MisconfiguredToolchainException;
 import org.apache.maven.toolchain.Toolchain;
 import org.apache.maven.toolchain.ToolchainManager;
@@ -48,6 +51,7 @@ import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -253,7 +257,7 @@ public class BuildSignaturesMojo
             }
         }
 
-        if ( includeJavaHome && javaHome == null  )
+        if ( includeJavaHome && javaHome == null )
         {
             if ( skipIfNoJavaHome )
             {
@@ -292,22 +296,46 @@ public class BuildSignaturesMojo
             SignatureBuilder builder =
                 new SignatureBuilder( (InputStream[]) baseSignatures.toArray( new InputStream[baseSignatures.size()] ),
                                       new FileOutputStream( sigFile ), new MavenLogger( getLog() ) );
-            if ( classesDirectory.isDirectory() )
+            if ( classesDirectory.isDirectory() && includeModuleClasses )
             {
                 getLog().info( "Parsing sigantures from " + classesDirectory );
                 builder.process( classesDirectory );
             }
+
+            PatternIncludesArtifactFilter includesFilter = includeDependencies == null
+                ? null
+                : new PatternIncludesArtifactFilter( Arrays.asList( includeDependencies ) );
+            PatternExcludesArtifactFilter excludesFilter = excludeDependencies == null
+                ? null
+                : new PatternExcludesArtifactFilter( Arrays.asList( excludeDependencies ) );
+
             for ( Iterator i = project.getArtifacts().iterator(); i.hasNext(); )
             {
                 Artifact artifact = (Artifact) i.next();
+                boolean result = true;
+
+                if ( includesFilter != null && !includesFilter.include( artifact ) )
+                {
+                    getLog().debug(
+                        "Artifact " + artifactId( artifact ) + " ignored as it does not match include rules." );
+                    continue;
+                }
+
+                if ( excludesFilter != null && !excludesFilter.include( artifact ) )
+                {
+                    getLog().debug(
+                        "Artifact " + artifactId( artifact ) + " ignored as it does matches exclude rules." );
+                    continue;
+                }
+
                 if ( StringUtils.equals( "jar", artifact.getType() ) )
                 {
-                    getLog().info( "Parsing sigantures from " + artifact.getFile() );
+                    getLog().info( "Parsing sigantures from " + artifactId( artifact ) );
                     builder.process( artifact.getFile() );
                 }
 
             }
-            if ( javaHome != null && new File( javaHome ).exists() )
+            if ( includeJavaHome && javaHome != null && new File( javaHome ).exists() )
             {
                 getLog().debug( "Parsing sigantures from " + javaHome );
                 process( builder, "lib/rt.jar" );
@@ -322,6 +350,12 @@ public class BuildSignaturesMojo
         {
             throw new MojoExecutionException( e.getMessage(), e );
         }
+    }
+
+    private static String artifactId( Artifact artifact )
+    {
+        return ArtifactUtils.artifactId( artifact.getGroupId(), artifact.getArtifactId(), artifact.getType(),
+                                         artifact.getClassifier(), artifact.getBaseVersion() );
     }
 
     private ToolchainPrivate[] getToolchains( String type )
