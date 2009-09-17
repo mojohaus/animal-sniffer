@@ -32,8 +32,11 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.MavenProjectHelper;
+import org.apache.maven.toolchain.MisconfiguredToolchainException;
 import org.apache.maven.toolchain.Toolchain;
 import org.apache.maven.toolchain.ToolchainManager;
+import org.apache.maven.toolchain.ToolchainPrivate;
+import org.apache.maven.toolchain.java.JavaToolChain;
 import org.codehaus.mojo.animal_sniffer.SignatureBuilder;
 import org.codehaus.plexus.util.StringUtils;
 
@@ -42,9 +45,12 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Stephen Connolly
@@ -62,22 +68,40 @@ public class BuildSignaturesMojo
     private boolean includeJavaHome;
 
     /**
+     * Should no signatures be generated if no java home is available.
+     *
+     * @parameter expression="${skipIfNoJavaHome}" default-value="false"
+     * @since 1.3
+     */
+    private boolean skipIfNoJavaHome;
+
+    /**
+     * Should the signatures from this module's classes be included..
+     *
+     * @parameter expression="${includeJavaHome}" default-value="true"
+     * @since 1.3
+     */
+    private boolean includeModuleClasses;
+
+    /**
      * Classes to generate signatures of.
-     * @parameter 
+     *
+     * @parameter
      * @since 1.3
      */
     private String[] includeClasses = null;
-    
+
     /**
      * Classes to exclude from generating signatures of.
-     * @parameter 
+     *
+     * @parameter
      * @since 1.3
      */
     private String[] excludeClasses = null;
 
     /**
      * A list of artifact patterns to include. Follows the pattern
-     * "groupId:artifactId:type:classifier:version". 
+     * "groupId:artifactId:type:classifier:version".
      *
      * @parameter
      * @since 1.3
@@ -86,7 +110,7 @@ public class BuildSignaturesMojo
 
     /**
      * A list of artifact patterns to exclude. Follows the pattern
-     * "groupId:artifactId:type:classifier:version". 
+     * "groupId:artifactId:type:classifier:version".
      *
      * @parameter
      * @since 1.3
@@ -95,13 +119,14 @@ public class BuildSignaturesMojo
 
     /**
      * A list of signatures to include.
+     *
      * @parameter
      * @since 1.3
      */
     private Signature[] includeSignatures = null;
-    
+
     /**
-     * The java home to generate the signatures of, if not specified only the signatures of dependencies will be 
+     * The java home to generate the signatures of, if not specified only the signatures of dependencies will be
      * included.
      *
      * @parameter expression="${javaHome}"
@@ -169,34 +194,84 @@ public class BuildSignaturesMojo
      */
     private MavenSession session;
 
+    /**
+     * @parameter default-value="jdk"
+     */
+    private String toolchain;
+
+    /**
+     * @parameter
+     */
+    private Map toolchainParams;
+
     public void execute()
         throws MojoExecutionException, MojoFailureException
     {
         //get toolchain from context
-        Toolchain tc = toolchainManager.getToolchainFromBuildContext( "jdk", //NOI18N
-                                                                      session );
+        Toolchain tc = null;
+        if ( toolchainManager != null && toolchain != null && toolchainParams != null )
+        {
+            try
+            {
+                final ToolchainPrivate[] tcp = getToolchains( toolchain );
+                for ( int i = 0; i < tcp.length; i++ )
+                {
+                    if ( tcp[i].matchesRequirements( toolchainParams ) )
+                    {
+                        tc = tcp[i];
+                        break;
+                    }
+                }
+            }
+            catch ( MisconfiguredToolchainException e )
+            {
+                throw new MojoExecutionException( e.getLocalizedMessage(), e );
+            }
+
+        }
+        if ( tc == null && toolchainManager != null )
+        {
+            tc = toolchainManager.getToolchainFromBuildContext( "jdk", //NOI18N
+                                                                session );
+        }
         if ( tc != null )
         {
-            getLog().info( "Toolchain in animal-sniffer-maven-plugin: " + tc );
+            if ( tc instanceof JavaToolChain )
+            {
+                getLog().info( "Toolchain in animal-sniffer-maven-plugin: " + tc );
 
-            //when the executable to use is explicitly set by user in mojo's parameter, ignore toolchains.
-            if ( javaHome != null )
-            {
-                getLog().warn( "Toolchains are ignored, 'javaHome' parameter is set to " + javaHome );
-            }
-            else
-            {
-                //assign the path to executable from toolchains
-                javaHome = tc.findTool( "jdkHome" ); //NOI18N
+                //when the executable to use is explicitly set by user in mojo's parameter, ignore toolchains.
+                if ( javaHome != null )
+                {
+                    getLog().warn( "Toolchains are ignored, 'javaHome' parameter is set to " + javaHome );
+                }
+                else
+                {
+                    //assign the path to executable from toolchains
+                    javaHome = ( (JavaToolChain) tc ).findTool( "../jre" ); //NOI18N
+                }
             }
         }
-        
-        if (includeJavaHome && javaHome == null) {
-            getLog().info( "Cannot include java home if java home is not specified (either " );
+
+        if ( includeJavaHome && javaHome == null  )
+        {
+            if ( skipIfNoJavaHome )
+            {
+                getLog().warn( "Skipping signature generation as could not find java home" );
+                return;
+            }
+            throw new MojoFailureException(
+                "Cannot include java home if java home is not specified (either via javaHome or toolchains)" );
         }
 
-        if (includeJavaHome && !new File(javaHome).isDirectory()) {
-            getLog().info( "Cannot include java home if java home is not specified" );
+        if ( includeJavaHome && !new File( javaHome ).isDirectory() )
+        {
+            if ( skipIfNoJavaHome )
+            {
+                getLog().warn( "Skipping signature generation as java home (" + javaHome + ") does not exist" );
+                return;
+            }
+            throw new MojoFailureException( "Cannot include java home if specified java home does not exist" );
         }
 
         File sigFile = getTargetFile( outputDirectory, signaturesName, classifier, "signature" );
@@ -217,9 +292,10 @@ public class BuildSignaturesMojo
             SignatureBuilder builder =
                 new SignatureBuilder( (InputStream[]) baseSignatures.toArray( new InputStream[baseSignatures.size()] ),
                                       new FileOutputStream( sigFile ), new MavenLogger( getLog() ) );
-            if (classesDirectory.isDirectory()) {
+            if ( classesDirectory.isDirectory() )
+            {
                 getLog().info( "Parsing sigantures from " + classesDirectory );
-                builder.process( classesDirectory );                
+                builder.process( classesDirectory );
             }
             for ( Iterator i = project.getArtifacts().iterator(); i.hasNext(); )
             {
@@ -233,7 +309,7 @@ public class BuildSignaturesMojo
             }
             if ( javaHome != null && new File( javaHome ).exists() )
             {
-                getLog().debug( "Parsing sigantures from " + javaHome);
+                getLog().debug( "Parsing sigantures from " + javaHome );
                 process( builder, "lib/rt.jar" );
                 process( builder, "lib/jce.jar" );
                 process( builder, "lib/jsse.jar" );
@@ -247,6 +323,55 @@ public class BuildSignaturesMojo
             throw new MojoExecutionException( e.getMessage(), e );
         }
     }
+
+    private ToolchainPrivate[] getToolchains( String type )
+        throws MojoExecutionException, MisconfiguredToolchainException
+    {
+        Class managerClass = toolchainManager.getClass();
+
+        try
+        {
+            try
+            {
+                // try 3.x style API
+                Method newMethod =
+                    managerClass.getMethod( "getToolchainsForType", new Class[]{String.class, MavenSession.class} );
+
+                return (ToolchainPrivate[]) newMethod.invoke( toolchainManager, new Object[]{type, session} );
+            }
+            catch ( NoSuchMethodException e )
+            {
+                // try 2.x style API
+                Method oldMethod = managerClass.getMethod( "getToolchainsForType", new Class[]{String.class} );
+
+                return (ToolchainPrivate[]) oldMethod.invoke( toolchainManager, new Object[]{type} );
+            }
+        }
+        catch ( NoSuchMethodException e )
+        {
+            throw new MojoExecutionException( "Incompatible toolchain API", e );
+        }
+        catch ( IllegalAccessException e )
+        {
+            throw new MojoExecutionException( "Incompatible toolchain API", e );
+        }
+        catch ( InvocationTargetException e )
+        {
+            Throwable cause = e.getCause();
+
+            if ( cause instanceof RuntimeException )
+            {
+                throw (RuntimeException) cause;
+            }
+            if ( cause instanceof MisconfiguredToolchainException )
+            {
+                throw (MisconfiguredToolchainException) cause;
+            }
+
+            throw new MojoExecutionException( "Incompatible toolchain API", e );
+        }
+    }
+
 
     private void process( SignatureBuilder builder, String name )
         throws IOException

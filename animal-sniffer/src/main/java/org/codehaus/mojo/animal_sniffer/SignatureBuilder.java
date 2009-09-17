@@ -39,11 +39,13 @@ import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.regex.Pattern;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
@@ -58,6 +60,10 @@ public class SignatureBuilder
     private boolean foundSome;
 
     private final Logger logger;
+
+    private List/*<Pattern>*/ includeClasses;
+
+    private List/*<Pattern>*/ excludeClasses;
 
     private final Map classes = new TreeMap();
 
@@ -76,6 +82,24 @@ public class SignatureBuilder
         throws IOException
     {
         this( null, out, logger );
+    }
+
+    public void addInclude( String className )
+    {
+        if ( includeClasses == null )
+        {
+            includeClasses = new ArrayList();
+        }
+        includeClasses.add( RegexUtils.compileWildcard( className ) );
+    }
+
+    public void addExclude( String className )
+    {
+        if ( excludeClasses == null )
+        {
+            excludeClasses = new ArrayList();
+        }
+        excludeClasses.add( RegexUtils.compileWildcard( className ) );
     }
 
     public SignatureBuilder( InputStream[] in, OutputStream out, Logger logger )
@@ -117,14 +141,47 @@ public class SignatureBuilder
     public void close()
         throws IOException
     {
+        int count = 0;
         Iterator i = classes.entrySet().iterator();
         while ( i.hasNext() )
         {
             Map.Entry entry = (Map.Entry) i.next();
-            logger.info( (String) entry.getKey() );
+            final String className = (String) entry.getKey();
+            if ( includeClasses != null )
+            {
+                boolean included = false;
+                Iterator j = includeClasses.iterator();
+                while ( !included && j.hasNext() )
+                {
+                    Pattern p = (Pattern) j.next();
+                    included = p.matcher( className ).matches();
+                }
+                if ( !included )
+                {
+                    continue;
+                }
+            }
+            if ( excludeClasses != null )
+            {
+                boolean excluded = false;
+                Iterator j = excludeClasses.iterator();
+                while ( !excluded && j.hasNext() )
+                {
+                    Pattern p = (Pattern) j.next();
+                    excluded = p.matcher( className ).matches();
+                }
+                if ( excluded )
+                {
+                    continue;
+                }
+            }
+            count++;
+            logger.debug( className );
+
             oos.writeObject( entry.getValue() );
         }
         oos.writeObject( null );   // EOF marker
+        logger.info( "Wrote signatures for " + count + " classes." );
         oos.close();
         if ( !foundSome )
         {
@@ -135,7 +192,7 @@ public class SignatureBuilder
     protected void process( String name, InputStream image )
         throws IOException
     {
-        logger.info( name );
+        logger.debug( name );
         foundSome = true;
         ClassReader cr = new ClassReader( image );
         SignatureVisitor v = new SignatureVisitor();

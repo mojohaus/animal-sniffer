@@ -39,8 +39,10 @@ import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Pattern;
 import java.util.zip.GZIPInputStream;
 
 /**
@@ -67,9 +69,9 @@ public class SignatureChecker
         throws Exception
     {
         Set ignoredPackages = new HashSet();
-        ignoredPackages.add( "org/jvnet/animal_sniffer" );
-        ignoredPackages.add( "org/codehaus/mojo/animal_sniffer" );
-        ignoredPackages.add( "org/objectweb/*" );
+        ignoredPackages.add( "org.jvnet.animal_sniffer.*" );
+        ignoredPackages.add( "org.codehaus.mojo.animal_sniffer.*" );
+        ignoredPackages.add( "org.objectweb.*" );
         new SignatureChecker( new FileInputStream( "signature" ), ignoredPackages,
                               new PrintWriterLogger( System.out ) ).process( new File( "target/classes" ) );
     }
@@ -77,7 +79,13 @@ public class SignatureChecker
     public SignatureChecker( InputStream in, Set ignoredPackages, Logger logger )
         throws IOException
     {
-        this.ignoredPackages = ignoredPackages;
+        this.ignoredPackages = new HashSet();
+        Iterator i = ignoredPackages.iterator();
+        while ( i.hasNext() )
+        {
+            String wildcard = (String) i.next();
+            this.ignoredPackages.add( RegexUtils.compileWildcard( wildcard.replace( '.', '/' )) );
+        }
         this.logger = logger;
         try
         {
@@ -180,31 +188,17 @@ public class SignatureChecker
                         {
                             return true; // array
                         }
-                        int idx = type.lastIndexOf( '/' );
-                        if ( idx < 0 )
+                        System.out.println( type );
+                        Iterator i = ignoredPackages.iterator();
+                        while ( i.hasNext() )
                         {
-                            return ignoredPackages.contains( "" );
-                        }
-                        String pkg = type.substring( 0, idx );
-                        if ( ignoredPackages.contains( pkg ) )
-                        {
-                            return true;
-                        }
-
-                        // check wildcard form
-                        while ( true )
-                        {
-                            if ( ignoredPackages.contains( pkg + "/*" ) )
+                            Pattern pattern = (Pattern) i.next();
+                            if ( pattern.matcher( type ).matches() )
                             {
                                 return true;
                             }
-                            idx = pkg.lastIndexOf( '/' );
-                            if ( idx < 0 )
-                            {
-                                return false;
-                            }
-                            pkg = pkg.substring( 0, idx );
                         }
+                        return false;
                     }
                 };
             }
