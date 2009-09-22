@@ -1,3 +1,4 @@
+package org.codehaus.mojo.animal_sniffer.jbcpd;
 /*
  * The MIT License
  *
