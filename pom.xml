@@ -43,6 +43,7 @@
   </description>
 
   <modules>
+    <module>java-boot-classpath-detector</module>
     <module>animal-sniffer-annotations</module>
     <module>animal-sniffer</module>
     <module>animal-sniffer-maven-plugin</module>

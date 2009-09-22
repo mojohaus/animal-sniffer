@@ -42,6 +42,9 @@ import org.apache.maven.toolchain.ToolchainPrivate;
 import org.apache.maven.toolchain.java.JavaToolChain;
 import org.codehaus.mojo.animal_sniffer.SignatureBuilder;
 import org.codehaus.plexus.util.StringUtils;
+import org.codehaus.plexus.util.cli.CommandLineException;
+import org.codehaus.plexus.util.cli.CommandLineUtils;
+import org.codehaus.plexus.util.cli.Commandline;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -139,6 +142,16 @@ public class BuildSignaturesMojo
     private String javaHome;
 
     /**
+     * Use this configuration option only if the automatic boot classpath detection does not work for the specific
+     * {@link #javaHome} or {@link #toolchain}.  For example, the automatic boot classpath detection does not work
+     * with Sun Java 1.1.
+     *
+     * @parameter
+     * @since 1.3
+     */
+    private File[] javaHomeClassPath;
+
+    /**
      * @parameter expression="${project.build.directory}"
      * @required
      * @since 1.3
@@ -208,6 +221,23 @@ public class BuildSignaturesMojo
      */
     private Map toolchainParams;
 
+    /**
+     * @parameter expression="${plugin.artifacts}"
+     * @required
+     * @readonly
+     */
+    private List/*<Artifact>*/ pluginArtifacts;
+
+    /**
+     * @parameter default-value="${plugin.groupId}"
+     */
+    private String jbcpdGroupId;
+
+    /**
+     * @parameter default-value="java-boot-classpath-detector"
+     */
+    private String jbcpdArtifactId;
+
     public void execute()
         throws MojoExecutionException, MojoFailureException
     {
@@ -276,6 +306,63 @@ public class BuildSignaturesMojo
                 return;
             }
             throw new MojoFailureException( "Cannot include java home if specified java home does not exist" );
+        }
+
+        if ( includeJavaHome && javaHomeClassPath == null || javaHomeClassPath.length == 0 )
+        {
+            getLog().info( "Attempting to auto-detect the boot classpath for JAVA_HOME=" + javaHome );
+            Iterator i = pluginArtifacts.iterator();
+            Artifact javaBootClasspathDetector = null;
+            while ( i.hasNext() && javaBootClasspathDetector == null )
+            {
+                Artifact candidate = (Artifact) i.next();
+
+                if ( StringUtils.equals( jbcpdGroupId, candidate.getGroupId() )
+                    && StringUtils.equals( jbcpdArtifactId, candidate.getArtifactId() ) && candidate.getFile() != null
+                    && candidate.getFile().isFile() )
+                {
+                    javaBootClasspathDetector = candidate;
+                }
+            }
+            if ( javaBootClasspathDetector == null )
+            {
+                if ( skipIfNoJavaHome )
+                {
+                    getLog().warn( "Skipping signature generation as could not find boot classpath detector ("
+                        + ArtifactUtils.versionlessKey( jbcpdGroupId, jbcpdArtifactId ) + ")." );
+                    return;
+                }
+                throw new MojoFailureException( "Could not find boot classpath detector ("
+                    + ArtifactUtils.versionlessKey( jbcpdGroupId, jbcpdArtifactId ) + ")." );
+            }
+
+            Commandline cli = new Commandline();
+            cli.setWorkingDirectory( project.getBasedir().getAbsolutePath() );
+            cli.setExecutable( new File( new File( javaHome, "bin" ), "java" ).getAbsolutePath() );
+            cli.addEnvironment( "CLASSPATH", "" );
+            cli.addArguments( new String[]{"-jar", javaBootClasspathDetector.getFile().getAbsolutePath()} );
+
+            final CommandLineUtils.StringStreamConsumer stdout = new CommandLineUtils.StringStreamConsumer();
+            final CommandLineUtils.StringStreamConsumer stderr = new CommandLineUtils.StringStreamConsumer();
+            try
+            {
+                int exitCode = CommandLineUtils.executeCommandLine( cli, stdout, stderr );
+                if (exitCode != 0) {
+                    getLog().debug( "Exit code = " + exitCode );
+                    if ( skipIfNoJavaHome )
+                    {
+                        getLog().warn( "Skipping signature generation as could not auto-detect java boot classpath for JAVA_HOME="+javaHome );
+                        return;
+                    }
+                    throw new MojoFailureException( "Could not auto-detect java boot classpath for JAVA_HOME="+javaHome);
+                }
+                getLog().info( stdout.getOutput() );
+            }
+            catch ( CommandLineException e )
+            {
+                throw new MojoExecutionException( e.getLocalizedMessage(), e );
+            }
+
         }
 
         File sigFile = getTargetFile( outputDirectory, signaturesName, classifier, "signature" );
