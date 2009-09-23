@@ -48,6 +48,7 @@ import org.codehaus.plexus.util.cli.Commandline;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -241,33 +242,8 @@ public class BuildSignaturesMojo
     public void execute()
         throws MojoExecutionException, MojoFailureException
     {
-        //get toolchain from context
-        Toolchain tc = null;
-        if ( toolchainManager != null && toolchain != null && toolchainParams != null )
-        {
-            try
-            {
-                final ToolchainPrivate[] tcp = getToolchains( toolchain );
-                for ( int i = 0; i < tcp.length; i++ )
-                {
-                    if ( tcp[i].matchesRequirements( toolchainParams ) )
-                    {
-                        tc = tcp[i];
-                        break;
-                    }
-                }
-            }
-            catch ( MisconfiguredToolchainException e )
-            {
-                throw new MojoExecutionException( e.getLocalizedMessage(), e );
-            }
+        Toolchain tc = getToolchain();
 
-        }
-        if ( tc == null && toolchainManager != null )
-        {
-            tc = toolchainManager.getToolchainFromBuildContext( "jdk", //NOI18N
-                                                                session );
-        }
         if ( tc != null )
         {
             if ( tc instanceof JavaToolChain )
@@ -310,126 +286,29 @@ public class BuildSignaturesMojo
 
         if ( includeJavaHome && javaHomeClassPath == null || javaHomeClassPath.length == 0 )
         {
-            getLog().info( "Attempting to auto-detect the boot classpath for JAVA_HOME=" + javaHome );
-            Iterator i = pluginArtifacts.iterator();
-            Artifact javaBootClasspathDetector = null;
-            while ( i.hasNext() && javaBootClasspathDetector == null )
+            if ( !detectJavaBootClasspath() )
             {
-                Artifact candidate = (Artifact) i.next();
-
-                if ( StringUtils.equals( jbcpdGroupId, candidate.getGroupId() )
-                    && StringUtils.equals( jbcpdArtifactId, candidate.getArtifactId() ) && candidate.getFile() != null
-                    && candidate.getFile().isFile() )
-                {
-                    javaBootClasspathDetector = candidate;
-                }
+                return;
             }
-            if ( javaBootClasspathDetector == null )
-            {
-                if ( skipIfNoJavaHome )
-                {
-                    getLog().warn( "Skipping signature generation as could not find boot classpath detector ("
-                        + ArtifactUtils.versionlessKey( jbcpdGroupId, jbcpdArtifactId ) + ")." );
-                    return;
-                }
-                throw new MojoFailureException( "Could not find boot classpath detector ("
-                    + ArtifactUtils.versionlessKey( jbcpdGroupId, jbcpdArtifactId ) + ")." );
-            }
-
-            Commandline cli = new Commandline();
-            cli.setWorkingDirectory( project.getBasedir().getAbsolutePath() );
-            cli.setExecutable( new File( new File( javaHome, "bin" ), "java" ).getAbsolutePath() );
-            cli.addEnvironment( "CLASSPATH", "" );
-            cli.addArguments( new String[]{"-jar", javaBootClasspathDetector.getFile().getAbsolutePath()} );
-
-            final CommandLineUtils.StringStreamConsumer stdout = new CommandLineUtils.StringStreamConsumer();
-            final CommandLineUtils.StringStreamConsumer stderr = new CommandLineUtils.StringStreamConsumer();
-            try
-            {
-                int exitCode = CommandLineUtils.executeCommandLine( cli, stdout, stderr );
-                if (exitCode != 0) {
-                    getLog().debug( "Exit code = " + exitCode );
-                    if ( skipIfNoJavaHome )
-                    {
-                        getLog().warn( "Skipping signature generation as could not auto-detect java boot classpath for JAVA_HOME="+javaHome );
-                        return;
-                    }
-                    throw new MojoFailureException( "Could not auto-detect java boot classpath for JAVA_HOME="+javaHome);
-                }
-                getLog().info( stdout.getOutput() );
-            }
-            catch ( CommandLineException e )
-            {
-                throw new MojoExecutionException( e.getLocalizedMessage(), e );
-            }
-
         }
+
+        displayJavaBootClasspath();
 
         File sigFile = getTargetFile( outputDirectory, signaturesName, classifier, "signature" );
         try
         {
             outputDirectory.mkdirs();
-            List baseSignatures = new ArrayList();
-            for ( Iterator i = project.getArtifacts().iterator(); i.hasNext(); )
-            {
-                Artifact artifact = (Artifact) i.next();
-                if ( StringUtils.equals( "signature", artifact.getType() ) )
-                {
-                    getLog().info( "Importing sigantures from " + artifact.getFile() );
-                    baseSignatures.add( new FileInputStream( artifact.getFile() ) );
-                }
+            SignatureBuilder builder = new SignatureBuilder( getBaseSignatures(), new FileOutputStream( sigFile ),
+                                                             new MavenLogger( getLog() ) );
 
-            }
-            SignatureBuilder builder =
-                new SignatureBuilder( (InputStream[]) baseSignatures.toArray( new InputStream[baseSignatures.size()] ),
-                                      new FileOutputStream( sigFile ), new MavenLogger( getLog() ) );
-            if ( classesDirectory.isDirectory() && includeModuleClasses )
-            {
-                getLog().info( "Parsing sigantures from " + classesDirectory );
-                builder.process( classesDirectory );
-            }
+            processJavaBootClasspath( builder );
 
-            PatternIncludesArtifactFilter includesFilter = includeDependencies == null
-                ? null
-                : new PatternIncludesArtifactFilter( Arrays.asList( includeDependencies ) );
-            PatternExcludesArtifactFilter excludesFilter = excludeDependencies == null
-                ? null
-                : new PatternExcludesArtifactFilter( Arrays.asList( excludeDependencies ) );
+            processModuleDependencies( builder );
 
-            for ( Iterator i = project.getArtifacts().iterator(); i.hasNext(); )
-            {
-                Artifact artifact = (Artifact) i.next();
-                boolean result = true;
+            processModuleClasses( builder );
 
-                if ( includesFilter != null && !includesFilter.include( artifact ) )
-                {
-                    getLog().debug(
-                        "Artifact " + artifactId( artifact ) + " ignored as it does not match include rules." );
-                    continue;
-                }
-
-                if ( excludesFilter != null && !excludesFilter.include( artifact ) )
-                {
-                    getLog().debug(
-                        "Artifact " + artifactId( artifact ) + " ignored as it does matches exclude rules." );
-                    continue;
-                }
-
-                if ( StringUtils.equals( "jar", artifact.getType() ) )
-                {
-                    getLog().info( "Parsing sigantures from " + artifactId( artifact ) );
-                    builder.process( artifact.getFile() );
-                }
-
-            }
-            if ( includeJavaHome && javaHome != null && new File( javaHome ).exists() )
-            {
-                getLog().debug( "Parsing sigantures from " + javaHome );
-                process( builder, "lib/rt.jar" );
-                process( builder, "lib/jce.jar" );
-                process( builder, "lib/jsse.jar" );
-            }
             builder.close();
+
             projectHelper.attachArtifact( project, "signature", classifier, sigFile );
 
         }
@@ -437,6 +316,233 @@ public class BuildSignaturesMojo
         {
             throw new MojoExecutionException( e.getMessage(), e );
         }
+    }
+
+    private boolean detectJavaBootClasspath()
+        throws MojoFailureException, MojoExecutionException
+    {
+        getLog().info( "Attempting to auto-detect the boot classpath for JAVA_HOME=" + javaHome );
+        Iterator i = pluginArtifacts.iterator();
+        Artifact javaBootClasspathDetector = null;
+        while ( i.hasNext() && javaBootClasspathDetector == null )
+        {
+            Artifact candidate = (Artifact) i.next();
+
+            if ( StringUtils.equals( jbcpdGroupId, candidate.getGroupId() )
+                && StringUtils.equals( jbcpdArtifactId, candidate.getArtifactId() ) && candidate.getFile() != null
+                && candidate.getFile().isFile() )
+            {
+                javaBootClasspathDetector = candidate;
+            }
+        }
+        if ( javaBootClasspathDetector == null )
+        {
+            if ( skipIfNoJavaHome )
+            {
+                getLog().warn( "Skipping signature generation as could not find boot classpath detector ("
+                    + ArtifactUtils.versionlessKey( jbcpdGroupId, jbcpdArtifactId ) + ")." );
+                return false;
+            }
+            throw new MojoFailureException( "Could not find boot classpath detector ("
+                + ArtifactUtils.versionlessKey( jbcpdGroupId, jbcpdArtifactId ) + ")." );
+        }
+
+        try
+        {
+            final Commandline cli = new Commandline();
+            cli.setWorkingDirectory( project.getBasedir().getAbsolutePath() );
+            cli.setExecutable( new File( new File( javaHome, "bin" ), "java" ).getAbsolutePath() );
+            cli.addEnvironment( "CLASSPATH", "" );
+            cli.addArguments( new String[]{"-jar", javaBootClasspathDetector.getFile().getAbsolutePath()} );
+
+            final CommandLineUtils.StringStreamConsumer stdout = new CommandLineUtils.StringStreamConsumer();
+            final CommandLineUtils.StringStreamConsumer stderr = new CommandLineUtils.StringStreamConsumer();
+            int exitCode = CommandLineUtils.executeCommandLine( cli, stdout, stderr );
+            if ( exitCode != 0 )
+            {
+                getLog().debug( "Stdout: " + stdout.getOutput() );
+                getLog().debug( "Stderr: " + stderr.getOutput() );
+                getLog().debug( "Exit code = " + exitCode );
+                if ( skipIfNoJavaHome )
+                {
+                    getLog().warn(
+                        "Skipping signature generation as could not auto-detect java boot classpath for JAVA_HOME="
+                            + javaHome );
+                    return false;
+                }
+                throw new MojoFailureException( "Could not auto-detect java boot classpath for JAVA_HOME=" + javaHome );
+            }
+            String[] classpath = StringUtils.split( stdout.getOutput(), File.pathSeparator );
+            javaHomeClassPath = new File[classpath.length];
+            for ( int j = 0; j < classpath.length; j++ )
+            {
+                javaHomeClassPath[j] = new File( classpath[j] );
+            }
+        }
+        catch ( CommandLineException e )
+        {
+            throw new MojoExecutionException( e.getLocalizedMessage(), e );
+        }
+        return true;
+    }
+
+    private void displayJavaBootClasspath()
+    {
+        if ( includeJavaHome )
+        {
+            getLog().info( "Boot Classpath for JAVA_HOME=" + javaHome );
+            for ( int j = 0; j < javaHomeClassPath.length; j++ )
+            {
+                getLog().info( "    [" + j + "] = " + javaHomeClassPath[j] );
+            }
+        }
+    }
+
+    private void processModuleDependencies( SignatureBuilder builder )
+        throws IOException
+    {
+        PatternIncludesArtifactFilter includesFilter = includeDependencies == null
+            ? null
+            : new PatternIncludesArtifactFilter( Arrays.asList( includeDependencies ) );
+        PatternExcludesArtifactFilter excludesFilter = excludeDependencies == null
+            ? null
+            : new PatternExcludesArtifactFilter( Arrays.asList( excludeDependencies ) );
+
+        for ( Iterator i = project.getArtifacts().iterator(); i.hasNext(); )
+        {
+            Artifact artifact = (Artifact) i.next();
+
+            if ( includesFilter != null && !includesFilter.include( artifact ) )
+            {
+                getLog().debug( "Artifact " + artifactId( artifact ) + " ignored as it does not match include rules." );
+                continue;
+            }
+
+            if ( excludesFilter != null && !excludesFilter.include( artifact ) )
+            {
+                getLog().debug( "Artifact " + artifactId( artifact ) + " ignored as it does matches exclude rules." );
+                continue;
+            }
+
+            if ( StringUtils.equals( "jar", artifact.getType() ) )
+            {
+                getLog().info( "Parsing sigantures from " + artifactId( artifact ) );
+                builder.process( artifact.getFile() );
+            }
+
+        }
+    }
+
+    private void processModuleClasses( SignatureBuilder builder )
+        throws IOException
+    {
+        if ( includeModuleClasses && classesDirectory.isDirectory() )
+        {
+            getLog().info( "Parsing sigantures from " + classesDirectory );
+            builder.process( classesDirectory );
+        }
+    }
+
+    private void processJavaBootClasspath( SignatureBuilder builder )
+        throws IOException
+    {
+        if ( includeJavaHome && javaHome != null && new File( javaHome ).exists() )
+        {
+            getLog().debug( "Parsing sigantures from " + javaHome );
+            for ( int i = 0; i < javaHomeClassPath.length; i++ )
+            {
+                if ( javaHomeClassPath[i].isFile() || javaHomeClassPath[i].isDirectory() )
+                {
+                    getLog().debug( "Processing " + javaHomeClassPath[i] );
+                    builder.process( javaHomeClassPath[i] );
+                }
+                else
+                {
+                    getLog().warn( "Could not add signatures from boot classpath element: " + javaHomeClassPath[i]
+                        + " as it does not exist." );
+                }
+            }
+        }
+    }
+
+    private InputStream[] getBaseSignatures()
+        throws FileNotFoundException
+    {
+        List baseSignatures = new ArrayList();
+        for ( Iterator i = project.getArtifacts().iterator(); i.hasNext(); )
+        {
+            Artifact artifact = (Artifact) i.next();
+            if ( StringUtils.equals( "signature", artifact.getType() ) )
+            {
+                getLog().info( "Importing sigantures from " + artifact.getFile() );
+                baseSignatures.add( new FileInputStream( artifact.getFile() ) );
+            }
+        }
+        final InputStream[] baseSignatureInputStreams =
+            (InputStream[]) baseSignatures.toArray( new InputStream[baseSignatures.size()] );
+        return baseSignatureInputStreams;
+    }
+
+    /**
+     * Gets the toolchain to use.
+     *
+     * @return the toolchain to use or <code>null</code> if no toolchain is configured or if no toolchain can be found.
+     * @throws MojoExecutionException if toolchains are misconfigured.
+     */
+    private Toolchain getToolchain()
+        throws MojoExecutionException
+    {
+        Toolchain tc = getToolchainFromConfiguration();
+        if ( tc == null )
+        {
+            tc = getToolchainFromContext();
+        }
+        return tc;
+    }
+
+    /**
+     * Gets the toolchain specified for the current context, e.g. specified via the maven-toolchain-plugin
+     *
+     * @return the toolchain from the context or <code>null</code> if there is no such toolchain.
+     */
+    private Toolchain getToolchainFromContext()
+    {
+        if ( toolchainManager != null )
+        {
+            return toolchainManager.getToolchainFromBuildContext( "jdk", //NOI18N
+                                                                  session );
+        }
+        return null;
+    }
+
+    /**
+     * Gets the toolchain from this plugin's configuration.
+     *
+     * @return the toolchain from this plugin's configuration, or <code>null</code> if no matching toolchain can be found.
+     * @throws MojoExecutionException if the toolchains are configured incorrectly.
+     */
+    private Toolchain getToolchainFromConfiguration()
+        throws MojoExecutionException
+    {
+        if ( toolchainManager != null && toolchain != null && toolchainParams != null )
+        {
+            try
+            {
+                final ToolchainPrivate[] tcp = getToolchains( toolchain );
+                for ( int i = 0; i < tcp.length; i++ )
+                {
+                    if ( tcp[i].matchesRequirements( toolchainParams ) )
+                    {
+                        return tcp[i];
+                    }
+                }
+            }
+            catch ( MisconfiguredToolchainException e )
+            {
+                throw new MojoExecutionException( e.getLocalizedMessage(), e );
+            }
+        }
+        return null;
     }
 
     private static String artifactId( Artifact artifact )
@@ -490,17 +596,6 @@ public class BuildSignaturesMojo
             }
 
             throw new MojoExecutionException( "Incompatible toolchain API", e );
-        }
-    }
-
-
-    private void process( SignatureBuilder builder, String name )
-        throws IOException
-    {
-        File f = new File( javaHome, name );
-        if ( f.exists() )
-        {
-            builder.process( f );
         }
     }
 
