@@ -52,6 +52,10 @@ public class BuildSignaturesTask
 
     private Vector signatures = new Vector();
 
+    private Vector includeClasses = new Vector();
+
+    private Vector excludeClasses = new Vector();
+
     public void setDestfile( File dest )
     {
         this.destfile = dest;
@@ -67,6 +71,20 @@ public class BuildSignaturesTask
         Signature signature = new Signature();
         signatures.add( signature );
         return signature;
+    }
+
+    public Ignore createIncludeClasses()
+    {
+        final Ignore result = new Ignore();
+        includeClasses.add( result );
+        return result;
+    }
+
+    public Ignore createExcludeClasses()
+    {
+        final Ignore result = new Ignore();
+        excludeClasses.add( result );
+        return result;
     }
 
     protected void validate()
@@ -92,6 +110,25 @@ public class BuildSignaturesTask
                 throw new BuildException( "signature " + signature.getSrc() + " does not exist" );
             }
         }
+        i = includeClasses.iterator();
+        while ( i.hasNext() )
+        {
+            Ignore tmp = (Ignore) i.next();
+            if ( tmp.getClassName() == null )
+            {
+                throw new BuildException( "includeClasses className not set" );
+            }
+        }
+        i = excludeClasses.iterator();
+        while ( i.hasNext() )
+        {
+            Ignore tmp = (Ignore) i.next();
+            if ( tmp.getClassName() == null )
+            {
+                throw new BuildException( "excludeClasses className not set" );
+            }
+        }
+
     }
 
     public void execute()
@@ -112,6 +149,18 @@ public class BuildSignaturesTask
             SignatureBuilder builder =
                 new SignatureBuilder( (InputStream[]) inStreams.toArray( new InputStream[inStreams.size()] ),
                                       new FileOutputStream( destfile ), new AntLogger( this ) );
+            i = includeClasses.iterator();
+            while ( i.hasNext() )
+            {
+                Ignore tmp = (Ignore) i.next();
+                builder.addInclude( tmp.getClassName() );
+            }
+            i = excludeClasses.iterator();
+            while ( i.hasNext() )
+            {
+                Ignore tmp = (Ignore) i.next();
+                builder.addExclude( tmp.getClassName() );
+            }
             i = paths.iterator();
             while ( i.hasNext() )
             {
