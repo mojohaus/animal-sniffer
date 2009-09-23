@@ -146,7 +146,7 @@ public class SignatureBuilder
         while ( i.hasNext() )
         {
             Map.Entry entry = (Map.Entry) i.next();
-            final String className = (String) entry.getKey();
+            final String className = ( (String) entry.getKey() ).replace( '/', '.' );
             if ( includeClasses != null )
             {
                 boolean included = false;

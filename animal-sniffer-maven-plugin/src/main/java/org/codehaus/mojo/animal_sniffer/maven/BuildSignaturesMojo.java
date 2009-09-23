@@ -108,8 +108,7 @@ public class BuildSignaturesMojo
     private String[] excludeClasses = null;
 
     /**
-     * A list of artifact patterns to include. Follows the pattern
-     * "groupId:artifactId:type:classifier:version".
+     * A list of artifact patterns to include. Follows the pattern "groupId:artifactId:type:classifier:version".
      *
      * @parameter
      * @since 1.3
@@ -117,8 +116,7 @@ public class BuildSignaturesMojo
     private String[] includeDependencies = null;
 
     /**
-     * A list of artifact patterns to exclude. Follows the pattern
-     * "groupId:artifactId:type:classifier:version".
+     * A list of artifact patterns to exclude. Follows the pattern "groupId:artifactId:type:classifier:version".
      *
      * @parameter
      * @since 1.3
@@ -144,8 +142,8 @@ public class BuildSignaturesMojo
 
     /**
      * Use this configuration option only if the automatic boot classpath detection does not work for the specific
-     * {@link #javaHome} or {@link #toolchain}.  For example, the automatic boot classpath detection does not work
-     * with Sun Java 1.1.
+     * {@link #javaHome} or {@link #toolchain}.  For example, the automatic boot classpath detection does not work with
+     * Sun Java 1.1.
      *
      * @parameter
      * @since 1.3
@@ -203,8 +201,7 @@ public class BuildSignaturesMojo
     private ToolchainManager toolchainManager;
 
     /**
-     * The current build session instance. This is used for
-     * toolchain manager API calls.
+     * The current build session instance. This is used for toolchain manager API calls.
      *
      * @parameter expression="${session}"
      * @required
@@ -300,6 +297,26 @@ public class BuildSignaturesMojo
             outputDirectory.mkdirs();
             SignatureBuilder builder = new SignatureBuilder( getBaseSignatures(), new FileOutputStream( sigFile ),
                                                              new MavenLogger( getLog() ) );
+
+            if ( includeClasses != null )
+            {
+                getLog().info( "Restricting signatures to include only the following classes:" );
+                for ( int i = 0; i < includeClasses.length; i++ )
+                {
+                    getLog().info( "  " + includeClasses[i] );
+                    builder.addInclude( includeClasses[i] );
+                }
+            }
+
+            if ( excludeClasses != null )
+            {
+                getLog().info( "Restricting signatures to exclude the following classes:" );
+                for ( int i = 0; i < excludeClasses.length; i++ )
+                {
+                    getLog().info( "  " + excludeClasses[i] );
+                    builder.addExclude( excludeClasses[i] );
+                }
+            }
 
             processJavaBootClasspath( builder );
 
@@ -518,7 +535,8 @@ public class BuildSignaturesMojo
     /**
      * Gets the toolchain from this plugin's configuration.
      *
-     * @return the toolchain from this plugin's configuration, or <code>null</code> if no matching toolchain can be found.
+     * @return the toolchain from this plugin's configuration, or <code>null</code> if no matching toolchain can be
+     *         found.
      * @throws MojoExecutionException if the toolchains are configured incorrectly.
      */
     private Toolchain getToolchainFromConfiguration()
