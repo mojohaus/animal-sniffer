@@ -239,53 +239,55 @@ public class BuildSignaturesMojo
     public void execute()
         throws MojoExecutionException, MojoFailureException
     {
-        Toolchain tc = getToolchain();
-
-        if ( tc != null )
+        if ( includeJavaHome && ( javaHomeClassPath == null || javaHomeClassPath.length == 0 ) )
         {
-            if ( tc instanceof JavaToolChain )
+            if ( javaHome != null )
             {
-                getLog().info( "Toolchain in animal-sniffer-maven-plugin: " + tc );
+                getLog().warn( "Toolchains are ignored, 'javaHome' parameter is set to " + javaHome );
 
-                //when the executable to use is explicitly set by user in mojo's parameter, ignore toolchains.
-                if ( javaHome != null )
+                if ( !new File( javaHome ).isDirectory() )
                 {
-                    getLog().warn( "Toolchains are ignored, 'javaHome' parameter is set to " + javaHome );
+                    if ( skipIfNoJavaHome )
+                    {
+                        getLog().warn( "Skipping signature generation as java home (" + javaHome + ") does not exist" );
+                        return;
+                    }
+                    throw new MojoFailureException( "Cannot include java home if specified java home does not exist" );
                 }
-                else
+
+                if ( !detectJavaBootClasspath( new File( new File( javaHome, "bin" ), "java" ).getAbsolutePath() ) )
                 {
+                    return;
+                }
+            }
+            else
+            {
+                Toolchain tc = getToolchain();
+
+                if ( tc != null && tc instanceof JavaToolChain )
+                {
+                    getLog().info( "Toolchain in animal-sniffer-maven-plugin: " + tc );
+
+                    //when the executable to use is explicitly set by user in mojo's parameter, ignore toolchains.
+
                     //assign the path to executable from toolchains
-                    javaHome = ( (JavaToolChain) tc ).findTool( "../jre" ); //NOI18N
+                    String jvm = tc.findTool( "java" ); //NOI18N
+
+                    if ( jvm == null )
+                    {
+                        if ( skipIfNoJavaHome )
+                        {
+                            getLog().warn( "Skipping signature generation as could not find java home" );
+                            return;
+                        }
+                        throw new MojoFailureException(
+                            "Cannot include java home if java home is not specified (either via javaClassPath, javaHome or toolchains)" );
+                    }
+                    if ( !detectJavaBootClasspath( jvm ) )
+                    {
+                        return;
+                    }
                 }
-            }
-        }
-
-        if ( includeJavaHome && javaHome == null )
-        {
-            if ( skipIfNoJavaHome )
-            {
-                getLog().warn( "Skipping signature generation as could not find java home" );
-                return;
-            }
-            throw new MojoFailureException(
-                "Cannot include java home if java home is not specified (either via javaHome or toolchains)" );
-        }
-
-        if ( includeJavaHome && !new File( javaHome ).isDirectory() )
-        {
-            if ( skipIfNoJavaHome )
-            {
-                getLog().warn( "Skipping signature generation as java home (" + javaHome + ") does not exist" );
-                return;
-            }
-            throw new MojoFailureException( "Cannot include java home if specified java home does not exist" );
-        }
-
-        if ( includeJavaHome && javaHomeClassPath == null || javaHomeClassPath.length == 0 )
-        {
-            if ( !detectJavaBootClasspath() )
-            {
-                return;
             }
         }
 
@@ -335,10 +337,10 @@ public class BuildSignaturesMojo
         }
     }
 
-    private boolean detectJavaBootClasspath()
+    private boolean detectJavaBootClasspath( String javaExecutable )
         throws MojoFailureException, MojoExecutionException
     {
-        getLog().info( "Attempting to auto-detect the boot classpath for JAVA_HOME=" + javaHome );
+        getLog().info( "Attempting to auto-detect the boot classpath for " + javaExecutable );
         Iterator i = pluginArtifacts.iterator();
         Artifact javaBootClasspathDetector = null;
         while ( i.hasNext() && javaBootClasspathDetector == null )
@@ -366,34 +368,9 @@ public class BuildSignaturesMojo
 
         try
         {
-            final Commandline cli = new Commandline();
-            cli.setWorkingDirectory( project.getBasedir().getAbsolutePath() );
-            cli.setExecutable( new File( new File( javaHome, "bin" ), "java" ).getAbsolutePath() );
-            cli.addEnvironment( "CLASSPATH", "" );
-            cli.addArguments( new String[]{"-jar", javaBootClasspathDetector.getFile().getAbsolutePath()} );
-
-            final CommandLineUtils.StringStreamConsumer stdout = new CommandLineUtils.StringStreamConsumer();
-            final CommandLineUtils.StringStreamConsumer stderr = new CommandLineUtils.StringStreamConsumer();
-            int exitCode = CommandLineUtils.executeCommandLine( cli, stdout, stderr );
-            if ( exitCode != 0 )
+            if ( !detectJavaClasspath( javaBootClasspathDetector, javaExecutable ) )
             {
-                getLog().debug( "Stdout: " + stdout.getOutput() );
-                getLog().debug( "Stderr: " + stderr.getOutput() );
-                getLog().debug( "Exit code = " + exitCode );
-                if ( skipIfNoJavaHome )
-                {
-                    getLog().warn(
-                        "Skipping signature generation as could not auto-detect java boot classpath for JAVA_HOME="
-                            + javaHome );
-                    return false;
-                }
-                throw new MojoFailureException( "Could not auto-detect java boot classpath for JAVA_HOME=" + javaHome );
-            }
-            String[] classpath = StringUtils.split( stdout.getOutput(), File.pathSeparator );
-            javaHomeClassPath = new File[classpath.length];
-            for ( int j = 0; j < classpath.length; j++ )
-            {
-                javaHomeClassPath[j] = new File( classpath[j] );
+                return false;
             }
         }
         catch ( CommandLineException e )
@@ -403,11 +380,46 @@ public class BuildSignaturesMojo
         return true;
     }
 
+    private boolean detectJavaClasspath( Artifact javaBootClasspathDetector, String javaExecutable )
+        throws CommandLineException, MojoFailureException
+    {
+        final Commandline cli = new Commandline();
+        cli.setWorkingDirectory( project.getBasedir().getAbsolutePath() );
+        cli.setExecutable( javaExecutable );
+        cli.addEnvironment( "CLASSPATH", "" );
+        cli.addEnvironment( "JAVA_HOME", "" );
+        cli.addArguments( new String[]{"-jar", javaBootClasspathDetector.getFile().getAbsolutePath()} );
+
+        final CommandLineUtils.StringStreamConsumer stdout = new CommandLineUtils.StringStreamConsumer();
+        final CommandLineUtils.StringStreamConsumer stderr = new CommandLineUtils.StringStreamConsumer();
+        int exitCode = CommandLineUtils.executeCommandLine( cli, stdout, stderr );
+        if ( exitCode != 0 )
+        {
+            getLog().debug( "Stdout: " + stdout.getOutput() );
+            getLog().debug( "Stderr: " + stderr.getOutput() );
+            getLog().debug( "Exit code = " + exitCode );
+            if ( skipIfNoJavaHome )
+            {
+                getLog().warn( "Skipping signature generation as could not auto-detect java boot classpath for "
+                    + javaExecutable );
+                return false;
+            }
+            throw new MojoFailureException( "Could not auto-detect java boot classpath for " + javaExecutable );
+        }
+        String[] classpath = StringUtils.split( stdout.getOutput(), File.pathSeparator );
+        javaHomeClassPath = new File[classpath.length];
+        for ( int j = 0; j < classpath.length; j++ )
+        {
+            javaHomeClassPath[j] = new File( classpath[j] );
+        }
+        return true;
+    }
+
     private void displayJavaBootClasspath()
     {
         if ( includeJavaHome )
         {
-            getLog().info( "Boot Classpath for JAVA_HOME=" + javaHome );
+            getLog().info( "Java Classpath:" );
             for ( int j = 0; j < javaHomeClassPath.length; j++ )
             {
                 getLog().info( "    [" + j + "] = " + javaHomeClassPath[j] );
@@ -463,9 +475,9 @@ public class BuildSignaturesMojo
     private void processJavaBootClasspath( SignatureBuilder builder )
         throws IOException
     {
-        if ( includeJavaHome && javaHome != null && new File( javaHome ).exists() )
+        if ( includeJavaHome && javaHomeClassPath != null && javaHomeClassPath.length > 0 )
         {
-            getLog().debug( "Parsing sigantures from " + javaHome );
+            getLog().debug( "Parsing sigantures java classpath:" );
             for ( int i = 0; i < javaHomeClassPath.length; i++ )
             {
                 if ( javaHomeClassPath[i].isFile() || javaHomeClassPath[i].isDirectory() )
