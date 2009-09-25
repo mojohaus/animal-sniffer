@@ -420,9 +420,16 @@ public class BuildSignaturesMojo
         if ( includeJavaHome )
         {
             getLog().info( "Java Classpath:" );
-            for ( int j = 0; j < javaHomeClassPath.length; j++ )
+            if ( javaHomeClassPath == null )
             {
-                getLog().info( "    [" + j + "] = " + javaHomeClassPath[j] );
+                getLog().info( "    Empty" );
+            }
+            else
+            {
+                for ( int j = 0; j < javaHomeClassPath.length; j++ )
+                {
+                    getLog().info( "    [" + j + "] = " + javaHomeClassPath[j] );
+                }
             }
         }
     }
