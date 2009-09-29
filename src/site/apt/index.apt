@@ -22,12 +22,50 @@
  ~~
  
  -----
- Animal Sniffer CLI
+ Animal Sniffer
  -----
- Kohsuke Kawaguchi
+ Stephen Connolly
  -----
- 2008-11-15
+ 2009-09-28
  -----
+
+What is animal-sniffer?
+
+  What happens if you compile a program written with a version of an API that is different from the version you are 
+  targetting? Well the answer depends on a number of things. 
+  
+    * Firstly we will assume that the API has an evolution contract, i.e., if a class or method or field
+      is present in version v1, it will also be present in version v2 providing v1 <= v2. A good example of this is the 
+      Java Runtime Library (a.k.a the JRE)
+      
+    * If you are compiling with a newer version of the API, you should not get any compiler errors.
+    
+    * If you are compiling with an older version of the API, and you have only used those features in the older version
+      of the API, you should not get any compiler errors.
+      
+    * If you are compiling with an older version of the API, and you have used some features only available in the newer
+      version, you will get a compiler error.
+      
+    []
+    
+  If you are developing a project which must support running on JDK version 1.4, but your development system does not 
+  have a JDK version 1.4 available, it can be quite easy to accidentally use methods or classes that are only available
+  in the newer version of the JDK.  For example, if you are develping a plugin for Maven 2.0.x on a Macintosh.
+
+  If you are developing software designed to run against multiple versions of Java, or indeed multiple versions of any
+  API, you may often run into a problem:
+  
+    * The new version has some cool feature that you would like to use.
+    
+    * You have to remain compatible with the old version.
+   
+    []
+    
+  Another issue that can often arise is:
+  
+    * You are compiling with a newer version of Java (e.g. Java 1.6) and by accident, you use one of the Java 1.6 only
+      methods.
+  
 
 What is this?
 
