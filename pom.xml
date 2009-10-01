@@ -41,7 +41,17 @@
   <description>
     Animal Sniffer Parent project.
   </description>
+  
+  <url>http://mojo.codehaus.org/animal-sniffer</url>
 
+  <distributionManagement>
+    <site>
+      <id>codehaus.org</id>
+      <name>Mojo Website</name>
+      <url>dav:https://dav.codehaus.org/mojo/animal-sniffer</url>
+    </site>    
+  </distributionManagement>
+  
   <modules>
     <module>java-boot-classpath-detector</module>
     <module>animal-sniffer-annotations</module>

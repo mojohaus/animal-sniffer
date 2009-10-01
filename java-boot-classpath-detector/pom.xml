@@ -35,7 +35,7 @@
   <artifactId>java-boot-classpath-detector</artifactId>
   <packaging>jar</packaging>
 
-  <name>Gets the java boot classpath for a specific java home</name>
+  <name>Java boot classpath detector</name>
 
   <description>
     Queries a java home in order to find its boot class path.
