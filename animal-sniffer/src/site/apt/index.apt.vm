@@ -1,0 +1,110 @@
+ ~~ The MIT License
+ ~~
+ ~~ Copyright (c) 2009 codehaus.org.
+ ~~
+ ~~ Permission is hereby granted, free of charge, to any person obtaining a copy
+ ~~ of this software and associated documentation files (the "Software"), to deal
+ ~~ in the Software without restriction, including without limitation the rights
+ ~~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ ~~ copies of the Software, and to permit persons to whom the Software is
+ ~~ furnished to do so, subject to the following conditions:
+ ~~
+ ~~ The above copyright notice and this permission notice shall be included in
+ ~~ all copies or substantial portions of the Software.
+ ~~
+ ~~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ ~~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ ~~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ ~~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ ~~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ ~~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ ~~ THE SOFTWARE.
+ ~~
+ 
+ -----
+ Animal Sniffer
+ -----
+ Stephen Connolly
+ -----
+ 2009-10-01
+ -----
+
+Animal Sniffer
+
+  Animal Sniffer provides tools to assist verifying that classes compiled with a newer JDK/API are compatible with an
+  older JDK/API.
+
+* CLI overview
+
+  The CLI has the following functionality:
+  
+  * {{{usage.html}Display the target class version of classes}} to help you track down the offending jar file when you 
+    see <<<UnsupportedClassVersionError>>>. 
+ 
+  []
+
+* API overview
+
+  Animal-sniffer also provides an API for verifying and compiling API signatures.  This API is used by 
+  {{{../animal-sniffer-ant-tasks/index.html} the ANT tasks}}, 
+  {{{../animal-sniffer-enforcer-rule} the maven enforcer rule}}, and 
+  {{{../../animal-sniffer-maven-plugin} the Maven plugin}}. If these tools are not sufficient to your needs, then
+  the two entry points to the API are:
+  
+  * {{{apidocs/org/codehaus/mojo/animal_sniffer/SignatureChecker.html}SignatureChecker}} is used to check classes 
+  against a specific signature.
+
+  * {{{apidocs/org/codehaus/mojo/animal_sniffer/SignatureBuilder.html}SignatureBuilder}} is used to build signatures 
+  from a collection of classes.
+  
+  []
+  
+* Usage
+
+  General instructions on how to use the Animal Sniffer API can be found on the {{{usage.html}usage page}}. Some more
+  specific use cases are described in the examples given below. Last but not least, users occasionally contribute
+  additional examples, tips or errata to the
+  {{{http://docs.codehaus.org/display/MAVENUSER/Animal_Sniffer}animal-sniffer's wiki page}}.
+
+  In case you still have questions regarding the plugin's usage, please have a look at the {{{faq.html}FAQ}} and feel
+  free to contact the {{{mail-lists.html}user mailing list}}. The posts to the mailing list are archived and could
+  already contain the answer to your question as part of an older thread. Hence, it is also worth browsing/searching
+  the {{{mail-lists.html}mail archive}}.
+
+  If you feel like animal-sniffer is missing a feature or has a defect, you can fill a feature request or bug report in 
+  our {{{issue-tracking.html}issue tracker}}. When creating a new issue, please provide a comprehensive description of 
+  your concern. Especially for fixing bugs it is crucial that the developers can reproduce your problem. For this 
+  reason, entire debug logs, POMs or most preferably little demo projects attached to the issue are very much 
+  appreciated. Of course, patches are welcome, too. Contributors can check out the project from our
+  {{{source-repository.html}source repository}} and will find supplementary information in the
+  {{{http://maven.apache.org/guides/development/guide-helping.html}guide to helping with Maven}}.
+
+* Examples
+
+    This CLI tool can accept any number of:
+
+    * Class files
+
+    * Jar files
+    
+    * Directories
+
+    []
+    
+    When directories are given, they are recursively scanned for class files and jar files.
+    When jar files are given, class files in it is examined.
+
+    The tool produces output like the following, so use the grep command to filter out the list:
+
+-----------------------------
+% java -jar ${project.artifactId}-${project.version}.jar tmp
+50.0 tmp/streambuffer-0.7.jar:com/sun/xml/stream/buffer/AbstractCreator.class
+50.0 tmp/streambuffer-0.7.jar:com/sun/xml/stream/buffer/AbstractCreatorProcessor.class
+50.0 tmp/streambuffer-0.7.jar:com/sun/xml/stream/buffer/AbstractProcessor.class
+50.0 tmp/streambuffer-0.7.jar:com/sun/xml/stream/buffer/AttributesHolder.class
+50.0 tmp/streambuffer-0.7.jar:com/sun/xml/stream/buffer/FragmentedArray.class
+50.0 tmp/streambuffer-0.7.jar:com/sun/xml/stream/buffer/MutableXMLStreamBuffer.class
+50.0 tmp/streambuffer-0.7.jar:com/sun/xml/stream/buffer/XMLStreamBuffer.class
+50.0 tmp/streambuffer-0.7.jar:com/sun/xml/stream/buffer/XMLStreamBufferException.class
+-----------------------------
+

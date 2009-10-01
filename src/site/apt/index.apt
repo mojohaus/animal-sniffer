@@ -1,6 +1,6 @@
  ~~ The MIT License
  ~~
- ~~ Copyright (c) 2008 Kohsuke Kawaguchi and codehaus.org.
+ ~~ Copyright (c) 2009 codehaus.org.
  ~~
  ~~ Permission is hereby granted, free of charge, to any person obtaining a copy
  ~~ of this software and associated documentation files (the "Software"), to deal
@@ -26,10 +26,15 @@
  -----
  Stephen Connolly
  -----
- 2009-09-28
+ 2009-10-01
  -----
 
-What is animal-sniffer?
+Animal Sniffer
+
+  Animal Sniffer provides tools to assist verifying that classes compiled with a newer JDK/API are compatible with an
+  older JDK/API.
+
+* Introduction
 
   What happens if you compile a program written with a version of an API that is different from the version you are 
   targetting? Well the answer depends on a number of things. 
@@ -50,69 +55,33 @@ What is animal-sniffer?
     
   If you are developing a project which must support running on JDK version 1.4, but your development system does not 
   have a JDK version 1.4 available, it can be quite easy to accidentally use methods or classes that are only available
-  in the newer version of the JDK.  For example, if you are develping a plugin for Maven 2.0.x on a Macintosh.
-
-  If you are developing software designed to run against multiple versions of Java, or indeed multiple versions of any
-  API, you may often run into a problem:
+  in the newer version of the JDK.  For example, if you are develping a plugin for Maven 2.0.x on a newer Macintosh.
   
-    * The new version has some cool feature that you would like to use.
-    
-    * You have to remain compatible with the old version.
-   
-    []
-    
-  Another issue that can often arise is:
+  Animal sniffer can check the classes and method signatures that your compiled code uses and verify that you have
+  use only those classes and signatures available in the API you are targetting.
   
-    * You are compiling with a newer version of Java (e.g. Java 1.6) and by accident, you use one of the Java 1.6 only
-      methods.
+* Why the name?
+
+  Sun gives each of the JDK versions codenames.  Most of these codenames are animal names.  Animal-sniffer was concieved
+  as a utility to see what "animal" your code can run on.
   
+* What does animal-sniffer provide?
 
-What is this?
-
-    This project develops a set of tools to deal with problems common when
-    dealing with multiple versions of JDKs. Currently, the following tools
-    are available:
+  The following tools are provided by animal sniffer:
+  
+    * {{{animal-sniffer/index.html}A command line tool to dump the class file version number}}. This helps you track 
+    down the offending jar file when you see  <<<UnsupportedClassVersionError>>>.
     
-    * {{{cli.html}A command line tool to dump the class file version number}}.
-      This helps you track down the offending jar file when you see
-      <<<UnsupportedClassVersionError>>>.
+    * {{{animal-sniffer-ant-tasks/index.html}A set of ANT tasks for verifying that your classes comply with an API
+    signature as well as tasks for creating API signatures from a JDK, or a collection or jar and class files, or a
+    collection of other API signature files, or combination of these elements.
     
-    * {{{signature-checker.html}A maven plugin to verify that your code doesn't depend on new library
-      classes/methods/fields introduced in later versions of JREs}}.
-      This helps you ensure that your application runs on earlier versions of JREs
-      even when you use newer versions of JDKs for development.
+    * {{{animal-sniffer-enforcer-rule/index.html}A rule for use in the maven-enforcer-plugin}} for verifying that your 
+    classes comply with an API signature .
     
-    []
-    This simple command line tool looks at Java class files and determine
-    the format version number. The common use case of this tool is to figure
-    out what is the offending jar file when you see <<<UnsupportedClassVersionError>>>.
-
-Usage
-
-    This tool can accept any number of:
-
-    * Class files
-
-    * Jar files
-    
-    * Directories
+    * {{{../animal-sniffer-maven-plugin/index.html}A maven plugin}} for verifying that your classes comply with an API
+    signature as well as for creating API signatures from a JDK, or the current module's classes, or the current 
+    module's dependencies, or a collection of other API signature files, or combination of these elements. 
 
     []
     
-    When directories are given, they are recursively scanned for class files and jar files.
-    When jar files are given, class files in it is examined.
-
-    The tool produces output like the following, so use the grep command to filter out the list:
-
------------------------------
-% java -jar target/animal-sniffer-1.0-SNAPSHOT.jar tmp
-50.0 tmp/streambuffer-0.7.jar:com/sun/xml/stream/buffer/AbstractCreator.class
-50.0 tmp/streambuffer-0.7.jar:com/sun/xml/stream/buffer/AbstractCreatorProcessor.class
-50.0 tmp/streambuffer-0.7.jar:com/sun/xml/stream/buffer/AbstractProcessor.class
-50.0 tmp/streambuffer-0.7.jar:com/sun/xml/stream/buffer/AttributesHolder.class
-50.0 tmp/streambuffer-0.7.jar:com/sun/xml/stream/buffer/FragmentedArray.class
-50.0 tmp/streambuffer-0.7.jar:com/sun/xml/stream/buffer/MutableXMLStreamBuffer.class
-50.0 tmp/streambuffer-0.7.jar:com/sun/xml/stream/buffer/XMLStreamBuffer.class
-50.0 tmp/streambuffer-0.7.jar:com/sun/xml/stream/buffer/XMLStreamBufferException.class
------------------------------
-
