@@ -40,8 +40,8 @@ Animal Sniffer
   targetting? Well the answer depends on a number of things. 
   
     * Firstly we will assume that the API has an evolution contract, i.e., if a class or method or field
-      is present in version v1, it will also be present in version v2 providing v1 <= v2. A good example of this is the 
-      Java Runtime Library (a.k.a the JRE)
+      is present in version v1, it will also be present in version v2 providing v1 is less than or equal to v2. A good 
+      example of this is the Java Runtime Library (a.k.a the JRE)
       
     * If you are compiling with a newer version of the API, you should not get any compiler errors.
     
@@ -72,7 +72,7 @@ Animal Sniffer
     * {{{animal-sniffer/index.html}A command line tool to dump the class file version number}}. This helps you track 
     down the offending jar file when you see  <<<UnsupportedClassVersionError>>>.
     
-    * {{{animal-sniffer-ant-tasks/index.html}A set of ANT tasks for verifying that your classes comply with an API
+    * {{{animal-sniffer-ant-tasks/index.html}A set of ANT tasks}} for verifying that your classes comply with an API
     signature as well as tasks for creating API signatures from a JDK, or a collection or jar and class files, or a
     collection of other API signature files, or combination of these elements.
     
@@ -85,3 +85,4 @@ Animal Sniffer
 
     []
     
+  Blah
