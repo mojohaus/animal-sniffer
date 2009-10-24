@@ -103,10 +103,9 @@
               <goal>build</goal>
             </goals>
             <configuration>
-              <toolchainType>jdk</toolchainType>
-              <toolchainParams>
+              <jdk>
                 <version>[1.2,1.3)</version>
-              </toolchainParams>
+              </jdk>
               <classifier>java12</classifier>
             </configuration>
           </execution>
@@ -117,10 +116,9 @@
               <goal>build</goal>
             </goals>
             <configuration>
-              <toolchainType>jdk</toolchainType>
-              <toolchainParams>
+              <jdk>
                 <version>[1.3,1.4)</version>
-              </toolchainParams>
+              </jdk>
               <classifier>java13</classifier>
             </configuration>
           </execution>
@@ -131,10 +129,9 @@
               <goal>build</goal>
             </goals>
             <configuration>
-              <toolchainType>jdk</toolchainType>
-              <toolchainParams>
+              <jdk>
                 <version>[1.4,1.5)</version>
-              </toolchainParams>
+              </jdk>
               <classifier>java14</classifier>
             </configuration>
           </execution>
@@ -145,10 +142,9 @@
               <goal>build</goal>
             </goals>
             <configuration>
-              <toolchainType>jdk</toolchainType>
-              <toolchainParams>
+              <jdk>
                 <version>[1.5,1.6)</version>
-              </toolchainParams>
+              </jdk>
               <classifier>java15</classifier>
             </configuration>
           </execution>
@@ -159,10 +155,9 @@
               <goal>build</goal>
             </goals>
             <configuration>
-              <toolchainType>jdk</toolchainType>
-              <toolchainParams>
+              <jdk>
                 <version>[1.6,1.7)</version>
-              </toolchainParams>
+              </jdk>
               <classifier>java16</classifier>
             </configuration>
           </execution>

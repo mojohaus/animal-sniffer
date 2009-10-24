@@ -58,11 +58,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author Stephen Connolly
  * @goal build
+ * @configurator override
  */
 public class BuildSignaturesMojo
     extends AbstractMojo
@@ -142,7 +142,7 @@ public class BuildSignaturesMojo
 
     /**
      * Use this configuration option only if the automatic boot classpath detection does not work for the specific
-     * {@link #javaHome} or {@link #toolchain}.  For example, the automatic boot classpath detection does not work with
+     * {@link #javaHome} or {@link #jdk}.  For example, the automatic boot classpath detection does not work with
      * Sun Java 1.1.
      *
      * @parameter
@@ -210,14 +210,9 @@ public class BuildSignaturesMojo
     private MavenSession session;
 
     /**
-     * @parameter default-value="jdk"
-     */
-    private String toolchain;
-
-    /**
      * @parameter
      */
-    private Map toolchainParams;
+    private JdkToolchain jdk;
 
     /**
      * @parameter expression="${plugin.artifacts}"
@@ -281,12 +276,32 @@ public class BuildSignaturesMojo
                             return;
                         }
                         throw new MojoFailureException(
-                            "Cannot include java home if java home is not specified (either via javaClassPath, javaHome or toolchains)" );
+                            "Cannot include java home if java home is not specified (either via javaClassPath, javaHome or jdk)" );
                     }
                     if ( !detectJavaBootClasspath( jvm ) )
                     {
                         return;
                     }
+                }
+                else if ( tc == null && jdk != null && jdk.getParameters() != null )
+                {
+                    if ( skipIfNoJavaHome )
+                    {
+                        getLog().warn( "Skipping signature generation as could not find jdk toolchain to match " +
+                            jdk.getParameters() );
+                        return;
+                    }
+                    throw new MojoFailureException( "Could not find jdk toolchain to match " + jdk.getParameters() );
+                }
+                else
+                {
+                    if ( skipIfNoJavaHome )
+                    {
+                        getLog().warn( "Skipping signature generation as could not find java home" );
+                        return;
+                    }
+                    throw new MojoFailureException(
+                        "Cannot include java home if java home is not specified (either via javaClassPath, javaHome or jdk)" );
                 }
             }
         }
@@ -347,9 +362,9 @@ public class BuildSignaturesMojo
         {
             Artifact candidate = (Artifact) i.next();
 
-            if ( StringUtils.equals( jbcpdGroupId, candidate.getGroupId() )
-                && StringUtils.equals( jbcpdArtifactId, candidate.getArtifactId() ) && candidate.getFile() != null
-                && candidate.getFile().isFile() )
+            if ( StringUtils.equals( jbcpdGroupId, candidate.getGroupId() ) &&
+                StringUtils.equals( jbcpdArtifactId, candidate.getArtifactId() ) && candidate.getFile() != null &&
+                candidate.getFile().isFile() )
             {
                 javaBootClasspathDetector = candidate;
             }
@@ -358,12 +373,12 @@ public class BuildSignaturesMojo
         {
             if ( skipIfNoJavaHome )
             {
-                getLog().warn( "Skipping signature generation as could not find boot classpath detector ("
-                    + ArtifactUtils.versionlessKey( jbcpdGroupId, jbcpdArtifactId ) + ")." );
+                getLog().warn( "Skipping signature generation as could not find boot classpath detector (" +
+                    ArtifactUtils.versionlessKey( jbcpdGroupId, jbcpdArtifactId ) + ")." );
                 return false;
             }
-            throw new MojoFailureException( "Could not find boot classpath detector ("
-                + ArtifactUtils.versionlessKey( jbcpdGroupId, jbcpdArtifactId ) + ")." );
+            throw new MojoFailureException( "Could not find boot classpath detector (" +
+                ArtifactUtils.versionlessKey( jbcpdGroupId, jbcpdArtifactId ) + ")." );
         }
 
         try
@@ -400,8 +415,8 @@ public class BuildSignaturesMojo
             getLog().debug( "Exit code = " + exitCode );
             if ( skipIfNoJavaHome )
             {
-                getLog().warn( "Skipping signature generation as could not auto-detect java boot classpath for "
-                    + javaExecutable );
+                getLog().warn( "Skipping signature generation as could not auto-detect java boot classpath for " +
+                    javaExecutable );
                 return false;
             }
             throw new MojoFailureException( "Could not auto-detect java boot classpath for " + javaExecutable );
@@ -494,8 +509,8 @@ public class BuildSignaturesMojo
                 }
                 else
                 {
-                    getLog().warn( "Could not add signatures from boot classpath element: " + javaHomeClassPath[i]
-                        + " as it does not exist." );
+                    getLog().warn( "Could not add signatures from boot classpath element: " + javaHomeClassPath[i] +
+                        " as it does not exist." );
                 }
             }
         }
@@ -561,14 +576,14 @@ public class BuildSignaturesMojo
     private Toolchain getToolchainFromConfiguration()
         throws MojoExecutionException
     {
-        if ( toolchainManager != null && toolchain != null && toolchainParams != null )
+        if ( toolchainManager != null && jdk != null && jdk.getParameters() != null )
         {
             try
             {
-                final ToolchainPrivate[] tcp = getToolchains( toolchain );
+                final ToolchainPrivate[] tcp = getToolchains( jdk.getToolchain() );
                 for ( int i = 0; i < tcp.length; i++ )
                 {
-                    if ( tcp[i].matchesRequirements( toolchainParams ) )
+                    if ( tcp[i].matchesRequirements( jdk.getParameters() ) )
                     {
                         return tcp[i];
                     }

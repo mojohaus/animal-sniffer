@@ -31,10 +31,10 @@
   <version>1.0-SNAPSHOT</version>
   <packaging>pom</packaging>
 
-  <name>JRE Test</name>
+  <name>Toolchain Test</name>
 
   <description>
-    Tests that JRE signatures can be captured.
+    Tests that JRE signatures can be captured from JDK specified in by toolchains.
   </description>
 
   <build>
@@ -87,7 +87,9 @@
               <goal>build</goal>
             </goals>
             <configuration>
-              <javaHome>@java.home@</javaHome>
+              <jdk>
+                <version>[1.4,)</version>
+              </jdk>
             </configuration>
           </execution>
         </executions>
