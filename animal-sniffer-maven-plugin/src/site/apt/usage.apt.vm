@@ -1,0 +1,174 @@
+ ~~ The MIT License
+ ~~
+ ~~ Copyright (c) 2009 codehaus.org.
+ ~~
+ ~~ Permission is hereby granted, free of charge, to any person obtaining a copy
+ ~~ of this software and associated documentation files (the "Software"), to deal
+ ~~ in the Software without restriction, including without limitation the rights
+ ~~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ ~~ copies of the Software, and to permit persons to whom the Software is
+ ~~ furnished to do so, subject to the following conditions:
+ ~~
+ ~~ The above copyright notice and this permission notice shall be included in
+ ~~ all copies or substantial portions of the Software.
+ ~~
+ ~~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ ~~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ ~~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ ~~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ ~~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ ~~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ ~~ THE SOFTWARE.
+ ~~
+
+ -----
+ Usage
+ -----
+ Stephen Connolly
+ ------
+ 2009-10-27
+ ------
+
+Usage
+
+  The plugin offers goals for checking projects against the signatures of an API as well as
+  goals for generating signatures of APIs.
+
+* Basic Usage
+
+** Checking a project against an API signature
+
+  In order to check your project against an API signature, you must configure your 
+  <<<pom.xml>>> to reference the signature to check against:
+
+---
+<project>
+  ...
+  <build>
+    ...
+    <plugins>
+      ...
+      <plugin>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>${project.artifactId}</artifactId>
+        <version>${project.version}</version>
+        ...
+        <configuration>
+          ...
+          <signature>
+            <groupId>___group id of signature___</groupId>
+            <artifactId>___artifact id of signature___</artifactId>
+            <version>___version of signature___</version>
+          </signature>
+          ...
+        </configuration>
+        ...
+      </plugin>
+      ...
+    </plugins>
+    ...
+  </build>
+  ...
+</project>
+---
+
+  In order to check your project against the signature you have just configured, either
+  invoke the <<<animal-sniffer:check>>> mojo directly, e.g.
+
+---
+mvn animal-sniffer:check
+---
+
+  or to make the checks part of your build process add an execution of to your 
+  configuration, e.g.
+
+---
+<project>
+  ...
+  <build>
+    ...
+    <plugins>
+      ...
+      <plugin>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>${project.artifactId}</artifactId>
+        <version>${project.version}</version>
+        <executions>
+          ...
+          <execution>
+            <id>___id of execution___</id>
+            ...
+            <phase>test</phase>
+            ...
+            <goals>
+              <goal>check</goal>
+            </goals>
+            ...
+          </execution>
+          ...
+        </configuration>
+      </plugin>
+      ...
+    </plugins>
+    ...
+  </build>
+  ...
+</project>
+---
+
+  <Note:> if you are attaching the plugin to your build process, and you want to check against
+  multiple separate APIs (e.g. check against the Tomcat, JBoss, and Jetty servlet containers,
+  or check against multiple java versions) then you will probably want to move the signature
+  configuration inside each of your multiple executions otherwise your project will be 
+  checked against the union of all the signatures specified, which is probably not what you 
+  wanted.
+
+  {{{examples/checking-signatures.html} Some more detailed examples of the <<<check>>> goal}}.
+
+** Generating API signatures
+
+  To generate the signatures of an API, simply construct a project with the appropriate
+  dependencies exposed by the API and then add an execution of the <<<animal-sniffer:build>>>
+  mojo to your project, e.g.
+
+---
+<project>
+  ...
+  <build>
+    ...
+    <plugins>
+      ...
+      <plugin>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>${project.artifactId}</artifactId>
+        <version>${project.version}</version>
+        <executions>
+          ...
+          <execution>
+            <id>___id of execution___</id>
+            ...
+            <phase>package</phase>
+            ...
+            <goals>
+              <goal>build</goal>
+            </goals>
+            ...
+          </execution>
+          ...
+        </configuration>
+      </plugin>
+      ...
+    </plugins>
+    ...
+  </build>
+  ...
+</project>
+---
+
+  For more detailed examples of how to configure this goal see:
+
+    * {{{examples/generating-java-signatures.html}Generating signatures of the Java Runtime}}
+
+    * {{{examples/generating-other-api-signatures.html}Generating signatures of other APIs}}
+
+    [] 
