@@ -31,3 +31,149 @@
 
 Generating signatures of the Java Runtime
 
+* Basic
+
+  To generate signatures of any API, you simple construct a project with the appropriate
+  dependencies exposed by the API and then add an execution of the <<<animal-sniffer:build>>>
+  mojo to your project.  In the case of the Java Runtime, this is a project with no 
+  dependencies, e.g.
+
+---
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>____</groupId>
+  <artifactId>____</artifactId>
+  <version>____</version>
+  <packaging>pom</packaging>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>${project.artifactId}</artifactId>
+        <version>${project.version}</version>
+        <executions>
+          <execution>
+            <id>___id of execution___</id>
+            <phase>package</phase>
+            <goals>
+              <goal>build</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+</project>
+---
+
+  Then you just build this project with the appropriate Java Runtime, and it will generate the signatures of that 
+  Java Runtime.
+
+  The observant reader may have spotted that it may not always be possible to run Maven with the Java Runtime
+  that you want to generate the signatures of.  In these cases you have a number of solutions:
+
+    * Use Maven Toolchains support and the <<<jdk>>> parameter to define what toolchain you require.
+      This will use automatic boot classpath detection, which does not work for Java 1.1 or earlier and
+      may not work on some exotic Java Runtimes. 
+
+      An example of using the <<<jdk>>> parameter is:
+
+---
+<project>
+  ...
+  <build>
+    ...
+    <plugins>
+      ...
+      <plugin>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>${project.artifactId}</artifactId>
+        <version>${project.version}</version>
+        ...
+        <configuration>
+          ...
+          <jdk>
+            <version>[1.6.0,1.6.1)</version>
+            <vendor>sun</vendor>
+          </jdk>
+          ...
+        </configuration>
+        ...
+      </plugin>
+      ...
+    </plugins>
+    ...
+  </build>
+  ...
+</project>
+---
+
+    * Use the <<<javaHome>>> parameter to specify the Java Home that you want to generate the signatures of.
+      This will use automatic boot classpath detection, which does not work for Java 1.1 or earlier and
+      may not work on some exotic Java Runtimes. 
+
+      An example of using the <<<javaHome>>> parameter is:
+
+---
+<project>
+  ...
+  <build>
+    ...
+    <plugins>
+      ...
+      <plugin>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>${project.artifactId}</artifactId>
+        <version>${project.version}</version>
+        ...
+        <configuration>
+          ...
+          <javaHome>C:\Program Files\Java\jdk_1.6.0_14</javaHome>
+          ...
+        </configuration>
+        ...
+      </plugin>
+      ...
+    </plugins>
+    ...
+  </build>
+  ...
+</project>
+---
+
+    * Use the <<<javaHomeClassPath>>> parameter to specify the exact classpath to generate the signatures of
+      This is the only way to specify the Java Runtime when automatic boot classpath detection fails.
+      
+      An example of this technique is:
+
+---
+<project>
+  ...
+  <build>
+    ...
+    <plugins>
+      ...
+      <plugin>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>${project.artifactId}</artifactId>
+        <version>${project.version}</version>
+        ...
+        <configuration>
+          ...
+          <javaHomeClassPath>
+            <javaHomeClassPath>C:\Program Files\Java\jdk_1.6.0_14\jre\lib\rt.jar</javaHomeClassPath>
+            <javaHomeClassPath>C:\Program Files\Java\jdk_1.6.0_14\jre\lib\jsse.jar</javaHomeClassPath>
+          </javaHomeClassPath>
+          ...
+        </configuration>
+        ...
+      </plugin>
+      ...
+    </plugins>
+    ...
+  </build>
+  ...
+</project>
+---
+
+    []
