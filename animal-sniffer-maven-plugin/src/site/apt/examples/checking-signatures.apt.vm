@@ -153,7 +153,7 @@ public final class MapFactory {
   When you run animal-sniffer against the above class using the JDK 1.4 signatures, you will get
   a build failure because <<<java.util.concurrent.ConcurrentHashMap>>> is not in the JDK 1.4 
   signature. If you are sure that where you have used <<<java.util.concurrent.ConcurrentHashMap>>>
-  you have correctly encapsulated it within <<<try { ... } catch (LinkerError e) { ... }>>>
+  you have correctly encapsulated it within <<<try { ... } catch (LinkageError e) { ... }>>>
   blocks or their equivalent, you can tell animal-sniffer to ignore the class, e.g.
 
 ---
