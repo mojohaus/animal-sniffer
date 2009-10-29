@@ -24,7 +24,13 @@
 -->
 <project>
   <body>
-    <menu ref="parent"/>
+    <breadcrumbs>
+      <item name="Animal Sniffer Maven plugin" href="./" />
+    </breadcrumbs>
+    <menu name="Parent Project">
+      <item name="Codehaus Mojo Parent" href="../index.html"/>
+      <item name="Animal Sniffer Parent project" href="../animal-sniffer/index.html"/>
+    </menu>
     <menu name="Overview">
       <item name="Introduction" href="index.html"/>
       <item name="Usage" href="usage.html"/>
