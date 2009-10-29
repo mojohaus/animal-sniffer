@@ -31,9 +31,9 @@
       <item name="Frequently Asked Questions" href="faq.html"/>
     </menu>
     <menu name="Examples">
-      <item name="Generating signatures of the Java Runtime" href="examples/checking-signatures.html"/>
-      <item name="Generating signatures of other APIs" href="examples/generating-java-signatures.html"/>
-      <item name="Checking a project against API signatures" href="generating-other-api-signatures.html"/>
+      <item name="Checking a project against API signatures" href="examples/checking-signatures.html"/>
+      <item name="Generating signatures of the Java Runtime" href="examples/generating-java-signatures.html"/>
+      <item name="Generating signatures of other APIs" href="examples/generating-other-api-signatures.html"/>
     </menu>
     <menu ref="reports"/>
   </body>
