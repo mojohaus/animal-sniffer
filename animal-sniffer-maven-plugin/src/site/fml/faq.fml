@@ -56,10 +56,14 @@
       <question>Which is the "official" animal-sniffer host: codehaus or java.net?</question>
       <answer>
         <p>
-          Both projects are "official" projects.  The 
+          This project is the "official" project.  The 
           <a href="https://animal-sniffer.dev.java.net">java.net</a> project
           was started by Kohsuke Kawaguchi before he was granted commit access
-          to the mojo project.
+          to the mojo project. Since Kohsuke was granted commit access in part
+          to allow the migration of animal-sniffer to codehaus, he has decreed
+          the codehaus version the "official" version as well as re-licensed
+          the codehaus version under the MIT License. The java.net version 
+          remains licensed under CDDL.
         </p>
         <p>
           This version (by virtue of belonging to mojo.codehaus.org) has the 
