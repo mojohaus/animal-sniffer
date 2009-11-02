@@ -177,3 +177,165 @@ Generating signatures of the Java Runtime
 ---
 
     []
+
+* Generating "pure" signatures
+
+  The above examples generate signatures of the entire classpath of the JRE.
+  That will include all the implementation classes which are not part of the
+  public contract of the JRE.  For example sun.misc.BASE64Encoder is part
+  of Sun's JRE runtime libraries, but is not part of the JRE specification
+  and if you run on a JRE produced by a different vendor, it is highly likely
+  that that class will not be available to your program.
+
+  In order to ensure that the Java signatures you generate only include those
+  classes which are officially published by the JRE, you will need to tune
+  your signatures.
+
+** Inclusion based tuning
+
+  One technique is to only include those classes which you know are part of the 
+  JRE public specification.  For example:
+
+---
+<project>
+  ...
+  <build>
+    ...
+    <plugins>
+      ...
+      <plugin>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>${project.artifactId}</artifactId>
+        <version>${project.version}</version>
+        ...
+        <configuration>
+          ...
+          <jdk>
+            <version>[1.4.0,1.5.0)</version>
+          </jdk>
+          <includeClasses>
+            <includeClass>java.*</includeClass>
+            <includeClass>javax.*</includeClass>
+            <includeClass>org.omg.*</includeClass>
+            <includeClass>org.w3c.dom.*</includeClass>
+            <!-- etc -->
+            ...
+          </includeClasses>
+          ...
+        </configuration>
+        ...
+      </plugin>
+      ...
+    </plugins>
+    ...
+  </build>
+  ...
+</project>
+---
+
+  This requires that you known exactly what classes are part of the JRE 
+  specification.
+
+** Exclusion based tuning
+
+  The other technique is to specify which classes are not to be included
+  (Note that a combination of the two can also be used.) For example:
+
+---
+<project>
+  ...
+  <build>
+    ...
+    <plugins>
+      ...
+      <plugin>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>${project.artifactId}</artifactId>
+        <version>${project.version}</version>
+        ...
+        <configuration>
+          ...
+          <jdk>
+            <version>[1.4.0,1.5.0)</version>
+          </jdk>
+          <excludeClasses>
+            <excludeClass>com.sun.*</excludeClass>
+            <excludeClass>sun.*</excludeClass>
+            <!-- etc -->
+            ...
+          </excludeClasses>
+          ...
+        </configuration>
+        ...
+      </plugin>
+      ...
+    </plugins>
+    ...
+  </build>
+  ...
+</project>
+---
+
+* When the version of Java you require is not available
+
+  By default, if the version of java that you require is not available,
+  the animal-sniffer plugin will fail the build.  If you are generating 
+  multiple signatures, this may not be exactly what you want.  For example
+  you may be generating signatures for JREs on windows, linux and MacOS 
+  from the same project.  This would require building the same project 
+  at least three times and setting the <<<skipIfNoJavaHome>>> option to
+  <<<true>>> for example
+
+---
+<project>
+  ...
+  <build>
+    ...
+    <plugins>
+      ...
+      <plugin>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>${project.artifactId}</artifactId>
+        <version>${project.version}</version>
+        ...
+        <configuration>
+          ...
+          <skipIfNoJavaHome>true</skipIfNoJavaHome>
+          ...
+        </configuration>
+        ...
+        <executions>
+          <execution>
+            <id>windows</id>
+            ...
+            <configuration>
+              ...
+              <jdk>
+                <version>[1.4.0,1.5.0)</version>
+                <os>windows</os>
+              </jdk>
+              ...
+            </configuration>
+            ...
+          </execution>
+          <execution>
+            <id>windows</id>
+            ...
+            <configuration>
+              ...
+              <jdk>
+                <version>[1.4.0,1.5.0)</version>
+                <os>linux</os>
+              </jdk>
+              ...
+            </configuration>
+            ...
+          </execution>
+        </executions>
+      </plugin>
+      ...
+    </plugins>
+    ...
+  </build>
+  ...
+
