@@ -31,3 +31,244 @@
 
 Generating signatures of other APIs
 
+* Basic
+
+  To generate signatures of any API, you simple construct a project with the appropriate
+  dependencies exposed by the API and then add an execution of the <<<animal-sniffer:build>>>
+  mojo to your project, e.g.
+
+---
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>____</groupId>
+  <artifactId>____</artifactId>
+  <version>____</version>
+  <dependencies>
+    ...
+  </dependencies>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>${project.artifactId}</artifactId>
+        <version>${project.version}</version>
+        <executions>
+          <execution>
+            <id>___id of execution___</id>
+            <phase>package</phase>
+            <goals>
+              <goal>build</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+</project>
+---
+
+* Controlling the Java Runtime signatures in your API signature
+
+  By default, the signatures of the Java Runtime that you use to build with will 
+  be included in the signatures of the API.  Since the Java Runtime forms
+  part of any java API (as your API extends <<<java.lang.Object>>>) in general
+  the Java Runtime signatures should form part of your API's signatures.
+
+  If you want a different Java Runtime signatures used, you can either use the
+  techniques described in {{{generating-java-signatures.html}Generating 
+  signatures of the Java Runtime}} to control what Java Runtime to include or
+  you can base your API off an existing Java Runtime signature.  For example:
+
+---
+<project>
+  ...
+  <build>
+    ...
+    <plugins>
+      ...
+      <plugin>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>${project.artifactId}</artifactId>
+        <version>${project.version}</version>
+        ...
+        <configuration>
+          ...
+          <includeSignatures>
+            <includeSignature>
+              <groupId>org.codehaus.mojo.animal_sniffer</groupId>
+              <artifactId>java</artifactId>
+              <version>1.0</version>
+              <classifier>java-1.4-generic</classifier>
+            </includeSignature>
+          </includeSignatures>
+          <includeJavaHome>false</includeJavaHome>
+          ...
+        </configuration>
+        ...
+      </plugin>
+      ...
+    </plugins>
+    ...
+  </build>
+  ...
+</project>
+---
+
+  Note: You can include multiple signatures, and the signatures you include do
+  not have to include a Java Runtime (but ultimately if you are checking against
+  a signature which does not include the Java Runtime, your check will always fail)
+
+* Excluding dependencies from signatures
+
+  Sometimes you may not want to include your module dependencies in the signature.
+  For example, your module might define the public API but depend on the private
+  implementations of that API.  In that case you would use either the 
+  <<<includeDependencies>>> to define the subset of module dependencies to include or
+  <<<excludeDependencies>>> to define the subset of module dependencies to exclude (or
+  a combination of the two. Note: includes are processed before excludes).  For example,
+  to include all artifacts with groupId <<<com.mycompany>>> and the servlet-api version 2.5
+  you would use something like:
+
+---
+<project>
+  ...
+  <build>
+    ...
+    <plugins>
+      ...
+      <plugin>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>${project.artifactId}</artifactId>
+        <version>${project.version}</version>
+        ...
+        <configuration>
+          ...
+          <includeDependencies>
+            <includeDependency>com.mycompany:*</includeDependency>
+            <includeDependency>javax.servlet:servlet-api:2.5:jar</includeDependency>
+          </includeDependencies>
+          ...
+        </configuration>
+        ...
+      </plugin>
+      ...
+    </plugins>
+    ...
+  </build>
+  ...
+</project>
+---
+
+* Excluding module classes from signatures
+
+  In some cases you may not want to include your module classes in the generated
+  signature.  To exclude module classes from the generated signature set the 
+  <<<includeModuleClasses>>> to <<<false>>> for example:
+
+---
+<project>
+  ...
+  <build>
+    ...
+    <plugins>
+      ...
+      <plugin>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>${project.artifactId}</artifactId>
+        <version>${project.version}</version>
+        ...
+        <configuration>
+          ...
+          <includeModuleClasses>false</includeModuleClasses>
+          ...
+        </configuration>
+        ...
+      </plugin>
+      ...
+    </plugins>
+    ...
+  </build>
+  ...
+</project>
+---
+
+* Tuning exactly which classes are part of the signatures
+
+  The above examples generate signatures of all the classes in scope. In some 
+  situations you may want to only include specific classes from the dependencies
+  or your module.  This can be achieved using the <<<includeClasses>> and 
+  <<<excludeClasses>>> configuration options.
+
+** Inclusion based tuning
+
+  One technique is to only include those classes which you want to be part of the
+  API signature.  For example:
+
+---
+<project>
+  ...
+  <build>
+    ...
+    <plugins>
+      ...
+      <plugin>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>${project.artifactId}</artifactId>
+        <version>${project.version}</version>
+        ...
+        <configuration>
+          ...
+          <includeClasses>
+            <includeClass>com.mycompany.myapi.*</includeClass>
+            <includeClass>com.mycompany.mydatamodel.ApiConfig</includeClass>
+            <!-- etc -->
+            ...
+          </includeClasses>
+          ...
+        </configuration>
+        ...
+      </plugin>
+      ...
+    </plugins>
+    ...
+  </build>
+  ...
+</project>
+---
+
+** Exclusion based tuning
+
+  The other technique is to specify which classes are not to be included
+  (Note that a combination of the two can also be used.) For example:
+
+---
+<project>
+  ...
+  <build>
+    ...
+    <plugins>
+      ...
+      <plugin>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>${project.artifactId}</artifactId>
+        <version>${project.version}</version>
+        ...
+        <configuration>
+          ...
+          <excludeClasses>
+            <excludeClass>com.mycompany.impl.*</excludeClass>
+            <!-- etc -->
+            ...
+          </excludeClasses>
+          ...
+        </configuration>
+        ...
+      </plugin>
+      ...
+    </plugins>
+    ...
+  </build>
+  ...
+</project>
+---
+

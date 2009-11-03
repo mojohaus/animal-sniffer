@@ -310,6 +310,7 @@ Generating signatures of the Java Runtime
             ...
             <configuration>
               ...
+              <classifier>windows</classifier>
               <jdk>
                 <version>[1.4.0,1.5.0)</version>
                 <os>windows</os>
@@ -319,10 +320,11 @@ Generating signatures of the Java Runtime
             ...
           </execution>
           <execution>
-            <id>windows</id>
+            <id>linux
             ...
             <configuration>
               ...
+              <classifier>linux</classifier>
               <jdk>
                 <version>[1.4.0,1.5.0)</version>
                 <os>linux</os>
@@ -338,4 +340,98 @@ Generating signatures of the Java Runtime
     ...
   </build>
   ...
+</project>
+---
+
+* Automatic boot classpath detection
+
+  Animal sniffer uses a helper module to try and determine the boot classpath
+  of the Java Home that has been specified either:
+
+    * indirectly via a toolchain reference using the <<<jdk>>> configuration 
+      option; or 
+
+    * directly using the <<<javaHome>>> option.
+
+    []
+
+  The {{{../../animal-sniffer/java-boot-classpath-detector/}helper module}}
+  should work for most common versions of Java providing they are at least
+  Java 1.2.
+
+  If the default helper module does not work for the version of java that
+  you need to generate signatures of, you can replace the helper module
+  with your own module.  The replacement module must meet the following 
+  specification:
+
+    * Must be an executable jar file
+
+    * If the Java boot classpath cannot be detected, it must return with
+      exit code 1.
+
+    * If the Java boot classpath has been detected, it must print the boot
+      class path to <<<stdout>>> as a single line with each element of
+      the boot classpath separated from the next using <<<File.pathSeparator>>>
+      and return with exit code 0.
+
+    []
+
+  When invoking the helper module, animal-sniffer will:
+
+    * Clear the CLASSPATH environment variable in the forked execution environment.
+
+    * Clear the JAVA_HOME environment variable in the forked execution environment.
+
+    * Invoke the <<<java>>> command in the <<<javaHome>>> or <<<jdk>>> that
+      has been configured with the options <<<-jar>>> and the full path to
+      the java boot classpath detector module specified in the configuration
+      of the animal-sniffer plugin.  Note: this module jar file will be located
+      in the Maven local repository.
+
+    []
+
+  A replacement module must be added to the <<<dependencies>>> section of
+  <the animal sniffer plugin> and the groupId and artifactId must be configured
+  using the <<<jbcpdGroupId>>> and <<<jbcpdArtifactId>>> configuration options.
+  For example, if your custom boot classpath detector is 
+  com.mycompany:detect-boot-classpath:1.2.0:jar then you could configure 
+  animal-sniffer to use this with the following:
+
+---
+<project>
+  ...
+  <build>
+    ...
+    <plugins>
+      ...
+      <plugin>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>${project.artifactId}</artifactId>
+        <version>${project.version}</version>
+        ...
+        <configuration>
+          ...
+          <jbcpdGroupId>com.mycompany</jbcpdGroupId>
+          <jbcpdArtifactId>detect-boot-classpath</jbcpdArtifactId>
+          ...
+        </configuration>
+        ...
+        <dependencies>
+          ...
+          <dependency>
+            <groupId>com.mycompany</groupId>
+            <artifactId>detect-boot-classpath</artifactId>
+            <version>1.2.0</version>
+          </dependency>
+          ...
+        </dependencies>
+        ...
+      </plugin>
+      ...
+    </plugins>
+    ...
+  </build>
+  ...
+</project>
+---
 
