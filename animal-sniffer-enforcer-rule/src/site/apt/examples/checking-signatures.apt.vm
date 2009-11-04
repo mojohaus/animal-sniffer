@@ -1,0 +1,386 @@
+ ~~ The MIT License
+ ~~
+ ~~ Copyright (c) 2009 codehaus.org.
+ ~~
+ ~~ Permission is hereby granted, free of charge, to any person obtaining a copy
+ ~~ of this software and associated documentation files (the "Software"), to deal
+ ~~ in the Software without restriction, including without limitation the rights
+ ~~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ ~~ copies of the Software, and to permit persons to whom the Software is
+ ~~ furnished to do so, subject to the following conditions:
+ ~~
+ ~~ The above copyright notice and this permission notice shall be included in
+ ~~ all copies or substantial portions of the Software.
+ ~~
+ ~~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ ~~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ ~~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ ~~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ ~~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ ~~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ ~~ THE SOFTWARE.
+ ~~
+
+ -----
+ Checking a project against API signatures
+ -----
+ Stephen Connolly
+ ------
+ 2009-11-04
+ ------
+
+Checking a project against API signatures
+
+* Basic example
+
+  In order to check your project against an API signature, you must add the enforcer rule as a dependency to
+  the maven-enforcer-plugin and then configure your the maven-enforcer-plugin to run the rule:
+
+---
+<project>
+  ...
+  <build>
+    ...
+    <plugins>
+      ...
+      <plugin>
+        <artifactId>maven-enforcer-plugin</artifactId>
+        <version>1.0-beta-1</version>
+        ...
+        <dependencies>
+            ...
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>${project.artifactId}</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            ...
+        </dependencies>
+        ...
+        <executions>
+           ....
+          <execution>
+            <id>check-signatures</id>
+            <phase>test</phase>
+            <goals>
+              <goal>enforce</goal>
+            </goals>
+            <configuration>
+              <rules>
+                <checkSignatureRule implementation="org.codehaus.mojo.animal_sniffer.enforcer.CheckSignatureRule">
+                  ...
+                  <signature>
+                    <groupId>___group id of signature___</groupId>
+                    <artifactId>___artifact id of signature___</artifactId>
+                    <version>___version of signature___</version>
+                  </signature>
+                  ...
+                </checkSignatureRule>
+              </rules>
+            </configuration>
+          </execution>
+          ...
+        </executions>            
+        ...
+      </plugin>
+      ...
+    </plugins>
+    ...
+  </build>
+  ...
+</project>
+---
+
+  Once you have configured your project with details of the signature to check, maven-enforcer will be able to
+  throw a build error if your any of your classes reference a class, a method, or a field which is not in either
+  the signature or your project's dependencies. 
+
+* Ignoring classes not in the signature
+
+  In certain situations you may want to reference classes which are missing from the signature you are
+  checking.  This is usually the case where you are compiling with a newer JDK than the JDK you are
+  targetting <<and>> you are writing some code which safely makes use of the features in the newer
+  JDK when running on the newer JDK.  For example, if you have code like:
+
+---
+public final class MapFactory {
+
+    private MapFactory() {
+        new IllegalAccessError("This is a utility class");
+    }
+    
+    public static Map newHashMap() {
+        try {
+            // we'd prefer the concurrent version
+            return new ConcurrentHashMap();
+        } catch (LinkageError e) {
+            // oh dear, looks like we're running on something
+            // earlier than JDK 1.5.  This will be slower
+            // but still safe for concurrent access
+            return Collections.synchronizedMap(new HashMap());
+        }
+    }
+}
+---
+
+  The above code will require JDK 1.5 or newer to compile, and can run on earlier JDKs (although 
+  with degraded performance, and we are assuming you have set the -source and -target options
+  correctly for the earlier JDKs).
+
+  When you run animal-sniffer against the above class using the JDK 1.4 signatures, you will get
+  a build failure because <<<java.util.concurrent.ConcurrentHashMap>>> is not in the JDK 1.4 
+  signature. If you are sure that where you have used <<<java.util.concurrent.ConcurrentHashMap>>>
+  you have correctly encapsulated it within <<<try { ... } catch (LinkageError e) { ... }>>>
+  blocks or their equivalent, you can tell animal-sniffer to ignore the class, e.g.
+
+---
+<project>
+  ...
+  <build>
+    ...
+    <plugins>
+      ...
+      <plugin>
+        <artifactId>maven-enforcer-plugin</artifactId>
+        <version>1.0-beta-1</version>
+        ...
+        <dependencies>
+            ...
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>${project.artifactId}</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            ...
+        </dependencies>
+        ...
+        <executions>
+           ....
+          <execution>
+            <id>check-signatures</id>
+            <phase>test</phase>
+            <goals>
+              <goal>enforce</goal>
+            </goals>
+            <configuration>
+              <rules>
+                <checkSignatureRule implementation="org.codehaus.mojo.animal_sniffer.enforcer.CheckSignatureRule">
+                  ...
+                  <ignores>
+                    ...
+                    <ignore>java.util.concurrent.ConcurrentHashMap</ignore>
+                    ...
+                  </ignores>
+                  ...
+                </checkSignatureRule>
+              </rules>
+            </configuration>
+          </execution>
+          ...
+        </executions>            
+        ...
+      </plugin>
+      ...
+    </plugins>
+    ...
+  </build>
+  ...
+</project>
+---
+
+  We can specify multiple <ignore> classes, and we can also use wildcards to match multiple classes, for
+  example, to ignore <<<java.util.concurrent.ConcurrentHashMap>>>, <<<java.util.concurrent.ConcurrentMap>>>
+  and <<<javax.servlet.*>>> you would use a configuration like:
+
+---
+<project>
+  ...
+  <build>
+    ...
+    <plugins>
+      ...
+      <plugin>
+        <artifactId>maven-enforcer-plugin</artifactId>
+        <version>1.0-beta-1</version>
+        ...
+        <dependencies>
+            ...
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>${project.artifactId}</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            ...
+        </dependencies>
+        ...
+        <executions>
+           ....
+          <execution>
+            <id>check-signatures</id>
+            <phase>test</phase>
+            <goals>
+              <goal>enforce</goal>
+            </goals>
+            <configuration>
+              <rules>
+                <checkSignatureRule implementation="org.codehaus.mojo.animal_sniffer.enforcer.CheckSignatureRule">
+                  ...
+                  <ignores>
+                    <ignore>java.util.concurrent.ConcurrentHashMap</ignore>
+                    <ignore>java.util.concurrent.ConcurrentMap</ignore>
+                    <ignore>javax.servlet.*</ignore>
+                  </ignores>
+                  ...
+                </checkSignatureRule>
+              </rules>
+            </configuration>
+          </execution>
+          ...
+        </executions>            
+        ...
+      </plugin>
+      ...
+    </plugins>
+    ...
+  </build>
+  ...
+</project>
+---
+
+* When your minimum target JRE is 1.5 or newer
+
+  If you are targetting JRE 1.5 or newer (i.e. the lowest version of Java that your project will support is
+  a version that supports annotations) it is preferable to annotate your <<<LinkageError>>> safe methods rather
+  than using the <<<ignores>>> configuration element.
+
+  To annotate your methods, you need to add either an optional and/or provided dependency on 
+  <<<animal-sniffer-annotations>>>, (technically optional is the correct way, but to work around some
+  incorrectly written maven plugins, you may end up using scope provided) e.g.
+
+---
+<project>
+  ...
+  <dependencies>
+    ...
+    <dependency>
+      <groupId>${project.parent.groupId}</groupId>
+      <artifactId>animal-sniffer-annotations</artifactId>
+      <version>${project.parent.version}</version>
+      <optional>true</optional>
+      <!-- if you are using badly written maven plugins then blame them and add
+      <scope>provided</scope>
+      -->    
+    </dependency>
+    ...
+  </dependencies>
+  ...
+  <build>
+    ...
+    <plugins>
+      ...
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        ...
+        <configuration>
+          ...
+          <source>1.5</source>
+          <target>1.5</target>
+          ...
+        </configuration>
+        ...
+      </plugin>
+      ...
+    </plugins>
+  ...
+</project>
+---
+
+  Then whenever you safely reference a newer class, you just annotate the method with <<<@IgnoreJRERequirement>>>
+  for example:
+
+---
+public final class Someclass {
+
+    ...
+
+    @IgnoreJRERequirement
+    public void doSomething() {
+        try {
+            // try it the JDK 6 way
+        } catch (LinkageError e) {
+            // fall back to the JDK 5 way
+        }
+    }
+
+    ...
+}
+---
+
+  Note: if you have compiled with the <<<org.jvnet:animal-sniffer-annotation:1.0>>> you do not have to change 
+  anything as animal-sniffer automatically detects this annotation as well (even although it is in a different 
+  package.
+
+* Referencing classes from dependencies
+
+  By default, animal-sniffer will automatically ignore any classes and methods defined in your dependencies.
+  This is usually what you want.  
+
+  In certain rare situations, you may want to ignore your project dependencies by setting the <<<ignoreDependencies>>>
+  parameter to <<<false>>>.
+
+  For example, you might be compiling your project against the JavaEE 5 specification but want to check compatibility
+  against the J2EE 1.4 specification. You will have a signature corresponding to the exposed J2EE 1.4 api's.
+  If you check against this signature, because all of the JavaEE 1.5 API dependencies are ignored your project
+  will never fail even if it uses JavaEE 1.5 only methods.  In this situation, you would want to turn off the 
+  default behaviour, e.g.
+
+---
+<project>
+  ...
+  <build>
+    ...
+    <plugins>
+      ...
+      <plugin>
+        <artifactId>maven-enforcer-plugin</artifactId>
+        <version>1.0-beta-1</version>
+        ...
+        <dependencies>
+            ...
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>${project.artifactId}</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            ...
+        </dependencies>
+        ...
+        <executions>
+           ....
+          <execution>
+            <id>check-signatures</id>
+            <phase>test</phase>
+            <goals>
+              <goal>enforce</goal>
+            </goals>
+            <configuration>
+              <rules>
+                <checkSignatureRule implementation="org.codehaus.mojo.animal_sniffer.enforcer.CheckSignatureRule">
+                  ...
+                  <ignoreDependencies>false</ignoreDependencies>
+                  ...
+                </checkSignatureRule>
+              </rules>
+            </configuration>
+          </execution>
+          ...
+        </executions>            
+        ...
+      </plugin>
+      ...
+    </plugins>
+    ...
+  </build>
+  ...
+</project>
+---
