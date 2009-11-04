@@ -112,9 +112,9 @@ public final class MapFactory {
   <dependencies>
     ...
     <dependency>
-      <groupId>${project.parent.groupId}</groupId>
-      <artifactId>animal-sniffer-annotations</artifactId>
-      <version>${project.parent.version}</version>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>${project.artifactId}</artifactId>
+      <version>${project.version}</version>
       <optional>true</optional>
       <!-- if you are using badly written maven plugins then blame them and add
       <scope>provided</scope>
