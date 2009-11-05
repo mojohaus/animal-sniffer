@@ -55,7 +55,7 @@ Animal Sniffer
     
   If you are developing a project which must support running on JDK version 1.4, but your development system does not 
   have a JDK version 1.4 available, it can be quite easy to accidentally use methods or classes that are only available
-  in the newer version of the JDK.  For example, if you are develping a plugin for Maven 2.0.x on a newer Macintosh.
+  in the newer version of the JDK.  For example, if you are developing a plugin for Maven 2.0.x on a newer Macintosh.
   
   Animal sniffer can check the classes and method signatures that your compiled code uses and verify that you have
   use only those classes and signatures available in the API you are targetting.
