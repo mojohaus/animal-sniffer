@@ -1,0 +1,147 @@
+ ~~ The MIT License
+ ~~
+ ~~ Copyright (c) 2009 codehaus.org.
+ ~~
+ ~~ Permission is hereby granted, free of charge, to any person obtaining a copy
+ ~~ of this software and associated documentation files (the "Software"), to deal
+ ~~ in the Software without restriction, including without limitation the rights
+ ~~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ ~~ copies of the Software, and to permit persons to whom the Software is
+ ~~ furnished to do so, subject to the following conditions:
+ ~~
+ ~~ The above copyright notice and this permission notice shall be included in
+ ~~ all copies or substantial portions of the Software.
+ ~~
+ ~~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ ~~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ ~~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ ~~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ ~~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ ~~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ ~~ THE SOFTWARE.
+ ~~
+
+ -----
+ Usage
+ -----
+ Stephen Connolly
+ ------
+ 2009-11-05
+ ------
+
+Usage
+
+  The ANT Tasks include tasks for checking classes against the signatures of an API as well as
+  goals for generating signatures of APIs.
+
+* Basic Usage
+
+** Defining the ANT Tasks
+
+  Before you can use the Animal Sniffer ANT Tasks you need to inform ANT about these tasks.
+  There are several techniques for defining custom tasks in ANT.  Our preferred technique (and the
+  technique that we will assume you use) is to use a namespace and the <<<antlib.xml>>> from within 
+  the Animal Sniffer ANT Tasks jar file, for example:
+  
+---
+<project ... xmlns:animal-sniffer="urn:animal-sniffer">
+  ...  
+  <target name="init">
+    ...
+    <path id="animal-sniffer.classpath"
+          path="lib/${pom.xml.project.artifactId}-${pom.xml.project.parent.version}.jar"/>
+    <typedef resource="org/codehaus/mojo/animal_sniffer/ant/antlib.xml" uri="urn:animal-sniffer"
+             classpathref="animal-sniffer.classpath"/>
+     ...
+  </target>
+  ...
+</project>
+---
+
+  Note: if you want to use any of the other techniques for importing ANT tasks, we (Maven developers)
+  assume that you (ANT developer) know how to convert our examples into the technique you are using.
+  This namespace based techique is the way the authors of this document know.
+
+** Checking a classes against an API signature
+
+  In order to check your classes against an API signature, you use the <<<check-signature>>> task:
+
+---
+<project ... xmlns:animal-sniffer="urn:animal-sniffer">
+  ...
+  <task ...>
+    ...
+    <animal-sniffer:check-signature signature=".../my-signature.sig">
+      <path path="classes"/>
+    </animal-sniffer:check-signature>
+    ...
+  </task>
+  ...
+</project>
+---
+
+  The path provided will be recursively searched for jar files and class files, all of which will be 
+  checked against the supplied signature.
+
+  When you run the <<<check-signature>>> task as in the above example, the task will fail if your
+  classes reference any class, method or field that is not either:
+  
+    * in the signatures; or
+    
+    * on the path you provided
+    
+    []
+
+  If you have compiled your classes against a classpath that you have already verified against the signature
+  of your target platform, you can speed up the checking process by giving the <<<check-signature>>> task
+  the classpathRef of your compile classpath.  For example, if you are checking a web application against signatures for
+  the Java EE Servlet specification, you might reference the classpath of the WEB-INF/lib folder when
+  checking your WEB-INF/classes path.  The following example illustrates how to achieve this:
+  
+---
+<project ... xmlns:animal-sniffer="urn:animal-sniffer">
+  ...
+  <task ...>
+    ...
+    <animal-sniffer:check-signature signature=".../javaee-servlet.sig" classpathRef="webLibs">
+      <path path="build/web/WEB-INF/classes"/>
+    </animal-sniffer:check-signature>
+    ...
+  </task>
+  ...
+</project>
+---
+
+  For more detailed examples of how to configure this task see:
+  
+    * {{{examples/checking-signatures.html} Checking signatures}}.
+    
+    []
+
+** Generating API signatures
+
+  To generate the signatures of an API, simply invoke the <<<build-signatures>>> tasks providing
+  the path of the API you want to generate the signatures for, e.g.
+
+---
+<project ... xmlns:animal-sniffer="urn:animal-sniffer">
+  ...
+  <task ...>
+    ...
+    <animal-sniffer:build-signatures destfile="dist/api.sig">
+      <path>
+        <fileset dir="classes"/>
+        <fileset dir="lib" includes="log4j.jar"/>
+      </path>
+    </animal-sniffer:build-signatures>
+    ...
+  </task>
+  ...
+</project>
+---
+
+  For more detailed examples of how to configure this goal see:
+
+    * {{{examples/generating-signatures.html}Generating signatures}}
+
+    [] 

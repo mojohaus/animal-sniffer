@@ -1,0 +1,191 @@
+ ~~ The MIT License
+ ~~
+ ~~ Copyright (c) 2009 codehaus.org.
+ ~~
+ ~~ Permission is hereby granted, free of charge, to any person obtaining a copy
+ ~~ of this software and associated documentation files (the "Software"), to deal
+ ~~ in the Software without restriction, including without limitation the rights
+ ~~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ ~~ copies of the Software, and to permit persons to whom the Software is
+ ~~ furnished to do so, subject to the following conditions:
+ ~~
+ ~~ The above copyright notice and this permission notice shall be included in
+ ~~ all copies or substantial portions of the Software.
+ ~~
+ ~~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ ~~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ ~~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ ~~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ ~~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ ~~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ ~~ THE SOFTWARE.
+ ~~
+
+ -----
+ Checking signatures
+ -----
+ Stephen Connolly
+ ------
+ 2009-11-05
+ ------
+
+Checking signatures
+
+* Basic example
+
+  In order to check your classes against an API signature, you use the <<<check-signature>>> task:
+
+---
+<project ... xmlns:animal-sniffer="urn:animal-sniffer">
+  ...
+  <task ...>
+    ...
+    <animal-sniffer:check-signature signature=".../my-signature.sig">
+      <path path="classes"/>
+    </animal-sniffer:check-signature>
+    ...
+  </task>
+  ...
+</project>
+---
+
+  The path provided will be recursively searched for jar files and class files, all of which will be 
+  checked against the supplied signature.
+
+  When you run the <<<check-signature>>> task as in the above example, the task will fail if your
+  classes reference any class, method or field that is not either:
+  
+    * in the signatures; or
+    
+    * on the path you provided
+    
+    []
+
+  If you have compiled your classes against a classpath that you have already verified against the signature
+  of your target platform, you can speed up the checking process by giving the <<<check-signature>>> task
+  the classpathRef of your compile classpath.  For example, if you are checking a web application against signatures for
+  the Java EE Servlet specification, you might reference the classpath of the WEB-INF/lib folder when
+  checking your WEB-INF/classes path.  The following example illustrates how to achieve this:
+  
+---
+<project ... xmlns:animal-sniffer="urn:animal-sniffer">
+  ...
+  <task ...>
+    ...
+    <animal-sniffer:check-signature signature=".../javaee-servlet.sig" classpathRef="webLibs">
+      <path path="build/web/WEB-INF/classes"/>
+    </animal-sniffer:check-signature>
+    ...
+  </task>
+  ...
+</project>
+---
+
+* Ignoring classes not in the signature
+
+  In certain situations you may want to reference classes which are missing from the signature you are
+  checking.  This is usually the case where you are compiling with a newer JDK than the JDK you are
+  targetting <<and>> you are writing some code which safely makes use of the features in the newer
+  JDK when running on the newer JDK.  For example, if you have code like:
+
+---
+public final class MapFactory {
+
+    private MapFactory() {
+        new IllegalAccessError("This is a utility class");
+    }
+    
+    public static Map newHashMap() {
+        try {
+            // we'd prefer the concurrent version
+            return new ConcurrentHashMap();
+        } catch (LinkageError e) {
+            // oh dear, looks like we're running on something
+            // earlier than JDK 1.5.  This will be slower
+            // but still safe for concurrent access
+            return Collections.synchronizedMap(new HashMap());
+        }
+    }
+}
+---
+
+  The above code will require JDK 1.5 or newer to compile, and can run on earlier JDKs (although 
+  with degraded performance, and we are assuming you have set the -source and -target options
+  correctly for the earlier JDKs).
+
+  When you run animal-sniffer against the above class using the JDK 1.4 signatures, you will get
+  a build failure because <<<java.util.concurrent.ConcurrentHashMap>>> is not in the JDK 1.4 
+  signature. If you are sure that where you have used <<<java.util.concurrent.ConcurrentHashMap>>>
+  you have correctly encapsulated it within <<<try { ... } catch (LinkageError e) { ... }>>>
+  blocks or their equivalent, you can tell animal-sniffer to ignore the class, e.g.
+
+---
+<project ... xmlns:animal-sniffer="urn:animal-sniffer">
+  ...
+  <task ...>
+    ...
+    <animal-sniffer:check-signature ...>
+      ...
+      <ignore className="java.util.concurrent.ConcurrentHashMap"/>
+      ...
+    </animal-sniffer:check-signature>
+    ...
+  </task>
+  ...
+</project>
+---
+
+  We can specify multiple <ignore> classes, and we can also use wildcards to match multiple classes, for
+  example, to ignore <<<java.util.concurrent.ConcurrentHashMap>>>, <<<java.util.concurrent.ConcurrentMap>>>
+  and <<<javax.servlet.*>>> you would use a configuration like:
+
+---
+<project ... xmlns:animal-sniffer="urn:animal-sniffer">
+  ...
+  <task ...>
+    ...
+    <animal-sniffer:check-signature ...>
+      ...
+      <ignore className="java.util.concurrent.ConcurrentHashMap"/>
+      <ignore className="java.util.concurrent.ConcurrentMap"/>
+      <ignore className="javax.servlet.*"/>
+      ...
+    </animal-sniffer:check-signature>
+    ...
+  </task>
+  ...
+</project>
+---
+
+* When your minimum target JRE is 1.5 or newer
+
+  If you are targetting JRE 1.5 or newer (i.e. the lowest version of Java that your project will support is
+  a version that supports annotations) it is preferable to annotate your <<<LinkageError>>> safe methods rather
+  than using the <<<ignores>>> configuration element.
+
+  To annotate your methods, you need to add <<<animal-sniffer-annotations>>> to your compile classpath. 
+
+  Then whenever you safely reference a newer class, you just annotate the method with <<<@IgnoreJRERequirement>>>
+  for example:
+
+---
+public final class Someclass {
+
+    ...
+
+    @IgnoreJRERequirement
+    public void doSomething() {
+        try {
+            // try it the JDK 6 way
+        } catch (LinkageError e) {
+            // fall back to the JDK 5 way
+        }
+    }
+
+    ...
+}
+---
+
+  Note: if you have compiled with the <<<org.jvnet:animal-sniffer-annotation:1.0>>> you do not have to change 
+  anything as animal-sniffer automatically detects this annotation as well (even although it is in a different 
+  package.
