@@ -1,0 +1,152 @@
+ ~~ The MIT License
+ ~~
+ ~~ Copyright (c) 2009 codehaus.org.
+ ~~
+ ~~ Permission is hereby granted, free of charge, to any person obtaining a copy
+ ~~ of this software and associated documentation files (the "Software"), to deal
+ ~~ in the Software without restriction, including without limitation the rights
+ ~~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ ~~ copies of the Software, and to permit persons to whom the Software is
+ ~~ furnished to do so, subject to the following conditions:
+ ~~
+ ~~ The above copyright notice and this permission notice shall be included in
+ ~~ all copies or substantial portions of the Software.
+ ~~
+ ~~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ ~~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ ~~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ ~~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ ~~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ ~~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ ~~ THE SOFTWARE.
+ ~~
+
+ -----
+ Sample project 
+ -----
+ Stephen Connolly
+ ------
+ 2009-11-06
+ ------
+
+Sample project
+
+* Sample project
+
+  The following sample project is based on the integration tests for this antlib
+  (but with the hacks to make it work when invoked from Maven removed)
+
+---
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="sample-project" xmlns:as="antlib:org.codehaus.mojo.animal_sniffer">
+
+  <property environment="env"/>
+
+  <path id="jre">
+    <fileset dir="\${java.home}" includes="lib/rt.jar"/>
+    <fileset dir="\${java.home}" includes="lib/jce.jar"/>
+    <fileset dir="\${java.home}" includes="lib/jsse.jar"/>
+  </path>
+
+  <typedef uri="antlib:org.codehaus.mojo.animal_sniffer">
+    <classpath path="lib/${project.artifactId}-${project.version}.jar"/>
+  </typedef>
+
+  <target name="clean">
+    <delete dir="build"/>
+  </target>
+
+  <target name="compile" depends="package-api2">
+    <mkdir dir="build/classes"/>
+    <javac srcdir="src/main/java" destdir="build/classes" fork="true">
+      <classpath>
+        <path path="build/api2.jar"/>
+      </classpath>
+    </javac>
+  </target>
+
+  <target name="package" depends="compile">
+    <mkdir dir="build"/>
+    <jar destfile="build/${ant.project.name}.jar" basedir="build/classes"/>
+  </target>
+
+  <target name="verify" depends="package">
+    <as:check-signature>
+      <classpath path="build/${ant.project.name}.jar"/>
+    </as:check-signature>
+  </target>
+
+  <target name="build-signatures">
+    <as:build-signatures destfile="build/jdk.sig">
+      <path>
+        <fileset dir="\${java.home}" includes="lib/rt.jar"/>
+        <fileset dir="\${java.home}" includes="lib/jce.jar"/>
+        <fileset dir="\${java.home}" includes="lib/jsse.jar"/>
+      </path>
+    </as:build-signatures>
+  </target>
+
+  <target name="compile-api1">
+    <mkdir dir="build/api1"/>
+    <javac srcdir="src/api1/java" destdir="build/api1" fork="true"/>
+  </target>
+
+  <target name="compile-api2">
+    <mkdir dir="build/api2"/>
+    <javac srcdir="src/api2/java" destdir="sedir}/build/api2" fork="true"/>
+  </target>
+
+  <target name="package-api1" depends="compile-api1">
+    <mkdir dir="build"/>
+    <jar destfile="build/api1.jar" basedir="build/api1"/>
+  </target>
+
+  <target name="package-api2" depends="compile-api2">
+    <mkdir dir="build"/>
+    <jar destfile="build/api2.jar" basedir="build/api2"/>
+  </target>
+
+  <target name="build-signatures-api1" depends="package-api1">
+    <as:build-signatures destfile="build/api1.sig">
+      <path>
+        <fileset dir="build" includes="api1.jar"/>
+      </path>
+    </as:build-signatures>
+  </target>
+
+  <target name="build-signatures-api2" depends="package-api2">
+    <as:build-signatures destfile="build/api2.sig">
+      <path>
+        <fileset dir="build" includes="api2.jar"/>
+      </path>
+    </as:build-signatures>
+  </target>
+
+  <target name="check-signatures-api1" depends="package, build-signatures-api1">
+    <!--
+      in this case we are checking signatures not of the jdk, but of our API
+      so we need to add the classpath of the jdk, or else we will have
+      an error due to java.lang.Object being undefined
+      -->
+    <as:check-signature signature="build/api1.sig" classpathRef="jre">
+      <path path="build/${ant.project.name}.jar"/>
+      <ignore className="java.*"/>
+      <ignore className="javax.*"/>
+    </as:check-signature>
+  </target>
+
+  <target name="check-signatures-api2" depends="package, build-signatures-api2">
+    <!--
+      in this case we are checking signatures not of the jdk, but of our API
+      so we need to add the classpath of the jdk, or else we will have
+      an error due to java.lang.Object being undefined
+      -->
+    <as:check-signature signature="build/api2.sig" classpathRef="jre">
+      <path path="build/${ant.project.name}.jar"/>
+      <ignore className="java.*"/>
+      <ignore className="javax.*"/>
+    </as:check-signature>
+  </target>
+
+</project>
+---

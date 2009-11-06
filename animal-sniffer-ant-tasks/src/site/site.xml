@@ -32,6 +32,7 @@
     <menu name="Examples">
       <item name="Checking signatures" href="examples/checking-signatures.html"/>
       <item name="Generating signatures" href="examples/generating-signatures.html"/>
+      <item name="Sample project" href="examples/sample-project.html"/>
     </menu>
     <menu ref="reports"/>
   </body>
