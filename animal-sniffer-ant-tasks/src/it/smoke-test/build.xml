@@ -38,31 +38,31 @@
   </typedef>
 
   <target name="clean">
-    <delete dir="${basedir}/build"/>
+    <delete dir="build"/>
   </target>
 
   <target name="compile" depends="package-api2">
-    <mkdir dir="${basedir}/build/classes"/>
-    <javac srcdir="${basedir}/src/main/java" destdir="${basedir}/build/classes" fork="true">
+    <mkdir dir="build/classes"/>
+    <javac srcdir="src/main/java" destdir="build/classes" fork="true">
       <classpath>
-        <path path="${basedir}/build/api2.jar"/>
+        <path path="build/api2.jar"/>
       </classpath>
     </javac>
   </target>
 
   <target name="package" depends="compile">
-    <mkdir dir="${basedir}/build"/>
-    <jar destfile="${basedir}/build/${ant.project.name}.jar" basedir="${basedir}/build/classes"/>
+    <mkdir dir="build"/>
+    <jar destfile="build/${ant.project.name}.jar" basedir="build/classes"/>
   </target>
 
   <target name="verify" depends="package">
     <as:check-signature>
-      <classpath path="${basedir}/build/${ant.project.name}.jar"/>
+      <classpath path="build/${ant.project.name}.jar"/>
     </as:check-signature>
   </target>
 
   <target name="build-signatures">
-    <as:build-signatures destfile="${basedir}/build/jdk.sig">
+    <as:build-signatures destfile="build/jdk.sig">
       <path>
         <fileset dir="${java.home}" includes="lib/rt.jar"/>
         <fileset dir="${java.home}" includes="lib/jce.jar"/>
@@ -72,37 +72,37 @@
   </target>
 
   <target name="compile-api1">
-    <mkdir dir="${basedir}/build/api1"/>
-    <javac srcdir="${basedir}/src/api1/java" destdir="${basedir}/build/api1" fork="true"/>
+    <mkdir dir="build/api1"/>
+    <javac srcdir="src/api1/java" destdir="build/api1" fork="true"/>
   </target>
 
   <target name="compile-api2">
-    <mkdir dir="${basedir}/build/api2"/>
-    <javac srcdir="${basedir}/src/api2/java" destdir="${basedir}/build/api2" fork="true"/>
+    <mkdir dir="build/api2"/>
+    <javac srcdir="src/api2/java" destdir="build/api2" fork="true"/>
   </target>
 
   <target name="package-api1" depends="compile-api1">
-    <mkdir dir="${basedir}/build"/>
-    <jar destfile="${basedir}/build/api1.jar" basedir="${basedir}/build/api1"/>
+    <mkdir dir="build"/>
+    <jar destfile="build/api1.jar" basedir="build/api1"/>
   </target>
 
   <target name="package-api2" depends="compile-api2">
-    <mkdir dir="${basedir}/build"/>
-    <jar destfile="${basedir}/build/api2.jar" basedir="${basedir}/build/api2"/>
+    <mkdir dir="build"/>
+    <jar destfile="build/api2.jar" basedir="build/api2"/>
   </target>
 
   <target name="build-signatures-api1" depends="package-api1">
-    <as:build-signatures destfile="${basedir}/build/api1.sig">
+    <as:build-signatures destfile="build/api1.sig">
       <path>
-        <fileset dir="${basedir}/build" includes="api1.jar"/>
+        <fileset dir="build" includes="api1.jar"/>
       </path>
     </as:build-signatures>
   </target>
 
   <target name="build-signatures-api2" depends="package-api2">
-    <as:build-signatures destfile="${basedir}/build/api2.sig">
+    <as:build-signatures destfile="build/api2.sig">
       <path>
-        <fileset dir="${basedir}/build" includes="api2.jar"/>
+        <fileset dir="build" includes="api2.jar"/>
       </path>
     </as:build-signatures>
   </target>
@@ -113,8 +113,8 @@
       so we need to add the classpath of the jdk, or else we will have
       an error due to java.lang.Object being undefined
       -->
-    <as:check-signature signature="${basedir}/build/api1.sig" classpathRef="jre">
-      <path path="${basedir}/build/${ant.project.name}.jar"/>
+    <as:check-signature signature="build/api1.sig" classpathRef="jre">
+      <path path="build/${ant.project.name}.jar"/>
       <ignore className="java.*"/>
       <ignore className="javax.*"/>
     </as:check-signature>
@@ -126,8 +126,8 @@
       so we need to add the classpath of the jdk, or else we will have
       an error due to java.lang.Object being undefined
       -->
-    <as:check-signature signature="${basedir}/build/api2.sig" classpathRef="jre">
-      <path path="${basedir}/build/${ant.project.name}.jar"/>
+    <as:check-signature signature="build/api2.sig" classpathRef="jre">
+      <path path="build/${ant.project.name}.jar"/>
       <ignore className="java.*"/>
       <ignore className="javax.*"/>
     </as:check-signature>
