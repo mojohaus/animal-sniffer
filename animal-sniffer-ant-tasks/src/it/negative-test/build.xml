@@ -22,7 +22,7 @@
   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
   THE SOFTWARE.
 -->
-<project name="smoke-test" default="test" xmlns:animal-sniffer="urn:animal-sniffer">
+<project name="negative-test" xmlns:as="antlib:org.codehaus.mojo.animal_sniffer">
 
   <property environment="env"/>
 
@@ -32,13 +32,10 @@
     <fileset dir="${java.home}" includes="lib/jsse.jar"/>
   </path>
 
-  <target name="init">
-    <xmlproperty file="../../../pom.xml" prefix="pom.xml"/>
-    <path id="animal-sniffer.classpath"
-          path="../../../target/${pom.xml.project.artifactId}-${pom.xml.project.parent.version}.jar"/>
-    <typedef resource="org/codehaus/mojo/animal_sniffer/ant/antlib.xml" uri="urn:animal-sniffer"
-             classpathref="animal-sniffer.classpath"/>
-  </target>
+  <xmlproperty file="../../../pom.xml" prefix="pom.xml"/>
+  <typedef uri="antlib:org.codehaus.mojo.animal_sniffer">
+    <classpath path="../../../target/${pom.xml.project.artifactId}-${pom.xml.project.parent.version}.jar"/>
+  </typedef>
 
   <target name="clean">
     <delete dir="${basedir}/build"/>
@@ -58,20 +55,20 @@
     <jar destfile="${basedir}/build/${ant.project.name}.jar" basedir="${basedir}/build/classes"/>
   </target>
 
-  <target name="verify" depends="init, package">
-    <animal-sniffer:check-signature>
+  <target name="verify" depends="package">
+    <as:check-signature>
       <classpath path="${basedir}/build/${ant.project.name}.jar"/>
-    </animal-sniffer:check-signature>
+    </as:check-signature>
   </target>
 
-  <target name="build-signatures" depends="init">
-    <animal-sniffer:build-signatures destfile="${basedir}/build/jdk.sig">
+  <target name="build-signatures">
+    <as:build-signatures destfile="${basedir}/build/jdk.sig">
       <path>
         <fileset dir="${java.home}" includes="lib/rt.jar"/>
         <fileset dir="${java.home}" includes="lib/jce.jar"/>
         <fileset dir="${java.home}" includes="lib/jsse.jar"/>
       </path>
-    </animal-sniffer:build-signatures>
+    </as:build-signatures>
   </target>
 
   <target name="compile-api1">
@@ -94,46 +91,46 @@
     <jar destfile="${basedir}/build/api2.jar" basedir="${basedir}/build/api2"/>
   </target>
 
-  <target name="build-signatures-api1" depends="init, package-api1">
-    <animal-sniffer:build-signatures destfile="${basedir}/build/api1.sig">
+  <target name="build-signatures-api1" depends="package-api1">
+    <as:build-signatures destfile="${basedir}/build/api1.sig">
       <path>
         <fileset dir="${basedir}/build" includes="api1.jar"/>
       </path>
-    </animal-sniffer:build-signatures>
+    </as:build-signatures>
   </target>
 
-  <target name="build-signatures-api2" depends="init, package-api2">
-    <animal-sniffer:build-signatures destfile="${basedir}/build/api2.sig">
+  <target name="build-signatures-api2" depends="package-api2">
+    <as:build-signatures destfile="${basedir}/build/api2.sig">
       <path>
         <fileset dir="${basedir}/build" includes="api2.jar"/>
       </path>
-    </animal-sniffer:build-signatures>
+    </as:build-signatures>
   </target>
 
-  <target name="check-signatures-api1" depends="init, package, build-signatures-api1">
+  <target name="check-signatures-api1" depends="package, build-signatures-api1">
     <!--
       in this case we are checking signatures not of the jdk, but of our API
       so we need to add the classpath of the jdk, or else we will have
       an error due to java.lang.Object being undefined
       -->
-    <animal-sniffer:check-signature signature="${basedir}/build/api1.sig" classpathRef="jre">
+    <as:check-signature signature="${basedir}/build/api1.sig" classpathRef="jre">
       <path path="${basedir}/build/${ant.project.name}.jar"/>
       <ignore className="java.*"/>
       <ignore className="javax.*"/>
-    </animal-sniffer:check-signature>
+    </as:check-signature>
   </target>
 
-  <target name="check-signatures-api2" depends="init, package, build-signatures-api2">
+  <target name="check-signatures-api2" depends="package, build-signatures-api2">
     <!--
       in this case we are checking signatures not of the jdk, but of our API
       so we need to add the classpath of the jdk, or else we will have
       an error due to java.lang.Object being undefined
       -->
-    <animal-sniffer:check-signature signature="${basedir}/build/api2.sig" classpathRef="jre">
+    <as:check-signature signature="${basedir}/build/api2.sig" classpathRef="jre">
       <path path="${basedir}/build/${ant.project.name}.jar"/>
       <ignore className="java.*"/>
       <ignore className="javax.*"/>
-    </animal-sniffer:check-signature>
+    </as:check-signature>
   </target>
 
 </project>

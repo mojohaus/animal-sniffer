@@ -44,16 +44,11 @@ Usage
   the Animal Sniffer ANT Tasks jar file, for example:
   
 ---
-<project ... xmlns:animal-sniffer="urn:animal-sniffer">
+<project ... xmlns:as="antlib:org.codehaus.mojo.animal_sniffer">
   ...  
-  <target name="init">
-    ...
-    <path id="animal-sniffer.classpath"
-          path="lib/${pom.xml.project.artifactId}-${pom.xml.project.parent.version}.jar"/>
-    <typedef resource="org/codehaus/mojo/animal_sniffer/ant/antlib.xml" uri="urn:animal-sniffer"
-             classpathref="animal-sniffer.classpath"/>
-     ...
-  </target>
+  <typedef uri="antlib:org.codehaus.mojo.animal_sniffer">
+    <classpath path="lib/${pom.xml.project.artifactId}-${pom.xml.project.parent.version}.jar"/>
+  </typedef>
   ...
 </project>
 ---
@@ -67,15 +62,15 @@ Usage
   In order to check your classes against an API signature, you use the <<<check-signature>>> task:
 
 ---
-<project ... xmlns:animal-sniffer="urn:animal-sniffer">
+<project ... xmlns:as="antlib:org.codehaus.mojo.animal_sniffer">
   ...
-  <task ...>
+  <target ...>
     ...
-    <animal-sniffer:check-signature signature=".../my-signature.sig">
+    <as:check-signature signature=".../my-signature.sig">
       <path path="classes"/>
-    </animal-sniffer:check-signature>
+    </as:check-signature>
     ...
-  </task>
+  </target>
   ...
 </project>
 ---
@@ -99,15 +94,15 @@ Usage
   checking your WEB-INF/classes path.  The following example illustrates how to achieve this:
   
 ---
-<project ... xmlns:animal-sniffer="urn:animal-sniffer">
+<project ... xmlns:as="antlib:org.codehaus.mojo.animal_sniffer">
   ...
-  <task ...>
+  <target ...>
     ...
-    <animal-sniffer:check-signature signature=".../javaee-servlet.sig" classpathRef="webLibs">
+    <as:check-signature signature=".../javaee-servlet.sig" classpathRef="webLibs">
       <path path="build/web/WEB-INF/classes"/>
-    </animal-sniffer:check-signature>
+    </as:check-signature>
     ...
-  </task>
+  </target>
   ...
 </project>
 ---
@@ -124,18 +119,18 @@ Usage
   the path of the API you want to generate the signatures for, e.g.
 
 ---
-<project ... xmlns:animal-sniffer="urn:animal-sniffer">
+<project ... xmlns:animal-sniffer="antlib:org.codehaus.mojo.animal_sniffer">
   ...
-  <task ...>
+  <target ...>
     ...
-    <animal-sniffer:build-signatures destfile="dist/api.sig">
+    <as:build-signatures destfile="dist/api.sig">
       <path>
         <fileset dir="classes"/>
         <fileset dir="lib" includes="log4j.jar"/>
       </path>
-    </animal-sniffer:build-signatures>
+    </as:build-signatures>
     ...
-  </task>
+  </target>
   ...
 </project>
 ---

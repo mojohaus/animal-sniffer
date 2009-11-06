@@ -37,18 +37,18 @@ Generating signatures
   and provide the path(s) of all the classes / jar files which form the API. For example:
   
 ---
-<project ... xmlns:animal-sniffer="urn:animal-sniffer">
+<project ... xmlns:as="antlib:org.codehaus.mojo.animal_sniffer">
   ...
-  <task ...>
+  <target ...>
     ...
-    <animal-sniffer:build-signatures destfile="dist/api.sig">
+    <as:build-signatures destfile="dist/api.sig">
       <path>
         <fileset dir="classes"/>
         <fileset dir="lib" includes="log4j.jar"/>
       </path>
-    </animal-sniffer:build-signatures>
+    </as:build-signatures>
     ...
-  </task>
+  </target>
   ...
 </project>
 ---  
@@ -73,11 +73,11 @@ Generating signatures
   JRE public specification.  For example:
 
 ---
-<project ... xmlns:animal-sniffer="urn:animal-sniffer">
+<project ... xmlns:as="antlib:org.codehaus.mojo.animal_sniffer">
   ...
-  <task ...>
+  <target ...>
     ...
-    <animal-sniffer:build-signatures ...>
+    <as:build-signatures ...>
       ...
       <includeClasses className="java.*"/>
       <includeClasses className="javax.*"/>
@@ -85,9 +85,9 @@ Generating signatures
       <includeClasses className="org.w3c.dom.*"/>
       <!-- etc -->
       ...
-    </animal-sniffer:build-signatures>
+    </as:build-signatures>
     ...
-  </task>
+  </target>
   ...
 </project>
 ---
@@ -100,19 +100,19 @@ Generating signatures
   (Note that a combination of the two can also be used.) For example:
 
 ---
-<project ... xmlns:animal-sniffer="urn:animal-sniffer">
+<project ... xmlns:as="antlib:org.codehaus.mojo.animal_sniffer">
   ...
-  <task ...>
+  <target ...>
     ...
-    <animal-sniffer:build-signatures ...>
+    <as:build-signatures ...>
       ...
       <excludeClasses className="com.sun.*"/>
       <excludeClasses className="sun.*"/>
       <!-- etc -->
       ...
-    </animal-sniffer:build-signatures>
+    </as:build-signatures>
     ...
-  </task>
+  </target>
   ...
 </project>
 ---
@@ -123,19 +123,19 @@ Generating signatures
   achieved by adding the required signatures to the <<<build-signature>>> task. For example:
    
 ---
-<project ... xmlns:animal-sniffer="urn:animal-sniffer">
+<project ... xmlns:as="antlib:org.codehaus.mojo.animal_sniffer">
   ...
-  <task ...>
+  <target ...>
     ...
-    <animal-sniffer:build-signatures ...>
+    <as:build-signatures ...>
       ...
       <signature src="javase-1.5.sig"/>
       <signature src="servlet-2.4.sig"/>
       <!-- etc -->
       ...
-    </animal-sniffer:build-signatures>
+    </as:build-signatures>
     ...
-  </task>
+  </target>
   ...
 </project>
 ---   
