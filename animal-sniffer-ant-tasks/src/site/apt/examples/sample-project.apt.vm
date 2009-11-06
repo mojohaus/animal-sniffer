@@ -93,7 +93,7 @@ Sample project
 
   <target name="compile-api2">
     <mkdir dir="build/api2"/>
-    <javac srcdir="src/api2/java" destdir="sedir}/build/api2" fork="true"/>
+    <javac srcdir="src/api2/java" destdir="build/api2" fork="true"/>
   </target>
 
   <target name="package-api1" depends="compile-api1">
