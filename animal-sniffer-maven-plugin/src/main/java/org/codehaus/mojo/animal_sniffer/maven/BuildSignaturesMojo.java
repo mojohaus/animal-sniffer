@@ -60,6 +60,9 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
+ * Generates an API Signature from at least one of: the java runtime, the
+ * module dependencies and the module classes.
+ *
  * @author Stephen Connolly
  * @goal build
  * @configurator override
