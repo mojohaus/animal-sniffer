@@ -34,7 +34,7 @@
 
   <artifactId>animal-sniffer-annotations</artifactId>
 
-  <name>Annotation for JDK requirements</name>
+  <name>Animal Sniffer Annotations</name>
 
   <build>
     <plugins>
