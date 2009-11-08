@@ -1,0 +1,63 @@
+ ~~ The MIT License
+ ~~
+ ~~ Copyright (c) 2009 codehaus.org.
+ ~~
+ ~~ Permission is hereby granted, free of charge, to any person obtaining a copy
+ ~~ of this software and associated documentation files (the "Software"), to deal
+ ~~ in the Software without restriction, including without limitation the rights
+ ~~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ ~~ copies of the Software, and to permit persons to whom the Software is
+ ~~ furnished to do so, subject to the following conditions:
+ ~~
+ ~~ The above copyright notice and this permission notice shall be included in
+ ~~ all copies or substantial portions of the Software.
+ ~~
+ ~~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ ~~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ ~~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ ~~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ ~~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ ~~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ ~~ THE SOFTWARE.
+ ~~
+
+ ------
+ Introduction
+ ------
+ Stephen Connolly
+ ------
+ 2009-11-08
+ ------
+
+Java Boot Classpath Detector
+
+  The Java Boot Classpath Detector is an executable jar file which tries to 
+  determine the boot classpath of the Java Runtime and outputs that classpath
+  to the standard output.
+
+  It is used by the Animal Sniffer Maven Plugin to autodetect the boot classpath
+  of Java Runtimes.
+
+  It is known to work with most Java versions 1.2 or newer from most vendors.
+
+* Usage
+
+  Just execute the jar file, e.g.
+
+---
+java -jar ${project.artifactId}-${project.version}.jar
+---
+
+  If successful the process should return with exit code 0 and the output 
+  should be the boot classpath as a single line with each element separated 
+  by <<<File.pathSeparatorChar>>>. For example, on linux you might get
+  output like:
+
+---
+/home/user/bin/jdk1.6.0_16/jre/lib/resources.jar:/home/user/bin/jdk1.6.0_16/jre/lib/rt.jar:/home/user/bin/jdk1.6.0_16/jre/lib/sunrsasign.jar:/home/user/bin/jdk1.6.0_16/jre/lib/jsse.jar:/home/user/bin/jdk1.6.0_16/jre/lib/jce.jar:/home/user/bin/jdk1.6.0_16/jre/lib/charsets.jar:/home/user/bin/jdk1.6.0_16/jre/classes
+---
+
+  A non-zero exit code indicates that the boot classpath could not be reliably
+  determined.
+
+
