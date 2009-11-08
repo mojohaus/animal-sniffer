@@ -136,7 +136,8 @@ public class BuildSignaturesMojo
 
     /**
      * The java home to generate the signatures of, if not specified only the signatures of dependencies will be
-     * included.
+     * included. This parameter is overridden by {@link #javaHomeClassPath}.  This parameter overrides {@link #jdk}
+     * and any java home specified by maven-toolchains-plugin.
      *
      * @parameter expression="${javaHome}"
      * @since 1.3
@@ -146,7 +147,7 @@ public class BuildSignaturesMojo
     /**
      * Use this configuration option only if the automatic boot classpath detection does not work for the specific
      * {@link #javaHome} or {@link #jdk}.  For example, the automatic boot classpath detection does not work with
-     * Sun Java 1.1.
+     * Sun Java 1.1. This parameter overrides {@link #javaHome}, {@link #jdk} and the maven-toolchains-plugin.
      *
      * @parameter
      * @since 1.3
@@ -154,6 +155,8 @@ public class BuildSignaturesMojo
     private File[] javaHomeClassPath;
 
     /**
+     * Where to put the generated signatures.
+     *
      * @parameter expression="${project.build.directory}"
      * @required
      * @since 1.3
@@ -161,6 +164,8 @@ public class BuildSignaturesMojo
     private File outputDirectory;
 
     /**
+     * Where to find this modules classes.
+     *
      * @parameter expression="${project.build.outputDirectory}"
      * @required
      * @since 1.3
@@ -213,7 +218,10 @@ public class BuildSignaturesMojo
     private MavenSession session;
 
     /**
+     * The JDK Toolchain to use.  This parameter can be overridden by {@link #javaHome} or {@link #javaHomeClasspath}. 
+     * This parameter overrides any toolchain specified with maven-toolchains-plugin.
      * @parameter
+     * @since 1.3
      */
     private JdkToolchain jdk;
 
@@ -225,12 +233,26 @@ public class BuildSignaturesMojo
     private List/*<Artifact>*/ pluginArtifacts;
 
     /**
+     * The groupId of the Java Boot Classpath Detector to use. The plugin's dependencies will be searched for a 
+     * dependency of type <code>jar</code> with this groupId and the artifactId specified in {@link #jbcpdArtifactId}.
+     * The dependency should be a standalone executable jar file which outputs the java boot classpath as a single
+     * line separated using {@link File#pathSeparatorChar} or else exits with a non-zero return code if it cannot determine
+     * the java boot classpath.
+     *
      * @parameter default-value="${plugin.groupId}"
+     * @since 1.3
      */
     private String jbcpdGroupId;
 
     /**
+     * The artifactId of the Java Boot Classpath Detector to use. The plugin's dependencies will be searched for a 
+     * dependency of type <code>jar</code> with this artifactId and the groupId specified in {@link #jbcpdGroupId}.
+     * The dependency should be a standalone executable jar file which outputs the java boot classpath as a single
+     * line separated using {@link File#pathSeparatorChar} or else exits with a non-zero return code if it cannot determine
+     * the java boot classpath.
+     *
      * @parameter default-value="java-boot-classpath-detector"
+     * @since 1.3
      */
     private String jbcpdArtifactId;
 
@@ -262,7 +284,30 @@ public class BuildSignaturesMojo
             {
                 Toolchain tc = getToolchain();
 
-                if ( tc != null && tc instanceof JavaToolChain )
+                if ( tc == null && jdk == null )
+                {
+                    getLog().info( "Toolchain from session: " + tc );
+                    tc = toolchainManager.getToolchainFromBuildContext( "jdk", //NOI18N
+                                session );
+                    //assign the path to executable from toolchains
+                    String jvm = tc.findTool( "java" ); //NOI18N
+
+                    if ( jvm == null )
+                    {
+                        if ( skipIfNoJavaHome )
+                        {
+                            getLog().warn( "Skipping signature generation as could not find java home" );
+                            return;
+                        }
+                        throw new MojoFailureException(
+                            "Cannot include java home if java home is not specified (either via javaClassPath, javaHome or jdk)" );
+                    }
+                    if ( !detectJavaBootClasspath( jvm ) )
+                    {
+                        return;
+                    }
+                }
+                else if ( tc != null && tc instanceof JavaToolChain )
                 {
                     getLog().info( "Toolchain in animal-sniffer-maven-plugin: " + tc );
 
@@ -304,7 +349,8 @@ public class BuildSignaturesMojo
                         return;
                     }
                     throw new MojoFailureException(
-                        "Cannot include java home if java home is not specified (either via javaClassPath, javaHome or jdk)" );
+                        "Cannot include java home if java home is not specified (either via javaClassPath, javaHome, "
+                        + "jdk or maven-toolchains-plugin)" );
                 }
             }
         }
