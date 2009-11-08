@@ -40,7 +40,7 @@ Animal Sniffer Enforcer Rule
 
   The Animal Sniffer Enforcer Rule has the following rule.
 
-  * {{{check-signature-rule.html}checkSignatureRule}} checks a project against an API signature.
+  * <<<checkSignatureRule>>> checks a project against an API signature.
 
 * Usage
 
