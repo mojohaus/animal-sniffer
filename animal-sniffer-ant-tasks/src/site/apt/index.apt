@@ -67,10 +67,10 @@ Animal Sniffer ANT Tasks
   To provide you with better understanding of some usages of Animal Sniffer ANT Tasks,
   you can take a look into the following examples:
 
-  * {{{examples/generating-java-signatures.html}Generating signatures of the Java Runtime}}
+  * {{{examples/generating-signatures.html}Generating signatures}}
 
-  * {{{examples/generating-other-api-signatures.html}Generating signatures of other APIs}}
+  * {{{examples/checking-signatures.html}Checking signatures}}
 
-  * {{{examples/checking-signatures.html}Checking a project against API signatures}}
+  * {{{examples/sample-project.html}A sample project}}
 
   []
