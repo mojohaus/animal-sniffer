@@ -72,7 +72,7 @@
 
   <issueManagement>
     <system>jira</system>
-    <url>http://jira.codehaus.org/browse/MOJO</url>
+    <url>http://jira.codehaus.org/browse/MANIMALSNIFFER</url>
   </issueManagement>
 
   <scm>
