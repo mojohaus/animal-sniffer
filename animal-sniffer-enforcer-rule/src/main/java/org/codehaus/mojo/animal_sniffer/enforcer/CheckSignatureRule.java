@@ -104,14 +104,17 @@ public class CheckSignatureRule
 
             final Set ignoredPackages = buildPackageList( outputDirectory, classpathElements );
 
-            for ( int i = 0; i < ignores.length; i++ )
+            if ( ignores != null ) 
             {
-                String ignore = ignores[i];
-                if ( ignore == null )
+                for ( int i = 0; i < ignores.length; i++ )
                 {
-                    continue;
+                    String ignore = ignores[i];
+                    if ( ignore == null )
+                    {
+                        continue;
+                    }
+                    ignoredPackages.add( ignore.replace( '.', '/' ) );
                 }
-                ignoredPackages.add( ignore.replace( '.', '/' ) );
             }
 
             final SignatureChecker signatureChecker =
