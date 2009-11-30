@@ -13,7 +13,7 @@
  
   The above copyright notice and this permission notice shall be included in
   all copies or substantial portions of the Software.
- 
+
   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
   IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
   FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -29,7 +29,7 @@
     <faq id="purpose">
       <question>What does the Animal Sniffer Maven Plugin do?</question>
       <answer>
-        <p>The Animal Sniffer Maven Plugin provides a means to verify that your classes only use the classes, methods and fields provided by specific API signatures that you specify.  The plugin also provides a means to generate API signatures from your project and/or a specific JDK/p>
+        <p>The Animal Sniffer Maven Plugin provides a means to verify that your classes only use the classes, methods and fields provided by specific API signatures that you specify.  The plugin also provides a means to generate API signatures from your project and/or a specific JDK</p>
       </answer>
     </faq>
 
