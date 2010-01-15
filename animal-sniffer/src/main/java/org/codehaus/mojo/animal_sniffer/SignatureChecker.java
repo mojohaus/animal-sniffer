@@ -188,7 +188,7 @@ public class SignatureChecker
                         {
                             return true; // array
                         }
-                        System.out.println( type );
+
                         Iterator i = ignoredPackages.iterator();
                         while ( i.hasNext() )
                         {
