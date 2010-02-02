@@ -287,11 +287,15 @@ public class BuildSignaturesMojo
 
                 if ( tc == null && jdk == null )
                 {
-                    getLog().info( "Toolchain from session: " + tc );
+                    String jvm = null;
                     tc = toolchainManager.getToolchainFromBuildContext( "jdk", //NOI18N
                                 session );
+                    getLog().info( "Toolchain from session: " + tc );
                     //assign the path to executable from toolchains
-                    String jvm = tc.findTool( "java" ); //NOI18N
+                    if ( tc != null)
+                    {
+                        jvm = tc.findTool( "java" ); //NOI18N
+                    }
 
                     if ( jvm == null )
                     {
