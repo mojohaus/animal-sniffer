@@ -54,6 +54,7 @@
             </goals>
             <configuration>
               <primaryArtifact>false</primaryArtifact>
+              <includeJavaHome>false</includeJavaHome>
             </configuration>
           </execution>
         </executions>

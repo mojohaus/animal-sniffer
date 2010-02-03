@@ -52,6 +52,9 @@
             <goals>
               <goal>build</goal>
             </goals>
+            <configuration>
+              <includeJavaHome>false</includeJavaHome>
+            </configuration>
           </execution>
         </executions>
       </plugin>
