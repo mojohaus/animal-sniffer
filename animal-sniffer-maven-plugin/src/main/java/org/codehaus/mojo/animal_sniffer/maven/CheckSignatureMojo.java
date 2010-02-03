@@ -34,7 +34,7 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.mojo.animal_sniffer.ClassFileVisitor;
-import org.codehaus.mojo.animal_sniffer.PackageListBuilder;
+import org.codehaus.mojo.animal_sniffer.ClassListBuilder;
 import org.codehaus.mojo.animal_sniffer.SignatureChecker;
 
 import java.io.File;
@@ -146,6 +146,8 @@ public class CheckSignatureMojo
                 }
             }
 
+            getLog().info(ignoredPackages.toString());
+
             final SignatureChecker signatureChecker =
                 new SignatureChecker( new FileInputStream( a.getFile() ), ignoredPackages,
                                       new MavenLogger( getLog() ) );
@@ -173,7 +175,7 @@ public class CheckSignatureMojo
     private Set buildPackageList()
         throws IOException
     {
-        PackageListBuilder plb = new PackageListBuilder();
+        ClassListBuilder plb = new ClassListBuilder();
         apply( plb );
         return plb.getPackages();
     }

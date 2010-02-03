@@ -34,7 +34,7 @@ import org.apache.maven.enforcer.rule.api.EnforcerRuleException;
 import org.apache.maven.enforcer.rule.api.EnforcerRuleHelper;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.mojo.animal_sniffer.ClassFileVisitor;
-import org.codehaus.mojo.animal_sniffer.PackageListBuilder;
+import org.codehaus.mojo.animal_sniffer.ClassListBuilder;
 import org.codehaus.mojo.animal_sniffer.SignatureChecker;
 import org.codehaus.plexus.component.configurator.expression.ExpressionEvaluationException;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
@@ -154,7 +154,7 @@ public class CheckSignatureRule
     private Set buildPackageList( File outputDirectory, List classpathElements )
         throws IOException
     {
-        PackageListBuilder plb = new PackageListBuilder();
+        ClassListBuilder plb = new ClassListBuilder();
         apply( plb, outputDirectory, classpathElements );
         return plb.getPackages();
     }

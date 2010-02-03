@@ -34,11 +34,11 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * List up packages seen in the given classes.
+ * List up classes seen.
  *
  * @author Kohsuke Kawaguchi
  */
-public class PackageListBuilder
+public class ClassListBuilder
     extends ClassFileVisitor
 {
     private final Set packages;
@@ -48,12 +48,12 @@ public class PackageListBuilder
         return packages;
     }
 
-    public PackageListBuilder( Set packages )
+    public ClassListBuilder( Set packages )
     {
         this.packages = packages;
     }
 
-    public PackageListBuilder()
+    public ClassListBuilder()
     {
         this( new HashSet() );
     }
@@ -67,15 +67,7 @@ public class PackageListBuilder
             public void visit( int version, int access, String name, String signature, String superName,
                                String[] interfaces )
             {
-                int idx = name.lastIndexOf( '/' );
-                if ( idx < 0 )
-                {
-                    packages.add( "" );
-                }
-                else
-                {
-                    packages.add( name.substring( 0, idx ) );
-                }
+                packages.add( name.replace( '/', '.' ) );
             }
         }, 0 );
     }

@@ -32,7 +32,7 @@ import org.apache.tools.ant.types.Path;
 import org.apache.tools.ant.types.Reference;
 import org.apache.tools.ant.types.resources.FileResource;
 import org.codehaus.mojo.animal_sniffer.ClassFileVisitor;
-import org.codehaus.mojo.animal_sniffer.PackageListBuilder;
+import org.codehaus.mojo.animal_sniffer.ClassListBuilder;
 import org.codehaus.mojo.animal_sniffer.SignatureChecker;
 
 import java.io.File;
@@ -174,7 +174,7 @@ public class CheckSignatureTask
     private Set buildPackageList()
         throws IOException
     {
-        PackageListBuilder plb = new PackageListBuilder();
+        ClassListBuilder plb = new ClassListBuilder();
         apply( plb );
         return plb.getPackages();
     }
