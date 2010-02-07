@@ -27,7 +27,7 @@
   <parent>
     <groupId>org.codehaus.mojo</groupId>
     <artifactId>animal-sniffer-parent</artifactId>
-    <version>1.5</version>
+    <version>1.6-SNAPSHOT</version>
   </parent>
 
   <groupId>org.codehaus.mojo</groupId>
@@ -54,12 +54,12 @@
     <dependency>
       <groupId>org.codehaus.mojo</groupId>
       <artifactId>animal-sniffer</artifactId>
-      <version>1.5</version>
+      <version>1.6-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.codehaus.mojo</groupId>
       <artifactId>java-boot-classpath-detector</artifactId>
-      <version>1.5</version>
+      <version>1.6-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.apache.maven</groupId>
