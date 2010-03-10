@@ -26,16 +26,16 @@
  -----
  Stephen Connolly
  ------
- 2009-10-27
+ 2010-03-10
  ------
 
 Generating signatures of other APIs
 
 * Basic
 
-  To generate signatures of any API, you simple construct a project with the appropriate
+  To generate signatures of any API, you simply construct a project with the appropriate
   dependencies exposed by the API and then add an execution of the <<<animal-sniffer:build>>>
-  mojo to your project, e.g.
+  goal to your project, e.g.
 
 ---
 <project>
@@ -69,13 +69,13 @@ Generating signatures of other APIs
 
 * Controlling the Java Runtime signatures in your API signature
 
-  By default, the signatures of the Java Runtime that you use to build with will 
+  By default, the signatures of the Java Runtime that you use to build with will
   be included in the signatures of the API.  Since the Java Runtime forms
-  part of any java API (as your API extends <<<java.lang.Object>>>) in general
+  part of any Java API (as your API extends <<<java.lang.Object>>>) in general
   the Java Runtime signatures should form part of your API's signatures.
 
-  If you want a different Java Runtime signatures used, you can either use the
-  techniques described in {{{generating-java-signatures.html}Generating 
+  If you want different Java Runtime signatures used, you can either use the
+  techniques described in {{{generating-java-signatures.html}Generating
   signatures of the Java Runtime}} to control what Java Runtime to include or
   you can base your API off an existing Java Runtime signature.  For example:
 
@@ -114,15 +114,15 @@ Generating signatures of other APIs
 </project>
 ---
 
-  Note: You can include multiple signatures, and the signatures you include do
+  <<Note:>> You can include multiple signatures, and the signatures you include do
   not have to include a Java Runtime (but ultimately if you are checking against
-  a signature which does not include the Java Runtime, your check will always fail)
+  a signature which does not include the Java Runtime, your check will always fail).
 
 * Excluding dependencies from signatures
 
   Sometimes you may not want to include your module dependencies in the signature.
   For example, your module might define the public API but depend on the private
-  implementations of that API.  In that case you would use either the 
+  implementations of that API.  In that case you would use either the
   <<<includeDependencies>>> to define the subset of module dependencies to include or
   <<<excludeDependencies>>> to define the subset of module dependencies to exclude (or
   a combination of the two. Note: includes are processed before excludes).  For example,
@@ -162,7 +162,7 @@ Generating signatures of other APIs
 * Excluding module classes from signatures
 
   In some cases you may not want to include your module classes in the generated
-  signature.  To exclude module classes from the generated signature set the 
+  signature.  To exclude module classes from the generated signature set the
   <<<includeModuleClasses>>> to <<<false>>> for example:
 
 ---
@@ -194,9 +194,9 @@ Generating signatures of other APIs
 
 * Tuning exactly which classes are part of the signatures
 
-  The above examples generate signatures of all the classes in scope. In some 
+  The above examples generate signatures of all the classes in scope. In some
   situations you may want to only include specific classes from the dependencies
-  or your module.  This can be achieved using the <<<includeClasses>> and 
+  or your module.  This can be achieved using the <<<includeClasses>>> and
   <<<excludeClasses>>> configuration options.
 
 ** Inclusion based tuning
@@ -238,8 +238,8 @@ Generating signatures of other APIs
 
 ** Exclusion based tuning
 
-  The other technique is to specify which classes are not to be included
-  (Note that a combination of the two can also be used.) For example:
+  The other technique is to specify which classes are not to be included.
+  Note that a combination of the two can also be used. For example:
 
 ---
 <project>

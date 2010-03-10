@@ -26,14 +26,14 @@
  -----
  Stephen Connolly
  ------
- 2009-10-27
+ 2010-03-10
  ------
 
 Checking a project against API signatures
 
 * Basic example
 
-  In order to check your project against an API signature, you must configure your 
+  In order to check your project against an API signature, you must configure your
   <<<pom.xml>>> to reference the signature to check against:
 
 ---
@@ -70,13 +70,13 @@ Checking a project against API signatures
   Once you have configured your project with details of the signature to check, you have two ways to
   check your classes against this signature:
 
-    * Invoke the <<<animal-sniffer:check>>> mojo directly, e.g.
+    * Invoke the <<<animal-sniffer:check>>> goal directly, e.g.
 
 ---
 mvn animal-sniffer:check
 ---
 
-    * make the checks part of your build process add an execution of to your 
+    * Make the checks part of your build process add an execution to your
       configuration, e.g.
 
 ---
@@ -103,7 +103,7 @@ mvn animal-sniffer:check
             ...
           </execution>
           ...
-        </configuration>
+        </executions>
       </plugin>
       ...
     </plugins>
@@ -115,8 +115,8 @@ mvn animal-sniffer:check
 
     []
 
-  In either case, if your any of your classes reference a class, a method, or a field which is not in either
-  the signature or your project's dependencies then an build error will be thrown. 
+  In either case, if any of your classes reference a class, a method, or a field which is not in either
+  the signature or your project's dependencies then a build error will be thrown.
 
 * Ignoring classes not in the signature
 
@@ -131,7 +131,7 @@ public final class MapFactory {
     private MapFactory() {
         new IllegalAccessError("This is a utility class");
     }
-    
+
     public static Map newHashMap() {
         try {
             // we'd prefer the concurrent version
@@ -146,12 +146,12 @@ public final class MapFactory {
 }
 ---
 
-  The above code will require JDK 1.5 or newer to compile, and can run on earlier JDKs (although 
+  The above code will require JDK 1.5 or newer to compile, and can run on earlier JDKs (although
   with degraded performance, and we are assuming you have set the -source and -target options
   correctly for the earlier JDKs).
 
   When you run animal-sniffer against the above class using the JDK 1.4 signatures, you will get
-  a build failure because <<<java.util.concurrent.ConcurrentHashMap>>> is not in the JDK 1.4 
+  a build failure because <<<java.util.concurrent.ConcurrentHashMap>>> is not in the JDK 1.4
   signature. If you are sure that where you have used <<<java.util.concurrent.ConcurrentHashMap>>>
   you have correctly encapsulated it within <<<try { ... } catch (LinkageError e) { ... }>>>
   blocks or their equivalent, you can tell animal-sniffer to ignore the class, e.g.
@@ -209,7 +209,7 @@ public final class MapFactory {
             <ignore>java.util.concurrent.ConcurrentHashMap</ignore>
             <ignore>java.util.concurrent.ConcurrentMap</ignore>
             <ignore>javax.servlet.*</ignore>
-          </ignorez>
+          </ignores>
           ...
         </configuration>
         ...
@@ -228,9 +228,9 @@ public final class MapFactory {
   a version that supports annotations) it is preferable to annotate your <<<LinkageError>>> safe methods rather
   than using the <<<ignores>>> configuration element.
 
-  To annotate your methods, you need to add either an optional and/or provided dependency on 
-  <<<animal-sniffer-annotations>>>, (technically optional is the correct way, but to work around some
-  incorrectly written maven plugins, you may end up using scope provided) e.g.
+  To annotate your methods, you need to add either an optional and/or provided dependency on
+  <<<animal-sniffer-annotations>>>. Technically optional is the correct way, but to work around some
+  incorrectly written Maven plugins, you may end up using scope provided.
 
 ---
 <project>
@@ -242,9 +242,9 @@ public final class MapFactory {
       <artifactId>animal-sniffer-annotations</artifactId>
       <version>${project.parent.version}</version>
       <optional>true</optional>
-      <!-- if you are using badly written maven plugins then blame them and add
+      <!-- if you are using badly written Maven plugins then blame them and add
       <scope>provided</scope>
-      -->    
+      -->
     </dependency>
     ...
   </dependencies>
@@ -291,14 +291,14 @@ public final class Someclass {
 }
 ---
 
-  Note: if you have compiled with the <<<org.jvnet:animal-sniffer-annotation:1.0>>> you do not have to change 
-  anything as animal-sniffer automatically detects this annotation as well (even although it is in a different 
+  <<Note:>> If you have compiled with the <<<org.jvnet:animal-sniffer-annotation:1.0>>> you do not have to change
+  anything as animal-sniffer automatically detects this annotation as well (even though it is in a different
   package.
 
 * Referencing classes from dependencies
 
   By default, animal-sniffer will automatically ignore any classes and methods defined in your dependencies.
-  This is usually what you want.  
+  This is usually what you want.
 
   In certain rare situations, you may want to ignore your project dependencies by setting the <<<ignoreDependencies>>>
   parameter to <<<false>>>.
@@ -306,7 +306,7 @@ public final class Someclass {
   For example, you might be compiling your project against the JavaEE 5 specification but want to check compatibility
   against the J2EE 1.4 specification. You will have a signature corresponding to the exposed J2EE 1.4 api's.
   If you check against this signature, because all of the JavaEE 1.5 API dependencies are ignored your project
-  will never fail even if it uses JavaEE 1.5 only methods.  In this situation, you would want to turn off the 
+  will never fail even if it uses JavaEE 1.5 only methods.  In this situation, you would want to turn off the
   default behaviour, e.g.
 
 ---

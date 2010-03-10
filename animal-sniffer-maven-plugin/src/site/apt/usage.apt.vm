@@ -26,7 +26,7 @@
  -----
  Stephen Connolly
  ------
- 2009-10-27
+ 2010-03-10
  ------
 
 Usage
@@ -38,7 +38,7 @@ Usage
 
 ** Checking a project against an API signature
 
-  In order to check your project against an API signature, you must configure your 
+  In order to check your project against an API signature, you must configure your
   <<<pom.xml>>> to reference the signature to check against:
 
 ---
@@ -73,13 +73,13 @@ Usage
 ---
 
   In order to check your project against the signature you have just configured, either
-  invoke the <<<animal-sniffer:check>>> mojo directly, e.g.
+  invoke the <<<animal-sniffer:check>>> goal directly, e.g.
 
 ---
 mvn animal-sniffer:check
 ---
 
-  or to make the checks part of your build process add an execution of to your 
+  or to make the checks part of your build process add an execution to your
   configuration, e.g.
 
 ---
@@ -106,7 +106,7 @@ mvn animal-sniffer:check
             ...
           </execution>
           ...
-        </configuration>
+        </executions>
       </plugin>
       ...
     </plugins>
@@ -116,12 +116,12 @@ mvn animal-sniffer:check
 </project>
 ---
 
-  <Note:> if you are attaching the plugin to your build process, and you want to check against
+  <<Note:>> If you are attaching the plugin to your build process, and you want to check against
   multiple separate APIs (e.g. check against the Tomcat, JBoss, and Jetty servlet containers,
-  or check against multiple java versions) then you will probably want to move the signature
-  configuration inside each of your multiple executions otherwise your project will be 
-  checked against the union of all the signatures specified, which is probably not what you 
-  wanted.
+  or check against multiple Java versions) then you will probably want to move the signature
+  configuration inside each of your multiple executions otherwise your project will be
+  checked against the union of all the signatures specified, which is probably not what you
+  want.
 
   {{{examples/checking-signatures.html} Some more detailed examples of the <<<check>>> goal}}.
 
@@ -129,7 +129,7 @@ mvn animal-sniffer:check
 
   To generate the signatures of an API, simply construct a project with the appropriate
   dependencies exposed by the API and then add an execution of the <<<animal-sniffer:build>>>
-  mojo to your project, e.g.
+  goal to your project, e.g.
 
 ---
 <project>
@@ -171,4 +171,4 @@ mvn animal-sniffer:check
 
     * {{{examples/generating-other-api-signatures.html}Generating signatures of other APIs}}
 
-    [] 
+    []

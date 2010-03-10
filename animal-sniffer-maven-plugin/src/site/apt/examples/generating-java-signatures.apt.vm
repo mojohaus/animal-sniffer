@@ -26,7 +26,7 @@
  -----
  Stephen Connolly
  ------
- 2009-10-27
+ 2010-03-10
  ------
 
 Generating signatures of the Java Runtime
@@ -35,7 +35,7 @@ Generating signatures of the Java Runtime
 
   To generate signatures of any API, you simple construct a project with the appropriate
   dependencies exposed by the API and then add an execution of the <<<animal-sniffer:build>>>
-  mojo to your project.  In the case of the Java Runtime, this is a project with no 
+  goal to your project.  In the case of the Java Runtime, this is a project with no
   dependencies, e.g.
 
 ---
@@ -66,7 +66,7 @@ Generating signatures of the Java Runtime
 </project>
 ---
 
-  Then you just build this project with the appropriate Java Runtime, and it will generate the signatures of that 
+  Then you just build this project with the appropriate Java Runtime, and it will generate the signatures of that
   Java Runtime.
 
   The observant reader may have spotted that it may not always be possible to run Maven with the Java Runtime
@@ -74,7 +74,7 @@ Generating signatures of the Java Runtime
 
     * Use Maven Toolchains support and the <<<jdk>>> parameter to define what toolchain you require.
       This will use automatic boot classpath detection, which does not work for Java 1.1 or earlier and
-      may not work on some exotic Java Runtimes. 
+      may not work on some exotic Java Runtimes.
 
       An example of using the <<<jdk>>> parameter is:
 
@@ -110,7 +110,7 @@ Generating signatures of the Java Runtime
 
     * Use the <<<javaHome>>> parameter to specify the Java Home that you want to generate the signatures of.
       This will use automatic boot classpath detection, which does not work for Java 1.1 or earlier and
-      may not work on some exotic Java Runtimes. 
+      may not work on some exotic Java Runtimes.
 
       An example of using the <<<javaHome>>> parameter is:
 
@@ -141,9 +141,9 @@ Generating signatures of the Java Runtime
 </project>
 ---
 
-    * Use the <<<javaHomeClassPath>>> parameter to specify the exact classpath to generate the signatures of
+    * Use the <<<javaHomeClassPath>>> parameter to specify the exact classpath to generate the signatures of.
       This is the only way to specify the Java Runtime when automatic boot classpath detection fails.
-      
+
       An example of this technique is:
 
 ---
@@ -193,7 +193,7 @@ Generating signatures of the Java Runtime
 
 ** Inclusion based tuning
 
-  One technique is to only include those classes which you know are part of the 
+  One technique is to only include those classes which you know are part of the
   JRE public specification.  For example:
 
 ---
@@ -233,13 +233,13 @@ Generating signatures of the Java Runtime
 </project>
 ---
 
-  This requires that you known exactly what classes are part of the JRE 
+  This requires that you known exactly what classes are part of the JRE
   specification.
 
 ** Exclusion based tuning
 
-  The other technique is to specify which classes are not to be included
-  (Note that a combination of the two can also be used.) For example:
+  The other technique is to specify which classes are not to be included.
+  Note that a combination of the two can also be used. For example:
 
 ---
 <project>
@@ -278,11 +278,11 @@ Generating signatures of the Java Runtime
 
 * When the version of Java you require is not available
 
-  By default, if the version of java that you require is not available,
-  the animal-sniffer plugin will fail the build.  If you are generating 
+  By default, if the version of Java that you require is not available,
+  the animal-sniffer plugin will fail the build.  If you are generating
   multiple signatures, this may not be exactly what you want.  For example
-  you may be generating signatures for JREs on windows, linux and MacOS 
-  from the same project.  This would require building the same project 
+  you may be generating signatures for JREs on Windows, Linux and MacOS
+  from the same project.  This would require building the same project
   at least three times and setting the <<<skipIfNoJavaHome>>> option to
   <<<true>>> for example
 
@@ -346,12 +346,12 @@ Generating signatures of the Java Runtime
 * Automatic boot classpath detection
 
   Animal sniffer uses a helper module to try and determine the boot classpath
-  of the Java Home that has been specified either:
+  of the Java Home that has been specified. This can be done in one of two ways:
 
-    * indirectly via a toolchain reference using the <<<jdk>>> configuration 
-      option; or 
+    * Indirectly via a toolchain reference using the <<<jdk>>> configuration
+      option
 
-    * directly using the <<<javaHome>>> option.
+    * Directly using the <<<javaHome>>> option
 
     []
 
@@ -359,12 +359,12 @@ Generating signatures of the Java Runtime
   should work for most common versions of Java providing they are at least
   Java 1.2.
 
-  If the default helper module does not work for the version of java that
+  If the default helper module does not work for the version of Java that
   you need to generate signatures of, you can replace the helper module
-  with your own module.  The replacement module must meet the following 
+  with your own module.  The replacement module must meet the following
   specification:
 
-    * Must be an executable jar file
+    * Must be an executable JAR file
 
     * If the Java boot classpath cannot be detected, it must return with
       exit code 1.
@@ -384,17 +384,17 @@ Generating signatures of the Java Runtime
 
     * Invoke the <<<java>>> command in the <<<javaHome>>> or <<<jdk>>> that
       has been configured with the options <<<-jar>>> and the full path to
-      the java boot classpath detector module specified in the configuration
-      of the animal-sniffer plugin.  Note: this module jar file will be located
+      the Java boot classpath detector module specified in the configuration
+      of the animal-sniffer plugin.  Note: this module JAR file will be located
       in the Maven local repository.
 
     []
 
   A replacement module must be added to the <<<dependencies>>> section of
-  <the animal sniffer plugin> and the groupId and artifactId must be configured
+  <the Animal Sniffer Plugin> and the groupId and artifactId must be configured
   using the <<<jbcpdGroupId>>> and <<<jbcpdArtifactId>>> configuration options.
-  For example, if your custom boot classpath detector is 
-  com.mycompany:detect-boot-classpath:1.2.0:jar then you could configure 
+  For example, if your custom boot classpath detector is
+  com.mycompany:detect-boot-classpath:1.2.0:jar then you could configure
   animal-sniffer to use this with the following:
 
 ---
