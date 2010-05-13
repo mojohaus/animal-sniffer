@@ -146,7 +146,10 @@ public class CheckSignatureMojo
                 }
             }
 
-            getLog().info(ignoredPackages.toString());
+            if ( getLog().isDebugEnabled() )
+            {
+                getLog().debug( ignoredPackages.toString() );
+            }
 
             final SignatureChecker signatureChecker =
                 new SignatureChecker( new FileInputStream( a.getFile() ), ignoredPackages,
