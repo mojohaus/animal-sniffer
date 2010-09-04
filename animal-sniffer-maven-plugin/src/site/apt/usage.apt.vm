@@ -56,9 +56,9 @@ Usage
         <configuration>
           ...
           <signature>
-            <groupId>___group id of signature___</groupId>
-            <artifactId>___artifact id of signature___</artifactId>
-            <version>___version of signature___</version>
+            <groupId>org.codehaus.mojo.signature</groupId>
+            <artifactId>java15</artifactId>
+            <version>1.0</version>
           </signature>
           ...
         </configuration>
@@ -71,6 +71,9 @@ Usage
   ...
 </project>
 ---
+
+  The example above configures the signature for JRE 1.5. For a list of other ready-made signatures, please visit the
+  {{{http://mojo.codehaus.org/signatures/}Animal Scents subproject}}.
 
   In order to check your project against the signature you have just configured, either
   invoke the <<<animal-sniffer:check>>> goal directly, e.g.

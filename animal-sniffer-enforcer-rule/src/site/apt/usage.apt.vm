@@ -38,7 +38,7 @@ Usage
 ** Checking a project against an API signature
 
   In order to check your project against an API signature, you must add the enforcer rule as a dependency to
-  the maven-enforcer-plugin and then configure your the maven-enforcer-plugin to run the rule:
+  the maven-enforcer-plugin and then configure the maven-enforcer-plugin to run the rule:
 
 ---
 <project>
@@ -74,9 +74,9 @@ Usage
                 <checkSignatureRule implementation="org.codehaus.mojo.animal_sniffer.enforcer.CheckSignatureRule">
                   ...
                   <signature>
-                    <groupId>___group id of signature___</groupId>
-                    <artifactId>___artifact id of signature___</artifactId>
-                    <version>___version of signature___</version>
+                    <groupId>org.codehaus.mojo.signature</groupId>
+                    <artifactId>java15</artifactId>
+                    <version>1.0</version>
                   </signature>
                   ...
                 </checkSignatureRule>
@@ -84,7 +84,7 @@ Usage
             </configuration>
           </execution>
           ...
-        </executions>            
+        </executions>
         ...
       </plugin>
       ...
@@ -94,6 +94,9 @@ Usage
   ...
 </project>
 ---
+
+  The example above configures the signature for JRE 1.5. For a list of other ready-made signatures, please visit the
+  {{{http://mojo.codehaus.org/signatures/}Animal Scents subproject}}.
 
   Once you have configured your project with details of the signature to check, maven-enforcer will be able to
   throw a build error if your any of your classes reference a class, a method, or a field which is not in either
