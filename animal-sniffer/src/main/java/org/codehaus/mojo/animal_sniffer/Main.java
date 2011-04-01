@@ -29,6 +29,11 @@ import java.io.DataInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author Kohsuke Kawaguchi
@@ -36,20 +41,57 @@ import java.io.InputStream;
 public class Main
     extends ClassFileVisitor
 {
+    private boolean humanReadableName = false;
+
+    private String maximumVersion = "00.0";
+
     public static void main( String[] args )
         throws IOException
     {
         if ( args.length == 0 )
         {
             System.err.println( "Usage: java -jar animal-sniffer.jar [JAR/CLASS FILES]" );
+            System.err.println("  -h   : show a human readable Java version number");
+            System.err.println("  -t N : return exit code 1 if any file has a class file version number > N");
             System.exit( -1 );
         }
 
         Main m = new Main();
+        String threshold = null;
+
+        List files = new ArrayList();
         for ( int i = 0; i < args.length; i++ )
         {
-            m.process( new File( args[i] ) );
+            if (args[i].equals("-h"))
+            {
+                m.humanReadableName = true;
+                continue;
+            }
+            if (args[i].equals("-t"))
+            {
+                threshold = args[++i];
+                for (Iterator j=HUMAN_READABLE_NAME.entrySet().iterator(); j.hasNext(); )
+                {
+                    Map.Entry v = ((Map.Entry)j.next());
+                    if (v.getValue().equals(threshold))
+                    {
+                        threshold = (String)v.getKey();
+                        break;
+                    }
+                }
+                continue;
+            }
+
+            files.add(new File(args[i]));
         }
+
+        for (int i = 0; i < files.size(); i++)
+        {
+            m.process((File) files.get(i));
+        }
+
+        if (threshold!=null && m.maximumVersion.compareTo(threshold)>0)
+            System.exit(1);
     }
 
     protected void process( String name, InputStream image )
@@ -59,11 +101,35 @@ public class Main
         byte[] buf = new byte[8];
         dis.readFully( buf );
 
-        System.out.println( u2( buf[6], buf[7] ) + "." + u2( buf[4], buf[5] ) + " " + name );
+        String v = u2(buf[6], buf[7]) + "." + u2(buf[4], buf[5]);
+        if (maximumVersion.compareTo(v)<0)
+        {
+            maximumVersion = v;
+        }
+
+        if (humanReadableName)
+        {
+            String hn = (String)HUMAN_READABLE_NAME.get(v);
+            if (hn!=null)   v = hn;
+        }
+
+        System.out.println( v + " " + name );
     }
 
     private static int u2( byte u, byte d )
     {
         return ( (int) u ) * 256 + d;
+    }
+
+    private static final Map HUMAN_READABLE_NAME = new HashMap();
+
+    static
+    {
+        HUMAN_READABLE_NAME.put("45.0","Java1");
+        HUMAN_READABLE_NAME.put("46.0","Java2");
+        HUMAN_READABLE_NAME.put("47.0","Java3");
+        HUMAN_READABLE_NAME.put("48.0","Java4");
+        HUMAN_READABLE_NAME.put("49.0","Java5");
+        HUMAN_READABLE_NAME.put("50.0","Java6");
     }
 }
