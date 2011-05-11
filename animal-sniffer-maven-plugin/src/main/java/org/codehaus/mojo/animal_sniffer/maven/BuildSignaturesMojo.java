@@ -128,14 +128,6 @@ public class BuildSignaturesMojo
     private String[] excludeDependencies = null;
 
     /**
-     * A list of signatures to include.
-     *
-     * @parameter
-     * @since 1.3
-     */
-    private Signature[] includeSignatures = null;
-
-    /**
      * The java home to generate the signatures of, if not specified only the signatures of dependencies will be
      * included. This parameter is overridden by {@link #javaHomeClassPath}.  This parameter overrides {@link #jdk}
      * and any java home specified by maven-toolchains-plugin.
