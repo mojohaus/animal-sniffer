@@ -40,6 +40,8 @@ import java.io.ObjectInputStream;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
@@ -61,6 +63,8 @@ public class SignatureChecker
      * Classes in this packages are considered to be resolved elsewhere and
      * thus not a subject of the error checking when referenced.
      */
+    private final List ignoredPackageRules;
+
     private final Set ignoredPackages;
 
     private boolean hadError = false;
@@ -80,11 +84,19 @@ public class SignatureChecker
         throws IOException
     {
         this.ignoredPackages = new HashSet();
+        this.ignoredPackageRules = new LinkedList();
         Iterator i = ignoredPackages.iterator();
         while ( i.hasNext() )
         {
             String wildcard = (String) i.next();
-            this.ignoredPackages.add( RegexUtils.compileWildcard( wildcard.replace( '.', '/' )) );
+            if ( wildcard.indexOf( '*' ) == -1 )
+            {
+                this.ignoredPackages.add( wildcard.replace( '.', '/' ) );
+            }
+            else
+            {
+                this.ignoredPackageRules.add( newMatchRule( wildcard.replace( '.', '/' ) ) );
+            }
         }
         this.logger = logger;
         try
@@ -112,6 +124,8 @@ public class SignatureChecker
         ClassReader cr = new ClassReader( image );
 
         final Set warned = new HashSet();
+
+        final Set ignoredPackageCache = new HashSet( 50 * ignoredPackageRules.size() );
 
         cr.accept( new EmptyVisitor()
         {
@@ -149,7 +163,7 @@ public class SignatureChecker
                         {
                             return;
                         }
-                        if ( type.startsWith( "[" ) )
+                        if ( type.charAt( 0 ) == '[' )
                         {
                             return; // array
                         }
@@ -184,17 +198,22 @@ public class SignatureChecker
                         {
                             return true;    // warning suppressed in this context
                         }
-                        if ( type.startsWith( "[" ) )
+                        if ( type.charAt( 0 ) == '[' )
                         {
                             return true; // array
                         }
 
-                        Iterator i = ignoredPackages.iterator();
+                        if ( ignoredPackages.contains( type ) || ignoredPackageCache.contains( type ) )
+                        {
+                            return true;
+                        }
+                        Iterator i = ignoredPackageRules.iterator();
                         while ( i.hasNext() )
                         {
-                            Pattern pattern = (Pattern) i.next();
-                            if ( pattern.matcher( type ).matches() )
+                            MatchRule rule = (MatchRule) i.next();
+                            if ( rule.matches( type ) )
                             {
+                                ignoredPackageCache.add( type );
                                 return true;
                             }
                         }
@@ -251,6 +270,73 @@ public class SignatureChecker
                 }
             }
         }, 0 );
+    }
+
+    private static interface MatchRule
+    {
+        boolean matches( String text );
+    }
+
+    private static class PrefixMatchRule
+        implements MatchRule
+    {
+        private final String prefix;
+
+        public PrefixMatchRule( String prefix )
+        {
+            this.prefix = prefix;
+        }
+
+        public boolean matches( String text )
+        {
+            return text.startsWith( prefix );
+        }
+    }
+
+    private static class ExactMatchRule
+        implements MatchRule
+    {
+        private final String match;
+
+        public ExactMatchRule( String match )
+        {
+            this.match = match;
+        }
+
+        public boolean matches( String text )
+        {
+            return match.equals( text );
+        }
+    }
+
+    private static class RegexMatchRule
+        implements MatchRule
+    {
+        private final Pattern regex;
+
+        public RegexMatchRule( Pattern regex )
+        {
+            this.regex = regex;
+        }
+
+        public boolean matches( String text )
+        {
+            return regex.matcher( text ).matches();
+        }
+    }
+
+    private MatchRule newMatchRule( String matcher )
+    {
+        int i = matcher.indexOf( '*' );
+        if ( i == -1 )
+        {
+            return new ExactMatchRule( matcher );
+        }
+        if ( i == matcher.length() - 1 )
+        {
+            return new PrefixMatchRule( matcher.substring( 0, i ) );
+        }
+        return new RegexMatchRule( RegexUtils.compileWildcard( matcher ) );
     }
 
     public boolean isSignatureBroken()
