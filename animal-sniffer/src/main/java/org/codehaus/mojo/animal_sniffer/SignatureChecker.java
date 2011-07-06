@@ -89,7 +89,7 @@ public class SignatureChecker
         while ( i.hasNext() )
         {
             String wildcard = (String) i.next();
-            if ( wildcard.indexOf( '*' ) == -1 )
+            if ( wildcard.indexOf( '*' ) == -1 && wildcard.indexOf( '?' ) == -1 )
             {
                 this.ignoredPackages.add( wildcard.replace( '.', '/' ) );
             }
