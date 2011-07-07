@@ -77,7 +77,7 @@ public class CheckSignatureRule
      *
      * @parameter default-value="true"
      */
-    protected boolean ignoreDependencies;
+    protected boolean ignoreDependencies = true;
     
     public void execute( EnforcerRuleHelper helper )
         throws EnforcerRuleException
