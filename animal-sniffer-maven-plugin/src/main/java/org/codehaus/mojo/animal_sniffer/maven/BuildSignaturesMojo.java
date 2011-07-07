@@ -220,6 +220,7 @@ public class BuildSignaturesMojo
     /**
      * The JDK Toolchain to use.  This parameter can be overridden by {@link #javaHome} or {@link #javaHomeClassPath}.
      * This parameter overrides any toolchain specified with maven-toolchains-plugin.
+     *
      * @parameter
      * @since 1.3
      */
@@ -233,7 +234,7 @@ public class BuildSignaturesMojo
     private List/*<Artifact>*/ pluginArtifacts;
 
     /**
-     * The groupId of the Java Boot Classpath Detector to use. The plugin's dependencies will be searched for a 
+     * The groupId of the Java Boot Classpath Detector to use. The plugin's dependencies will be searched for a
      * dependency of type <code>jar</code> with this groupId and the artifactId specified in {@link #jbcpdArtifactId}.
      * The dependency should be a standalone executable jar file which outputs the java boot classpath as a single
      * line separated using {@link File#pathSeparatorChar} or else exits with a non-zero return code if it cannot determine
@@ -245,7 +246,7 @@ public class BuildSignaturesMojo
     private String jbcpdGroupId;
 
     /**
-     * The artifactId of the Java Boot Classpath Detector to use. The plugin's dependencies will be searched for a 
+     * The artifactId of the Java Boot Classpath Detector to use. The plugin's dependencies will be searched for a
      * dependency of type <code>jar</code> with this artifactId and the groupId specified in {@link #jbcpdGroupId}.
      * The dependency should be a standalone executable jar file which outputs the java boot classpath as a single
      * line separated using {@link File#pathSeparatorChar} or else exits with a non-zero return code if it cannot determine
@@ -288,10 +289,10 @@ public class BuildSignaturesMojo
                 {
                     String jvm = null;
                     tc = toolchainManager.getToolchainFromBuildContext( "jdk", //NOI18N
-                                session );
+                                                                        session );
                     getLog().info( "Toolchain from session: " + tc );
                     //assign the path to executable from toolchains
-                    if ( tc != null)
+                    if ( tc != null )
                     {
                         jvm = tc.findTool( "java" ); //NOI18N
                     }
@@ -339,8 +340,8 @@ public class BuildSignaturesMojo
                 {
                     if ( skipIfNoJavaHome )
                     {
-                        getLog().warn( "Skipping signature generation as could not find jdk toolchain to match " +
-                            jdk.getParameters() );
+                        getLog().warn( "Skipping signature generation as could not find jdk toolchain to match "
+                                           + jdk.getParameters() );
                         return;
                     }
                     throw new MojoFailureException( "Could not find jdk toolchain to match " + jdk.getParameters() );
@@ -354,7 +355,7 @@ public class BuildSignaturesMojo
                     }
                     throw new MojoFailureException(
                         "Cannot include java home if java home is not specified (either via javaClassPath, javaHome, "
-                        + "jdk or maven-toolchains-plugin)" );
+                            + "jdk or maven-toolchains-plugin)" );
                 }
             }
         }
@@ -415,9 +416,9 @@ public class BuildSignaturesMojo
         {
             Artifact candidate = (Artifact) i.next();
 
-            if ( StringUtils.equals( jbcpdGroupId, candidate.getGroupId() ) &&
-                StringUtils.equals( jbcpdArtifactId, candidate.getArtifactId() ) && candidate.getFile() != null &&
-                candidate.getFile().isFile() )
+            if ( StringUtils.equals( jbcpdGroupId, candidate.getGroupId() )
+                && StringUtils.equals( jbcpdArtifactId, candidate.getArtifactId() ) && candidate.getFile() != null
+                && candidate.getFile().isFile() )
             {
                 javaBootClasspathDetector = candidate;
             }
@@ -426,12 +427,13 @@ public class BuildSignaturesMojo
         {
             if ( skipIfNoJavaHome )
             {
-                getLog().warn( "Skipping signature generation as could not find boot classpath detector (" +
-                    ArtifactUtils.versionlessKey( jbcpdGroupId, jbcpdArtifactId ) + ")." );
+                getLog().warn( "Skipping signature generation as could not find boot classpath detector ("
+                                   + ArtifactUtils.versionlessKey( jbcpdGroupId, jbcpdArtifactId ) + ")." );
                 return false;
             }
-            throw new MojoFailureException( "Could not find boot classpath detector (" +
-                ArtifactUtils.versionlessKey( jbcpdGroupId, jbcpdArtifactId ) + ")." );
+            throw new MojoFailureException( "Could not find boot classpath detector ("
+                                                + ArtifactUtils.versionlessKey( jbcpdGroupId, jbcpdArtifactId )
+                                                + ")." );
         }
 
         try
@@ -456,7 +458,7 @@ public class BuildSignaturesMojo
         cli.setExecutable( javaExecutable );
         cli.addEnvironment( "CLASSPATH", "" );
         cli.addEnvironment( "JAVA_HOME", "" );
-        cli.addArguments( new String[]{"-jar", javaBootClasspathDetector.getFile().getAbsolutePath()} );
+        cli.addArguments( new String[]{ "-jar", javaBootClasspathDetector.getFile().getAbsolutePath() } );
 
         final CommandLineUtils.StringStreamConsumer stdout = new CommandLineUtils.StringStreamConsumer();
         final CommandLineUtils.StringStreamConsumer stderr = new CommandLineUtils.StringStreamConsumer();
@@ -468,8 +470,8 @@ public class BuildSignaturesMojo
             getLog().debug( "Exit code = " + exitCode );
             if ( skipIfNoJavaHome )
             {
-                getLog().warn( "Skipping signature generation as could not auto-detect java boot classpath for " +
-                    javaExecutable );
+                getLog().warn( "Skipping signature generation as could not auto-detect java boot classpath for "
+                                   + javaExecutable );
                 return false;
             }
             throw new MojoFailureException( "Could not auto-detect java boot classpath for " + javaExecutable );
@@ -562,8 +564,8 @@ public class BuildSignaturesMojo
                 }
                 else
                 {
-                    getLog().warn( "Could not add signatures from boot classpath element: " + javaHomeClassPath[i] +
-                        " as it does not exist." );
+                    getLog().warn( "Could not add signatures from boot classpath element: " + javaHomeClassPath[i]
+                                       + " as it does not exist." );
                 }
             }
         }
@@ -663,87 +665,31 @@ public class BuildSignaturesMojo
         // successful enumeration of all the toolchains of the required type.
         // This method is only ever called in versions of Maven that have toolchain support.
 
-        if ( toolchainManagerPrivate != null )
-        {
-            // Maven 2.2.1+ and 3.0+
-            Class managerClass = toolchainManagerPrivate.getClass();
-            try
-            {
-                try
-                {
-                    // try 3.x style API
-                    Method newMethod = managerClass.getMethod( "getToolchainsForType",
-                                                               new Class[]{ String.class, MavenSession.class } );
-
-                    return (ToolchainPrivate[]) newMethod.invoke( toolchainManagerPrivate,
-                                                                  new Object[]{ type, session } );
-                }
-                catch ( NoSuchMethodException e1 )
-                {
-                    try
-                    {
-                        // try 2.2.1 style API
-                        Method oldMethod =
-                            managerClass.getMethod( "getToolchainsForType", new Class[]{ String.class } );
-
-                        return (ToolchainPrivate[]) oldMethod.invoke( toolchainManagerPrivate, new Object[]{ type } );
-                    }
-                    catch ( NoSuchMethodException e2 )
-                    {
-                        e2.initCause( e1 );
-                        throw e2;
-                    }
-                }
-            }
-            catch ( NoSuchMethodException e )
-            {
-                StringBuilder buf = new StringBuilder( "Incompatible toolchain API." );
-                buf.append( "\n\nCannot find a suitable 'getToolchainsForType' method. Available methods are:\n" );
-
-                Method[] methods = managerClass.getMethods();
-                for ( int i = 0; i < methods.length; i++ )
-                {
-                    buf.append( "  " ).append( methods[i] ).append( '\n' );
-                }
-                throw new MojoExecutionException( buf.toString(), e );
-            }
-            catch ( IllegalAccessException e )
-            {
-                throw new MojoExecutionException( "Incompatible toolchain API", e );
-            }
-            catch ( InvocationTargetException e )
-            {
-                Throwable cause = e.getCause();
-
-                if ( cause instanceof RuntimeException )
-                {
-                    throw (RuntimeException) cause;
-                }
-                if ( cause instanceof MisconfiguredToolchainException )
-                {
-                    throw (MisconfiguredToolchainException) cause;
-                }
-
-                throw new MojoExecutionException( "Incompatible toolchain API", e );
-            }
-        }
-
-        // Now it must the the 2.0.x style API
-        // Therefore we need to hack our way to the correct method
-
-        Class managerClass = toolchainManager.getClass();
+        Class managerClass = toolchainManagerPrivate.getClass();
         try
         {
             try
             {
-                // try 2.0.x style API
-                Method oldMethod = managerClass.getMethod( "getToolchainsForType", new Class[]{ String.class } );
+                // try 3.x style API
+                Method newMethod =
+                    managerClass.getMethod( "getToolchainsForType", new Class[]{ String.class, MavenSession.class } );
 
-                return (ToolchainPrivate[]) oldMethod.invoke( toolchainManager, new Object[]{ type } );
+                return (ToolchainPrivate[]) newMethod.invoke( toolchainManagerPrivate, new Object[]{ type, session } );
             }
-            catch ( NoSuchMethodException e2 )
+            catch ( NoSuchMethodException e1 )
             {
-                throw e2;
+                try
+                {
+                    // try 2.2.1 style API
+                    Method oldMethod = managerClass.getMethod( "getToolchainsForType", new Class[]{ String.class } );
+
+                    return (ToolchainPrivate[]) oldMethod.invoke( toolchainManagerPrivate, new Object[]{ type } );
+                }
+                catch ( NoSuchMethodException e2 )
+                {
+                    e2.initCause( e1 );
+                    throw e2;
+                }
             }
         }
         catch ( NoSuchMethodException e )
