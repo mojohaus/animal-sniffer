@@ -67,7 +67,8 @@ import java.util.List;
  * @author Stephen Connolly
  * @goal build
  * @configurator override
- * @requiresDependencyResolution compile 
+ * @requiresDependencyResolution compile
+ * @threadSafe
  */
 public class BuildSignaturesMojo
     extends AbstractMojo

@@ -51,6 +51,7 @@ import java.util.Set;
  * @phase process-classes
  * @requiresDependencyResolution compile
  * @goal check
+ * @threadSafe
  */
 public class CheckSignatureMojo
     extends AbstractMojo
