@@ -38,6 +38,7 @@ import org.apache.maven.shared.artifact.filter.PatternIncludesArtifactFilter;
 import org.apache.maven.toolchain.MisconfiguredToolchainException;
 import org.apache.maven.toolchain.Toolchain;
 import org.apache.maven.toolchain.ToolchainManager;
+import org.apache.maven.toolchain.ToolchainManagerPrivate;
 import org.apache.maven.toolchain.ToolchainPrivate;
 import org.apache.maven.toolchain.java.JavaToolChain;
 import org.codehaus.mojo.animal_sniffer.SignatureBuilder;
@@ -202,6 +203,11 @@ public class BuildSignaturesMojo
     private ToolchainManager toolchainManager;
 
     /**
+     * @component
+     */
+    private ToolchainManagerPrivate toolchainManagerPrivate;
+
+    /**
      * The current build session instance. This is used for toolchain manager API calls.
      *
      * @parameter expression="${session}"
@@ -211,7 +217,7 @@ public class BuildSignaturesMojo
     private MavenSession session;
 
     /**
-     * The JDK Toolchain to use.  This parameter can be overridden by {@link #javaHome} or {@link #javaHomeClasspath}. 
+     * The JDK Toolchain to use.  This parameter can be overridden by {@link #javaHome} or {@link #javaHomeClassPath}.
      * This parameter overrides any toolchain specified with maven-toolchains-plugin.
      * @parameter
      * @since 1.3
@@ -652,29 +658,104 @@ public class BuildSignaturesMojo
     private ToolchainPrivate[] getToolchains( String type )
         throws MojoExecutionException, MisconfiguredToolchainException
     {
-        Class managerClass = toolchainManager.getClass();
+        // The toolchain API has moved about quite a bit... this method tries to navigate through to a
+        // successful enumeration of all the toolchains of the required type.
+        // This method is only ever called in versions of Maven that have toolchain support.
 
+        if ( toolchainManagerPrivate != null )
+        {
+            // Maven 2.2.1+ and 3.0+
+            Class managerClass = toolchainManagerPrivate.getClass();
+            try
+            {
+                try
+                {
+                    // try 3.x style API
+                    Method newMethod = managerClass.getMethod( "getToolchainsForType",
+                                                               new Class[]{ String.class, MavenSession.class } );
+
+                    return (ToolchainPrivate[]) newMethod.invoke( toolchainManagerPrivate,
+                                                                  new Object[]{ type, session } );
+                }
+                catch ( NoSuchMethodException e1 )
+                {
+                    try
+                    {
+                        // try 2.2.1 style API
+                        Method oldMethod =
+                            managerClass.getMethod( "getToolchainsForType", new Class[]{ String.class } );
+
+                        return (ToolchainPrivate[]) oldMethod.invoke( toolchainManagerPrivate, new Object[]{ type } );
+                    }
+                    catch ( NoSuchMethodException e2 )
+                    {
+                        e2.initCause( e1 );
+                        throw e2;
+                    }
+                }
+            }
+            catch ( NoSuchMethodException e )
+            {
+                StringBuilder buf = new StringBuilder( "Incompatible toolchain API." );
+                buf.append( "\n\nCannot find a suitable 'getToolchainsForType' method. Available methods are:\n" );
+
+                Method[] methods = managerClass.getMethods();
+                for ( int i = 0; i < methods.length; i++ )
+                {
+                    buf.append( "  " ).append( methods[i] ).append( '\n' );
+                }
+                throw new MojoExecutionException( buf.toString(), e );
+            }
+            catch ( IllegalAccessException e )
+            {
+                throw new MojoExecutionException( "Incompatible toolchain API", e );
+            }
+            catch ( InvocationTargetException e )
+            {
+                Throwable cause = e.getCause();
+
+                if ( cause instanceof RuntimeException )
+                {
+                    throw (RuntimeException) cause;
+                }
+                if ( cause instanceof MisconfiguredToolchainException )
+                {
+                    throw (MisconfiguredToolchainException) cause;
+                }
+
+                throw new MojoExecutionException( "Incompatible toolchain API", e );
+            }
+        }
+
+        // Now it must the the 2.0.x style API
+        // Therefore we need to hack our way to the correct method
+
+        Class managerClass = toolchainManager.getClass();
         try
         {
             try
             {
-                // try 3.x style API
-                Method newMethod =
-                    managerClass.getMethod( "getToolchainsForType", new Class[]{String.class, MavenSession.class} );
+                // try 2.0.x style API
+                Method oldMethod = managerClass.getMethod( "getToolchainsForType", new Class[]{ String.class } );
 
-                return (ToolchainPrivate[]) newMethod.invoke( toolchainManager, new Object[]{type, session} );
+                return (ToolchainPrivate[]) oldMethod.invoke( toolchainManager, new Object[]{ type } );
             }
-            catch ( NoSuchMethodException e )
+            catch ( NoSuchMethodException e2 )
             {
-                // try 2.x style API
-                Method oldMethod = managerClass.getMethod( "getToolchainsForType", new Class[]{String.class} );
-
-                return (ToolchainPrivate[]) oldMethod.invoke( toolchainManager, new Object[]{type} );
+                throw e2;
             }
         }
         catch ( NoSuchMethodException e )
         {
-            throw new MojoExecutionException( "Incompatible toolchain API", e );
+            StringBuilder buf = new StringBuilder( "Incompatible toolchain API." );
+            buf.append( "\n\nCannot find a suitable 'getToolchainsForType' method. Available methods are:\n" );
+
+            Method[] methods = managerClass.getMethods();
+            for ( int i = 0; i < methods.length; i++ )
+            {
+                buf.append( "  " ).append( methods[i] ).append( '\n' );
+            }
+            throw new MojoExecutionException( buf.toString(), e );
         }
         catch ( IllegalAccessException e )
         {
