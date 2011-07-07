@@ -97,6 +97,13 @@ public class CheckSignatureMojo
     protected boolean ignoreDependencies;
 
     /**
+     * Should signature checking be skipped?
+     *
+     * @parameter default-value="false" expression="${animal.sniffer.skip}"
+     */
+    protected boolean skip;
+
+    /**
      * @component
      * @readonly
      */
@@ -123,6 +130,12 @@ public class CheckSignatureMojo
     public void execute()
         throws MojoExecutionException, MojoFailureException
     {
+        if ( skip )
+        {
+            getLog().info( "Signature checking is skipped." );
+            return;
+        }
+
         try
         {
             getLog().info( "Checking unresolved references to " + signature );
