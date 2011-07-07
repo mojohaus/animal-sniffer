@@ -99,9 +99,10 @@ public class SignatureChecker
             }
         }
         this.logger = logger;
+        ObjectInputStream ois = null;
         try
         {
-            ObjectInputStream ois = new ObjectInputStream( new GZIPInputStream( in ) );
+            ois = new ObjectInputStream( new GZIPInputStream( in ) );
             while ( true )
             {
                 Clazz c = (Clazz) ois.readObject();
@@ -115,6 +116,20 @@ public class SignatureChecker
         catch ( ClassNotFoundException e )
         {
             throw new NoClassDefFoundError( e.getMessage() );
+        }
+        finally
+        {
+            if ( ois != null )
+            {
+                try
+                {
+                    ois.close();
+                }
+                catch ( IOException e )
+                {
+                    // ignore
+                }
+            }
         }
     }
 
@@ -222,12 +237,11 @@ public class SignatureChecker
         public CheckingVisitor( String name )
         {
             this.ignoredPackageCache = new HashSet( 50 * ignoredPackageRules.size() );
-            this.warned = new HashSet(  );
+            this.warned = new HashSet();
             this.name = name;
         }
 
-        public MethodVisitor visitMethod( int access, String name, String desc, String signature,
-                                          String[] exceptions )
+        public MethodVisitor visitMethod( int access, String name, String desc, String signature, String[] exceptions )
         {
             return new EmptyVisitor()
             {
