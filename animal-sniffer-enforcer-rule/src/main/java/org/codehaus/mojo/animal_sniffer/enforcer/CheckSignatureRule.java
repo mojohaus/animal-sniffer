@@ -122,6 +122,8 @@ public class CheckSignatureRule
 
             final SignatureChecker signatureChecker =
                 new SignatureChecker( new FileInputStream( a.getFile() ), ignoredPackages, logger );
+            signatureChecker.setCheckJars( false ); // don't want to decend into jar files that have been copied to
+                                                    // the output directory as resources.
             signatureChecker.process( outputDirectory );
 
             if ( signatureChecker.isSignatureBroken() )

@@ -39,6 +39,21 @@ import java.util.jar.JarFile;
 public abstract class ClassFileVisitor
 {
     /**
+     * Whether to check inside <code>.jar</code> files
+     */
+    private boolean checkJars = true;
+
+    public boolean isCheckJars()
+    {
+        return checkJars;
+    }
+
+    public void setCheckJars( boolean checkJars )
+    {
+        this.checkJars = checkJars;
+    }
+
+    /**
      * Multi-arg version of {@link #process(File)}.
      */
     public void process( File[] files )
@@ -68,7 +83,7 @@ public abstract class ClassFileVisitor
         {
             processClassFile( file );
         }
-        else if ( file.getName().endsWith( ".jar" ) )
+        else if ( file.getName().endsWith( ".jar" ) && checkJars )
         {
             processJarFile( file );
         }
