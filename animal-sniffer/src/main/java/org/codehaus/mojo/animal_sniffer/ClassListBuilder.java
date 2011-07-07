@@ -25,6 +25,7 @@ package org.codehaus.mojo.animal_sniffer;
  *
  */
 
+import org.codehaus.mojo.animal_sniffer.logging.Logger;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.commons.EmptyVisitor;
 
@@ -43,32 +44,47 @@ public class ClassListBuilder
 {
     private final Set packages;
 
+    private final Logger logger;
+
     public Set getPackages()
     {
         return packages;
     }
 
-    public ClassListBuilder( Set packages )
+    public ClassListBuilder( Set packages, Logger logger )
     {
         this.packages = packages;
+        this.logger = logger;
     }
 
-    public ClassListBuilder()
+    public ClassListBuilder( Logger logger )
     {
-        this( new HashSet() );
+        this( new HashSet(), logger );
     }
 
     protected void process( String name, InputStream image )
         throws IOException
     {
-        ClassReader cr = new ClassReader( image );
-        cr.accept( new EmptyVisitor()
+        try
         {
-            public void visit( int version, int access, String name, String signature, String superName,
-                               String[] interfaces )
+            ClassReader cr = new ClassReader( image );
+            cr.accept( new EmptyVisitor()
             {
-                packages.add( name.replace( '/', '.' ) );
-            }
-        }, 0 );
+                public void visit( int version, int access, String name, String signature, String superName,
+                                   String[] interfaces )
+                {
+                    packages.add( name.replace( '/', '.' ) );
+                }
+            }, 0 );
+        }
+        catch ( ArrayIndexOutOfBoundsException e )
+        {
+            logger.error( "Bad class file " + name );
+            // MANIMALSNIFFER-9 it is a pity that ASM does not throw a nicer error on encountering a malformed
+            // class file.
+            IOException ioException = new IOException( "Bad class file " + name );
+            ioException.initCause( e );
+            throw ioException;
+        }
     }
 }

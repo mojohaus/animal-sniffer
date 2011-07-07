@@ -123,153 +123,19 @@ public class SignatureChecker
     {
         ClassReader cr = new ClassReader( image );
 
-        final Set warned = new HashSet();
-
-        final Set ignoredPackageCache = new HashSet( 50 * ignoredPackageRules.size() );
-
-        cr.accept( new EmptyVisitor()
+        try
         {
-            public MethodVisitor visitMethod( int access, String name, String desc, String signature,
-                                              String[] exceptions )
-            {
-                return new EmptyVisitor()
-                {
-                    /**
-                     * True if @IgnoreJRERequirement is set.
-                     */
-                    boolean ignoreError = false;
-
-                    public AnnotationVisitor visitAnnotation( String desc, boolean visible )
-                    {
-                        if ( desc.equals( "Lorg/jvnet/animal_sniffer/IgnoreJRERequirement;" ) )
-                        {
-                            ignoreError = true;
-                        }
-                        if ( desc.equals( "Lorg/codehaus/mojo/animal_sniffer/IgnoreJRERequirement;" ) )
-                        {
-                            ignoreError = true;
-                        }
-                        return super.visitAnnotation( desc, visible );
-                    }
-
-                    public void visitMethodInsn( int opcode, String owner, String name, String desc )
-                    {
-                        check( owner, name + desc );
-                    }
-
-                    public void visitTypeInsn( int opcode, String type )
-                    {
-                        if ( shouldBeIgnored( type ) )
-                        {
-                            return;
-                        }
-                        if ( type.charAt( 0 ) == '[' )
-                        {
-                            return; // array
-                        }
-                        Clazz sigs = (Clazz) classes.get( type );
-                        if ( sigs == null )
-                        {
-                            error( "Undefined reference: " + type );
-                        }
-                    }
-
-                    public void visitFieldInsn( int opcode, String owner, String name, String desc )
-                    {
-                        check( owner, name + '#' + desc );
-                    }
-
-                    private void check( String owner, String sig )
-                    {
-                        if ( shouldBeIgnored( owner ) )
-                        {
-                            return;
-                        }
-                        if ( find( (Clazz) classes.get( owner ), sig ) )
-                        {
-                            return; // found it
-                        }
-                        error( "Undefined reference: " + owner + '.' + sig );
-                    }
-
-                    private boolean shouldBeIgnored( String type )
-                    {
-                        if ( ignoreError )
-                        {
-                            return true;    // warning suppressed in this context
-                        }
-                        if ( type.charAt( 0 ) == '[' )
-                        {
-                            return true; // array
-                        }
-
-                        if ( ignoredPackages.contains( type ) || ignoredPackageCache.contains( type ) )
-                        {
-                            return true;
-                        }
-                        Iterator i = ignoredPackageRules.iterator();
-                        while ( i.hasNext() )
-                        {
-                            MatchRule rule = (MatchRule) i.next();
-                            if ( rule.matches( type ) )
-                            {
-                                ignoredPackageCache.add( type );
-                                return true;
-                            }
-                        }
-                        return false;
-                    }
-                };
-            }
-
-            /**
-             * If the given signature is found in the specified class, return true.
-             */
-            private boolean find( Clazz c, String sig )
-            {
-                if ( c == null )
-                {
-                    return false;
-                }
-                if ( c.getSignatures().contains( sig ) )
-                {
-                    return true;
-                }
-
-                if ( sig.startsWith( "<" ) )
-                // constructor and static initializer shouldn't go up the inheritance hierarchy
-                {
-                    return false;
-                }
-
-                if ( find( (Clazz) classes.get( c.getSuperClass() ), sig ) )
-                {
-                    return true;
-                }
-
-                if ( c.getSuperInterfaces() != null )
-                {
-                    for ( int i = 0; i < c.getSuperInterfaces().length; i++ )
-                    {
-                        if ( find( (Clazz) classes.get( c.getSuperInterfaces()[i] ), sig ) )
-                        {
-                            return true;
-                        }
-                    }
-                }
-
-                return false;
-            }
-
-            private void error( String msg )
-            {
-                hadError = true;
-                if ( warned.add( msg ) )
-                {
-                    logger.error( msg + " in " + name );
-                }
-            }
-        }, 0 );
+            cr.accept( new CheckingVisitor( name ), 0 );
+        }
+        catch ( ArrayIndexOutOfBoundsException e )
+        {
+            logger.error( "Bad class file " + name );
+            // MANIMALSNIFFER-9 it is a pity that ASM does not throw a nicer error on encountering a malformed
+            // class file.
+            IOException ioException = new IOException( "Bad class file " + name );
+            ioException.initCause( e );
+            throw ioException;
+        }
     }
 
     private static interface MatchRule
@@ -278,7 +144,7 @@ public class SignatureChecker
     }
 
     private static class PrefixMatchRule
-        implements MatchRule
+        implements SignatureChecker.MatchRule
     {
         private final String prefix;
 
@@ -294,7 +160,7 @@ public class SignatureChecker
     }
 
     private static class ExactMatchRule
-        implements MatchRule
+        implements SignatureChecker.MatchRule
     {
         private final String match;
 
@@ -310,7 +176,7 @@ public class SignatureChecker
     }
 
     private static class RegexMatchRule
-        implements MatchRule
+        implements SignatureChecker.MatchRule
     {
         private final Pattern regex;
 
@@ -325,7 +191,7 @@ public class SignatureChecker
         }
     }
 
-    private MatchRule newMatchRule( String matcher )
+    private SignatureChecker.MatchRule newMatchRule( String matcher )
     {
         int i = matcher.indexOf( '*' );
         if ( i == -1 )
@@ -342,5 +208,163 @@ public class SignatureChecker
     public boolean isSignatureBroken()
     {
         return hadError;
+    }
+
+    private class CheckingVisitor
+        extends EmptyVisitor
+    {
+        private final Set ignoredPackageCache;
+
+        private final Set warned;
+
+        private final String name;
+
+        public CheckingVisitor( String name )
+        {
+            this.ignoredPackageCache = new HashSet( 50 * ignoredPackageRules.size() );
+            this.warned = new HashSet(  );
+            this.name = name;
+        }
+
+        public MethodVisitor visitMethod( int access, String name, String desc, String signature,
+                                          String[] exceptions )
+        {
+            return new EmptyVisitor()
+            {
+                /**
+                 * True if @IgnoreJRERequirement is set.
+                 */
+                boolean ignoreError = false;
+
+                public AnnotationVisitor visitAnnotation( String desc, boolean visible )
+                {
+                    if ( desc.equals( "Lorg/jvnet/animal_sniffer/IgnoreJRERequirement;" ) )
+                    {
+                        ignoreError = true;
+                    }
+                    if ( desc.equals( "Lorg/codehaus/mojo/animal_sniffer/IgnoreJRERequirement;" ) )
+                    {
+                        ignoreError = true;
+                    }
+                    return super.visitAnnotation( desc, visible );
+                }
+
+                public void visitMethodInsn( int opcode, String owner, String name, String desc )
+                {
+                    check( owner, name + desc );
+                }
+
+                public void visitTypeInsn( int opcode, String type )
+                {
+                    if ( shouldBeIgnored( type ) )
+                    {
+                        return;
+                    }
+                    if ( type.charAt( 0 ) == '[' )
+                    {
+                        return; // array
+                    }
+                    Clazz sigs = (Clazz) classes.get( type );
+                    if ( sigs == null )
+                    {
+                        error( "Undefined reference: " + type );
+                    }
+                }
+
+                public void visitFieldInsn( int opcode, String owner, String name, String desc )
+                {
+                    check( owner, name + '#' + desc );
+                }
+
+                private void check( String owner, String sig )
+                {
+                    if ( shouldBeIgnored( owner ) )
+                    {
+                        return;
+                    }
+                    if ( find( (Clazz) classes.get( owner ), sig ) )
+                    {
+                        return; // found it
+                    }
+                    error( "Undefined reference: " + owner + '.' + sig );
+                }
+
+                private boolean shouldBeIgnored( String type )
+                {
+                    if ( ignoreError )
+                    {
+                        return true;    // warning suppressed in this context
+                    }
+                    if ( type.charAt( 0 ) == '[' )
+                    {
+                        return true; // array
+                    }
+
+                    if ( ignoredPackages.contains( type ) || ignoredPackageCache.contains( type ) )
+                    {
+                        return true;
+                    }
+                    Iterator i = ignoredPackageRules.iterator();
+                    while ( i.hasNext() )
+                    {
+                        MatchRule rule = (MatchRule) i.next();
+                        if ( rule.matches( type ) )
+                        {
+                            ignoredPackageCache.add( type );
+                            return true;
+                        }
+                    }
+                    return false;
+                }
+            };
+        }
+
+        /**
+         * If the given signature is found in the specified class, return true.
+         */
+        private boolean find( Clazz c, String sig )
+        {
+            if ( c == null )
+            {
+                return false;
+            }
+            if ( c.getSignatures().contains( sig ) )
+            {
+                return true;
+            }
+
+            if ( sig.startsWith( "<" ) )
+            // constructor and static initializer shouldn't go up the inheritance hierarchy
+            {
+                return false;
+            }
+
+            if ( find( (Clazz) classes.get( c.getSuperClass() ), sig ) )
+            {
+                return true;
+            }
+
+            if ( c.getSuperInterfaces() != null )
+            {
+                for ( int i = 0; i < c.getSuperInterfaces().length; i++ )
+                {
+                    if ( find( (Clazz) classes.get( c.getSuperInterfaces()[i] ), sig ) )
+                    {
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+        }
+
+        private void error( String msg )
+        {
+            hadError = true;
+            if ( warned.add( msg ) )
+            {
+                logger.error( msg + " in " + name );
+            }
+        }
     }
 }

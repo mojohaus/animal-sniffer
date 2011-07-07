@@ -192,7 +192,7 @@ public class CheckSignatureMojo
     private Set buildPackageList()
         throws IOException
     {
-        ClassListBuilder plb = new ClassListBuilder();
+        ClassListBuilder plb = new ClassListBuilder( new MavenLogger( getLog() ) );
         apply( plb );
         return plb.getPackages();
     }

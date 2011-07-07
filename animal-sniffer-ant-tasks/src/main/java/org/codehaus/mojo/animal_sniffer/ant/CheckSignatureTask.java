@@ -174,7 +174,7 @@ public class CheckSignatureTask
     private Set buildPackageList()
         throws IOException
     {
-        ClassListBuilder plb = new ClassListBuilder();
+        ClassListBuilder plb = new ClassListBuilder( new AntLogger( this ) );
         apply( plb );
         return plb.getPackages();
     }

@@ -36,6 +36,7 @@ import org.apache.maven.project.MavenProject;
 import org.codehaus.mojo.animal_sniffer.ClassFileVisitor;
 import org.codehaus.mojo.animal_sniffer.ClassListBuilder;
 import org.codehaus.mojo.animal_sniffer.SignatureChecker;
+import org.codehaus.mojo.animal_sniffer.logging.Logger;
 import org.codehaus.plexus.component.configurator.expression.ExpressionEvaluationException;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 
@@ -102,7 +103,9 @@ public class CheckSignatureRule
             resolver.resolve( a, project.getRemoteArtifactRepositories(), localRepository );
             // just check code from this module
 
-            final Set ignoredPackages = buildPackageList( outputDirectory, classpathElements );
+            MavenLogger logger = new MavenLogger( helper.getLog() );
+
+            final Set ignoredPackages = buildPackageList( outputDirectory, classpathElements, logger );
 
             if ( ignores != null ) 
             {
@@ -118,8 +121,7 @@ public class CheckSignatureRule
             }
 
             final SignatureChecker signatureChecker =
-                new SignatureChecker( new FileInputStream( a.getFile() ), ignoredPackages,
-                                      new MavenLogger( helper.getLog() ) );
+                new SignatureChecker( new FileInputStream( a.getFile() ), ignoredPackages, logger );
             signatureChecker.process( outputDirectory );
 
             if ( signatureChecker.isSignatureBroken() )
@@ -150,11 +152,12 @@ public class CheckSignatureRule
      * List of packages defined in the application.
      *
      * @param outputDirectory
+     * @param logger
      */
-    private Set buildPackageList( File outputDirectory, List classpathElements )
+    private Set buildPackageList( File outputDirectory, List classpathElements, Logger logger )
         throws IOException
     {
-        ClassListBuilder plb = new ClassListBuilder();
+        ClassListBuilder plb = new ClassListBuilder( logger );
         apply( plb, outputDirectory, classpathElements );
         return plb.getPackages();
     }
