@@ -126,7 +126,7 @@ mvn animal-sniffer:check
   checked against the union of all the signatures specified, which is probably not what you
   want.
 
-  {{{examples/checking-signatures.html} Some more detailed examples of the <<<check>>> goal}}.
+  {{{./examples/checking-signatures.html} Some more detailed examples of the <<<check>>> goal}}.
 
 ** Generating API signatures
 
@@ -170,8 +170,8 @@ mvn animal-sniffer:check
 
   For more detailed examples of how to configure this goal see:
 
-    * {{{examples/generating-java-signatures.html}Generating signatures of the Java Runtime}}
+    * {{{./examples/generating-java-signatures.html}Generating signatures of the Java Runtime}}
 
-    * {{{examples/generating-other-api-signatures.html}Generating signatures of other APIs}}
+    * {{{./examples/generating-other-api-signatures.html}Generating signatures of other APIs}}
 
     []

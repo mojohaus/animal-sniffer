@@ -69,14 +69,14 @@ Animal Sniffer
 
   The following tools are provided by animal sniffer:
   
-    * {{{animal-sniffer/index.html}A command line tool to dump the class file version number}}. This helps you track 
+    * {{{./animal-sniffer/index.html}A command line tool to dump the class file version number}}. This helps you track 
     down the offending jar file when you see  <<<UnsupportedClassVersionError>>>.
     
-    * {{{animal-sniffer-ant-tasks/index.html}A set of ANT tasks}} for verifying that your classes comply with an API
+    * {{{./animal-sniffer-ant-tasks/index.html}A set of ANT tasks}} for verifying that your classes comply with an API
     signature as well as tasks for creating API signatures from a JDK, or a collection or jar and class files, or a
     collection of other API signature files, or combination of these elements.
     
-    * {{{animal-sniffer-enforcer-rule/index.html}A rule for use in the maven-enforcer-plugin}} for verifying that your 
+    * {{{./animal-sniffer-enforcer-rule/index.html}A rule for use in the maven-enforcer-plugin}} for verifying that your 
     classes comply with an API signature .
     
     * {{{../animal-sniffer-maven-plugin/index.html}A maven plugin}} for verifying that your classes comply with an API

@@ -109,4 +109,4 @@ Usage
   checked against the union of all the signatures specified, which is probably not what you 
   wanted.
 
-  {{{examples/checking-signatures.html} Some more detailed examples of the <<<checkSignatureRule>>> rule}}.
+  {{{./examples/checking-signatures.html} Some more detailed examples of the <<<checkSignatureRule>>> rule}}.

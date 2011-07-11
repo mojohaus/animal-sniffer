@@ -75,7 +75,7 @@ Generating signatures of other APIs
   the Java Runtime signatures should form part of your API's signatures.
 
   If you want different Java Runtime signatures used, you can either use the
-  techniques described in {{{generating-java-signatures.html}Generating
+  techniques described in {{{./generating-java-signatures.html}Generating
   signatures of the Java Runtime}} to control what Java Runtime to include or
   you can base your API off an existing Java Runtime signature.  For example:
 

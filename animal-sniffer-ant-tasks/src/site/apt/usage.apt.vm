@@ -109,7 +109,7 @@ Usage
 
   For more detailed examples of how to configure this task see:
   
-    * {{{examples/checking-signatures.html} Checking signatures}}.
+    * {{{./examples/checking-signatures.html} Checking signatures}}.
     
     []
 
@@ -137,6 +137,6 @@ Usage
 
   For more detailed examples of how to configure this goal see:
 
-    * {{{examples/generating-signatures.html}Generating signatures}}
+    * {{{./examples/generating-signatures.html}Generating signatures}}
 
     [] 

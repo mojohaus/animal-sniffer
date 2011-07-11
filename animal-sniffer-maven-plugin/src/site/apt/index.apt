@@ -41,28 +41,28 @@ Animal Sniffer Maven Plugin
 
   The Animal Sniffer Plugin has the following goals.
 
-  * {{{build-mojo.html}animal-sniffer:build}} creates a signature of an API.
+  * {{{./build-mojo.html}animal-sniffer:build}} creates a signature of an API.
 
-  * {{{check-mojo.html}animal-sniffer:check}} checks a project against an API signature.
+  * {{{./check-mojo.html}animal-sniffer:check}} checks a project against an API signature.
 
 * Usage
 
-  General instructions on how to use the Animal Sniffer Plugin can be found on the {{{usage.html}usage page}}. Some more
+  General instructions on how to use the Animal Sniffer Plugin can be found on the {{{./usage.html}usage page}}. Some more
   specific use cases are described in the examples given below. Last but not least, users occasionally contribute
   additional examples, tips or errata to the
   {{{http://docs.codehaus.org/display/MAVENUSER/Animal+Sniffer+Maven+Plugin}plugin's wiki page}}.
 
-  In case you still have questions regarding the plugin's usage, please have a look at the {{{faq.html}FAQ}} and feel
-  free to contact the {{{mail-lists.html}user mailing list}}. The posts to the mailing list are archived and could
+  In case you still have questions regarding the plugin's usage, please have a look at the {{{./faq.html}FAQ}} and feel
+  free to contact the {{{./mail-lists.html}user mailing list}}. The posts to the mailing list are archived and could
   already contain the answer to your question as part of an older thread. Hence, it is also worth browsing/searching
-  the {{{mail-lists.html}mail archive}}.
+  the {{{./mail-lists.html}mail archive}}.
 
   If you feel like the plugin is missing a feature or has a defect, you can fill a feature request or bug report in our
-  {{{issue-tracking.html}issue tracker}}. When creating a new issue, please provide a comprehensive description of your
+  {{{./issue-tracking.html}issue tracker}}. When creating a new issue, please provide a comprehensive description of your
   concern. Especially for fixing bugs it is crucial that the developers can reproduce your problem. For this reason,
   entire debug logs, POMs or most preferably little demo projects attached to the issue are very much appreciated.
   Of course, patches are welcome, too. Contributors can check out the project from our
-  {{{source-repository.html}source repository}} and will find supplementary information in the
+  {{{./source-repository.html}source repository}} and will find supplementary information in the
   {{{http://maven.apache.org/guides/development/guide-helping.html}guide to helping with Maven}}.
 
 * Examples
@@ -70,10 +70,10 @@ Animal Sniffer Maven Plugin
   To provide you with better understanding of some usages of Animal Sniffer,
   you can take a look into the following examples:
 
-  * {{{examples/generating-java-signatures.html}Generating signatures of the Java Runtime}}
+  * {{{./examples/generating-java-signatures.html}Generating signatures of the Java Runtime}}
 
-  * {{{examples/generating-other-api-signatures.html}Generating signatures of other APIs}}
+  * {{{./examples/generating-other-api-signatures.html}Generating signatures of other APIs}}
 
-  * {{{examples/checking-signatures.html}Checking a project against API signatures}}
+  * {{{./examples/checking-signatures.html}Checking a project against API signatures}}
 
   []
