@@ -87,6 +87,7 @@
               <goal>build</goal>
             </goals>
             <configuration>
+              <skipIfNoJavaHome>true</skipIfNoJavaHome>
               <jdk>
                 <version>[1.4,)</version>
               </jdk>

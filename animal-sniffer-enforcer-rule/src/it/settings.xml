@@ -31,7 +31,7 @@
       </activation>
       <repositories>
         <repository>
-          <id>central</id>
+          <id>local.central</id>
           <url>file:///@localRepository@</url>
           <releases>
             <enabled>true</enabled>
@@ -47,7 +47,7 @@
       </repositories>
       <pluginRepositories>
         <pluginRepository>
-          <id>central</id>
+          <id>local.central</id>
           <url>file:///@localRepository@</url>
           <releases>
             <enabled>true</enabled>
