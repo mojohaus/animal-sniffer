@@ -31,33 +31,29 @@
       </activation>
       <repositories>
         <repository>
-          <id>central</id>
+          <id>local.central</id>
           <url>file:///@localRepository@</url>
           <releases>
             <enabled>true</enabled>
             <checksumPolicy>ignore</checksumPolicy>
-            <updatePolicy>never</updatePolicy>
           </releases>
           <snapshots>
             <enabled>true</enabled>
             <checksumPolicy>ignore</checksumPolicy>
-            <updatePolicy>never</updatePolicy>
           </snapshots>
         </repository>
       </repositories>
       <pluginRepositories>
         <pluginRepository>
-          <id>central</id>
+          <id>local.central</id>
           <url>file:///@localRepository@</url>
           <releases>
             <enabled>true</enabled>
             <checksumPolicy>ignore</checksumPolicy>
-            <updatePolicy>never</updatePolicy>
           </releases>
           <snapshots>
             <enabled>true</enabled>
             <checksumPolicy>ignore</checksumPolicy>
-            <updatePolicy>never</updatePolicy>
           </snapshots>
         </pluginRepository>
       </pluginRepositories>
