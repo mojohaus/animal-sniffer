@@ -105,25 +105,32 @@ public abstract class ClassFileVisitor
     protected void processJarFile( File file )
         throws IOException
     {
-        JarFile jar = new JarFile( file );
-
-        Enumeration e = jar.entries();
-        while ( e.hasMoreElements() )
+        try
         {
-            JarEntry x = (JarEntry) e.nextElement();
-            if ( !x.getName().endsWith( ".class" ) )
+            JarFile jar = new JarFile( file );
+
+            Enumeration e = jar.entries();
+            while ( e.hasMoreElements() )
             {
-                continue;
+                JarEntry x = (JarEntry) e.nextElement();
+                if ( !x.getName().endsWith( ".class" ) )
+                {
+                    continue;
+                }
+                InputStream is = jar.getInputStream( x );
+                try
+                {
+                    process( file.getPath() + ':' + x.getName(), is );
+                }
+                finally
+                {
+                    is.close();
+                }
             }
-            InputStream is = jar.getInputStream( x );
-            try
-            {
-                process( file.getPath() + ':' + x.getName(), is );
-            }
-            finally
-            {
-                is.close();
-            }
+        }
+        catch ( IOException e )
+        {
+            throw new IOException( " failed to process jar " + file.getPath() + " : " + e.getMessage(), e );
         }
 
     }
