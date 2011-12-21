@@ -28,9 +28,10 @@ package org.codehaus.mojo.animal_sniffer;
 import org.codehaus.mojo.animal_sniffer.logging.Logger;
 import org.codehaus.mojo.animal_sniffer.logging.PrintWriterLogger;
 import org.objectweb.asm.ClassReader;
+import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.FieldVisitor;
 import org.objectweb.asm.MethodVisitor;
-import org.objectweb.asm.commons.EmptyVisitor;
+import org.objectweb.asm.Opcodes;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -201,9 +202,13 @@ public class SignatureBuilder
     }
 
     private class SignatureVisitor
-        extends EmptyVisitor
+        extends ClassVisitor
     {
         private Clazz clazz;
+
+        public SignatureVisitor() {
+            super(Opcodes.ASM4);
+        }
 
         public void visit( int version, int access, String name, String signature, String superName,
                            String[] interfaces )

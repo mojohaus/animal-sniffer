@@ -29,8 +29,9 @@ import org.codehaus.mojo.animal_sniffer.logging.Logger;
 import org.codehaus.mojo.animal_sniffer.logging.PrintWriterLogger;
 import org.objectweb.asm.AnnotationVisitor;
 import org.objectweb.asm.ClassReader;
+import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.MethodVisitor;
-import org.objectweb.asm.commons.EmptyVisitor;
+import org.objectweb.asm.Opcodes;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -226,7 +227,7 @@ public class SignatureChecker
     }
 
     private class CheckingVisitor
-        extends EmptyVisitor
+        extends ClassVisitor
     {
         private final Set ignoredPackageCache;
 
@@ -236,6 +237,7 @@ public class SignatureChecker
 
         public CheckingVisitor( String name )
         {
+            super(Opcodes.ASM4);
             this.ignoredPackageCache = new HashSet( 50 * ignoredPackageRules.size() );
             this.warned = new HashSet();
             this.name = name;
@@ -243,7 +245,7 @@ public class SignatureChecker
 
         public MethodVisitor visitMethod( int access, String name, String desc, String signature, String[] exceptions )
         {
-            return new EmptyVisitor()
+            return new MethodVisitor(Opcodes.ASM4)
             {
                 /**
                  * True if @IgnoreJRERequirement is set.

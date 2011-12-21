@@ -27,7 +27,8 @@ package org.codehaus.mojo.animal_sniffer;
 
 import org.codehaus.mojo.animal_sniffer.logging.Logger;
 import org.objectweb.asm.ClassReader;
-import org.objectweb.asm.commons.EmptyVisitor;
+import org.objectweb.asm.ClassVisitor;
+import org.objectweb.asm.Opcodes;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -68,7 +69,7 @@ public class ClassListBuilder
         try
         {
             ClassReader cr = new ClassReader( image );
-            cr.accept( new EmptyVisitor()
+            cr.accept( new ClassVisitor(Opcodes.ASM4)
             {
                 public void visit( int version, int access, String name, String signature, String superName,
                                    String[] interfaces )
