@@ -654,8 +654,10 @@ public class BuildSignaturesMojo
 
     private static String artifactId( Artifact artifact )
     {
-        return ArtifactUtils.artifactId( artifact.getGroupId(), artifact.getArtifactId(), artifact.getType(),
-                                         artifact.getClassifier(), artifact.getBaseVersion() );
+        return artifact.getGroupId() + ":" + artifact.getArtifactId() + ":" + artifact.getType()
+                + ( artifact.getClassifier() != null ? ":" + artifact.getClassifier() : "" ) + ":"
+                + artifact.getBaseVersion();
+
     }
 
     private ToolchainPrivate[] getToolchains( String type )
