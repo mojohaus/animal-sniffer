@@ -235,12 +235,27 @@ public class SignatureChecker
 
         private final String name;
 
+        private boolean ignoreClass = false;
+
         public CheckingVisitor( String name )
         {
             super(Opcodes.ASM4);
             this.ignoredPackageCache = new HashSet( 50 * ignoredPackageRules.size() );
             this.warned = new HashSet();
             this.name = name;
+        }
+
+        public boolean isIgnoreAnnotation(String desc)
+        {
+            return desc.equals( "Lorg/jvnet/animal_sniffer/IgnoreJRERequirement;" )
+                || desc.equals( "Lorg/codehaus/mojo/animal_sniffer/IgnoreJRERequirement;" );
+        }
+
+
+        public AnnotationVisitor visitAnnotation(String desc, boolean visible)
+        {
+            ignoreClass |= isIgnoreAnnotation(desc);
+            return super.visitAnnotation(desc, visible);
         }
 
         public MethodVisitor visitMethod( int access, String name, String desc, String signature, String[] exceptions )
@@ -250,18 +265,11 @@ public class SignatureChecker
                 /**
                  * True if @IgnoreJRERequirement is set.
                  */
-                boolean ignoreError = false;
+                boolean ignoreError = ignoreClass;
 
                 public AnnotationVisitor visitAnnotation( String desc, boolean visible )
                 {
-                    if ( desc.equals( "Lorg/jvnet/animal_sniffer/IgnoreJRERequirement;" ) )
-                    {
-                        ignoreError = true;
-                    }
-                    if ( desc.equals( "Lorg/codehaus/mojo/animal_sniffer/IgnoreJRERequirement;" ) )
-                    {
-                        ignoreError = true;
-                    }
+                    ignoreError |= isIgnoreAnnotation(desc);
                     return super.visitAnnotation( desc, visible );
                 }
 
