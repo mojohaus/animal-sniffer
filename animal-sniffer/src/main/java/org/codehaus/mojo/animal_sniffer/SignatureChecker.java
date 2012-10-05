@@ -69,6 +69,8 @@ public class SignatureChecker
 
     private final Set ignoredPackages;
 
+    private final Set/*<String>*/ ignoredOuterClassesOrMethods = new HashSet();
+
     private boolean hadError = false;
 
     private List/*<File>*/ sourcePath;
@@ -243,6 +245,7 @@ public class SignatureChecker
         private String packagePrefix;
         private int line;
         private String name;
+        private String internalName;
 
         private boolean ignoreClass = false;
 
@@ -255,6 +258,7 @@ public class SignatureChecker
 
         public void visit( int version, int access, String name, String signature, String superName, String[] interfaces )
         {
+            internalName = name;
             packagePrefix = name.substring(0, name.lastIndexOf( '/' ) + 1 );
         }
 
@@ -271,6 +275,15 @@ public class SignatureChecker
             }
         }
 
+        public void visitOuterClass( String owner, String name, String desc )
+        {
+            if ( ignoredOuterClassesOrMethods.contains( owner ) ||
+                 ( name != null && ignoredOuterClassesOrMethods.contains ( owner + "#" + name + desc ) ) )
+            {
+                ignoreClass = true;
+            }
+        }
+
         public boolean isIgnoreAnnotation(String desc)
         {
             return desc.equals( "Lorg/jvnet/animal_sniffer/IgnoreJRERequirement;" )
@@ -280,11 +293,15 @@ public class SignatureChecker
 
         public AnnotationVisitor visitAnnotation(String desc, boolean visible)
         {
-            ignoreClass |= isIgnoreAnnotation(desc);
+            if ( isIgnoreAnnotation( desc ) )
+            {
+                ignoreClass = true;
+                ignoredOuterClassesOrMethods.add( internalName );
+            }
             return super.visitAnnotation(desc, visible);
         }
 
-        public MethodVisitor visitMethod( int access, String name, String desc, String signature, String[] exceptions )
+        public MethodVisitor visitMethod( int access, final String name, final String desc, String signature, String[] exceptions )
         {
             return new MethodVisitor(Opcodes.ASM4)
             {
@@ -293,10 +310,14 @@ public class SignatureChecker
                  */
                 boolean ignoreError = ignoreClass;
 
-                public AnnotationVisitor visitAnnotation( String desc, boolean visible )
+                public AnnotationVisitor visitAnnotation( String annoDesc, boolean visible )
                 {
-                    ignoreError |= isIgnoreAnnotation(desc);
-                    return super.visitAnnotation( desc, visible );
+                    if ( isIgnoreAnnotation(annoDesc) )
+                    {
+                        ignoreError = true;
+                        ignoredOuterClassesOrMethods.add( internalName + "#" + name + desc );
+                    }
+                    return super.visitAnnotation( annoDesc, visible );
                 }
 
                 public void visitMethodInsn( int opcode, String owner, String name, String desc )

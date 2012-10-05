@@ -29,7 +29,12 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Enumeration;
+import java.util.Iterator;
+import java.util.SortedSet;
+import java.util.TreeSet;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
@@ -59,6 +64,20 @@ public abstract class ClassFileVisitor
     public void process( File[] files )
         throws IOException
     {
+        Arrays.sort( files, new Comparator/*<File>*/()
+        {
+            public int compare( Object o1, Object o2 )
+            {
+                File f1 = ( File ) o1;
+                File f2 = ( File ) o2;
+                String n1 = f1.getName();
+                String n2 = f2.getName();
+                // Ensure that outer classes are visited before inner classes:
+                int diff = n1.length() - n2.length();
+                return diff != 0 ? diff : n1.compareTo( n2 );
+            }
+
+        } );
         for ( int i = 0; i < files.length; i++ )
         {
             process( files[i] );
@@ -108,7 +127,17 @@ public abstract class ClassFileVisitor
         try
         {
             JarFile jar = new JarFile( file );
-
+            SortedSet/*<JarEntry>*/ entries = new TreeSet( new Comparator/*<JarEntry>*/() {
+                public int compare( Object o1, Object o2 )
+                {
+                    JarEntry e1 = ( JarEntry ) o1;
+                    JarEntry e2 = ( JarEntry ) o2;
+                    String n1 = e1.getName();
+                    String n2 = e2.getName();
+                    int diff = n1.length() - n2.length();
+                    return diff != 0 ? diff : n1.compareTo( n2 );
+                }
+            } );
             Enumeration e = jar.entries();
             while ( e.hasMoreElements() )
             {
@@ -117,6 +146,11 @@ public abstract class ClassFileVisitor
                 {
                     continue;
                 }
+                entries.add( x );
+            }
+            Iterator it = entries.iterator();
+            while ( it.hasNext() ) {
+                JarEntry x = ( JarEntry ) it.next();
                 InputStream is = jar.getInputStream( x );
                 try
                 {
