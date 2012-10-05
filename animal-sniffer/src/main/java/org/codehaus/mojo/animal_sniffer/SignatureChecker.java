@@ -47,6 +47,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.zip.GZIPInputStream;
+import org.objectweb.asm.Label;
 
 /**
  * Checks the signature against classes in this list.
@@ -69,6 +70,8 @@ public class SignatureChecker
     private final Set ignoredPackages;
 
     private boolean hadError = false;
+
+    private List/*<File>*/ sourcePath;
 
     public static void main( String[] args )
         throws Exception
@@ -132,6 +135,12 @@ public class SignatureChecker
                 }
             }
         }
+    }
+
+    /** @since 1.9 */
+    public void setSourcePath( List/*<File>*/ sourcePath )
+    {
+        this.sourcePath = sourcePath;
     }
 
     protected void process( final String name, InputStream image )
@@ -231,9 +240,9 @@ public class SignatureChecker
     {
         private final Set ignoredPackageCache;
 
-        private final Set warned;
-
-        private final String name;
+        private String packagePrefix;
+        private int line;
+        private String name;
 
         private boolean ignoreClass = false;
 
@@ -241,8 +250,25 @@ public class SignatureChecker
         {
             super(Opcodes.ASM4);
             this.ignoredPackageCache = new HashSet( 50 * ignoredPackageRules.size() );
-            this.warned = new HashSet();
             this.name = name;
+        }
+
+        public void visit( int version, int access, String name, String signature, String superName, String[] interfaces )
+        {
+            packagePrefix = name.substring(0, name.lastIndexOf( '/' ) + 1 );
+        }
+
+        public void visitSource( String source, String debug )
+        {
+            for ( Iterator it = sourcePath.iterator(); it.hasNext(); )
+            {
+                File root = ( File ) it.next();
+                File s = new File( root, packagePrefix + source );
+                if ( s.isFile() )
+                {
+                    name = s.getAbsolutePath();
+                }
+            }
         }
 
         public boolean isIgnoreAnnotation(String desc)
@@ -298,6 +324,11 @@ public class SignatureChecker
                 public void visitFieldInsn( int opcode, String owner, String name, String desc )
                 {
                     check( owner, name + '#' + desc );
+                }
+
+                public void visitLineNumber( int line, Label start )
+                {
+                    CheckingVisitor.this.line = line;
                 }
 
                 private void check( String owner, String sig )
@@ -385,10 +416,7 @@ public class SignatureChecker
         private void error( String msg )
         {
             hadError = true;
-            if ( warned.add( msg ) )
-            {
-                logger.error( msg + " in " + name );
-            }
+            logger.error(name + (line > 0 ? ":" + line : "") + ": " + msg);
         }
     }
 }
