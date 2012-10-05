@@ -38,6 +38,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
+import java.nio.CharBuffer;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -338,7 +339,7 @@ public class SignatureChecker
                     Clazz sigs = (Clazz) classes.get( type );
                     if ( sigs == null )
                     {
-                        error( "Undefined reference: " + type );
+                        error( type, null );
                     }
                 }
 
@@ -362,7 +363,7 @@ public class SignatureChecker
                     {
                         return; // found it
                     }
-                    error( "Undefined reference: " + owner + '.' + sig );
+                    error( owner, sig );
                 }
 
                 private boolean shouldBeIgnored( String type )
@@ -434,10 +435,109 @@ public class SignatureChecker
             return false;
         }
 
-        private void error( String msg )
+        private void error( String type, String sig )
         {
             hadError = true;
-            logger.error(name + (line > 0 ? ":" + line : "") + ": " + msg);
+            logger.error(name + (line > 0 ? ":" + line : "") + ": Undefined reference: " + toSourceForm( type, sig ) );
         }
     }
+
+    static String toSourceForm( String type, String sig )
+    {
+        String sourceType = toSourceType( type );
+        if ( sig == null )
+        {
+            return sourceType;
+        }
+        int hash = sig.indexOf( '#' );
+        if ( hash != -1 )
+        {
+            return toSourceType( CharBuffer.wrap( sig, hash + 1, sig.length() ) ) + " " + sourceType + "." + sig.substring( 0, hash );
+        }
+        int lparen = sig.indexOf( '(' );
+        if ( lparen != -1 )
+        {
+            int rparen = sig.indexOf( ')' );
+            if ( rparen != -1 )
+            {
+                StringBuffer b = new StringBuffer();
+                String returnType = sig.substring( rparen + 1 );
+                if ( returnType.equals( "V" ) )
+                {
+                    b.append( "void" );
+                }
+                else
+                {
+                    b.append( toSourceType( CharBuffer.wrap( returnType ) ) );
+                }
+                b.append( ' ' );
+                b.append( sourceType );
+                b.append( '.' );
+                // XXX consider prettifying <init>
+                b.append( sig.substring( 0, lparen ) );
+                b.append( '(' );
+                boolean first = true;
+                CharBuffer args = CharBuffer.wrap( sig, lparen + 1, rparen );
+                while ( args.hasRemaining() )
+                {
+                    if ( first )
+                    {
+                        first = false;
+                    }
+                    else
+                    {
+                        b.append( ", " );
+                    }
+                    b.append( toSourceType( args ) );
+                }
+                b.append( ')' );
+                return b.toString();
+            }
+        }
+        return "{" + type + ":" + sig + "}"; // ??
+    }
+
+    private static String toSourceType( CharBuffer type )
+    {
+        switch ( type.get() )
+        {
+            case 'L':
+                for ( int i = type.position(); i < type.limit(); i++ )
+                {
+                    if ( type.get( i ) == ';' )
+                    {
+                        String text = type.subSequence( 0, i - type.position() ).toString();
+                        type.position( i + 1 );
+                        return toSourceType( text );
+                    }
+                }
+                return "{" + type + "}"; // ??
+            case '[':
+                return toSourceType( type ) + "[]";
+            case 'B':
+                return "byte";
+            case 'C':
+                return "char";
+            case 'D':
+                return "double";
+            case 'F':
+                return "float";
+            case 'I':
+                return "int";
+            case 'J':
+                return "long";
+            case 'S':
+                return "short";
+            case 'Z':
+                return "boolean";
+            default:
+                return "{" + type + "}"; // ??
+        }
+    }
+
+    private static String toSourceType( String text )
+    {
+        return text.replaceFirst( "^java/lang/([^/]+)$", "$1" ).replace( '/', '.' ).replace( '$', '.' );
+    }
+
 }
