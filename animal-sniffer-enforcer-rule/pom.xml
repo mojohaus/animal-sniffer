@@ -43,7 +43,7 @@
   <properties>
     <enforcer-api.version>1.0</enforcer-api.version>
     <maven.version>2.0.9</maven.version>
-    <build-helper.version>1.4</build-helper.version>
+    <build-helper.version>1.7</build-helper.version>
   </properties>
 
   <dependencies>
