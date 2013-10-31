@@ -161,11 +161,6 @@ public class CheckSignatureMojo
                 }
             }
 
-            if ( getLog().isDebugEnabled() )
-            {
-                getLog().debug( ignoredPackages.toString() );
-            }
-
             final SignatureChecker signatureChecker =
                 new SignatureChecker( new FileInputStream( a.getFile() ), ignoredPackages,
                                       new MavenLogger( getLog() ) );
