@@ -43,6 +43,8 @@ import org.codehaus.plexus.component.repository.exception.ComponentLookupExcepti
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
@@ -122,8 +124,16 @@ public class CheckSignatureRule
 
             final SignatureChecker signatureChecker =
                 new SignatureChecker( new FileInputStream( a.getFile() ), ignoredPackages, logger );
-            signatureChecker.setCheckJars( false ); // don't want to decend into jar files that have been copied to
-                                                    // the output directory as resources.
+            signatureChecker.setCheckJars( false ); // don't want to descend into jar files that have been copied to
+            // the output directory as resources.
+            List sourcePaths = new ArrayList();
+            Iterator iterator = project.getCompileSourceRoots().iterator();
+            while ( iterator.hasNext() )
+            {
+                String path = (String) iterator.next();
+                sourcePaths.add( new File( path ) );
+            }
+            signatureChecker.setSourcePath( sourcePaths );
             signatureChecker.process( outputDirectory );
 
             if ( signatureChecker.isSignatureBroken() )

@@ -40,6 +40,7 @@ import org.codehaus.mojo.animal_sniffer.SignatureChecker;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -166,7 +167,14 @@ public class CheckSignatureMojo
                                       new MavenLogger( getLog() ) );
             signatureChecker.setCheckJars( false ); // don't want to decend into jar files that have been copied to
                                                     // the output directory as resources.
-            signatureChecker.setSourcePath( Collections.singletonList( new File( project.getBuild().getSourceDirectory() ) ) );
+            List sourcePaths = new ArrayList();
+            Iterator iterator = project.getCompileSourceRoots().iterator();
+            while ( iterator.hasNext() )
+            {
+                String path = (String) iterator.next();
+                sourcePaths.add( new File( path ) );
+            }
+            signatureChecker.setSourcePath( sourcePaths );
             signatureChecker.process( outputDirectory );
 
             if ( signatureChecker.isSignatureBroken() )
