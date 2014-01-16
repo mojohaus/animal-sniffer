@@ -24,6 +24,7 @@
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
+
   <parent>
     <groupId>org.codehaus.mojo</groupId>
     <artifactId>mojo-parent</artifactId>
@@ -36,32 +37,11 @@
   <packaging>pom</packaging>
 
   <name>Animal Sniffer</name>
-
   <description>
     Animal Sniffer Parent project.
   </description>
-  
   <url>http://mojo.codehaus.org/animal-sniffer</url>
-
-  <distributionManagement>
-    <site>
-      <id>codehaus.org</id>
-      <name>Mojo Website</name>
-      <url>dav:https://dav.codehaus.org/mojo/animal-sniffer</url>
-    </site>    
-  </distributionManagement>
-  
-  <modules>
-    <module>java-boot-classpath-detector</module>
-    <module>animal-sniffer-annotations</module>
-    <module>animal-sniffer</module>
-    <module>animal-sniffer-maven-plugin</module>
-    <module>animal-sniffer-enforcer-rule</module>
-    <module>animal-sniffer-ant-tasks</module>
-  </modules>
-
   <inceptionYear>2008</inceptionYear>
-
   <licenses>
     <license>
       <name>MIT license</name>
@@ -69,17 +49,6 @@
       <distribution>repo</distribution>
     </license>
   </licenses>
-
-  <issueManagement>
-    <system>jira</system>
-    <url>http://jira.codehaus.org/browse/MANIMALSNIFFER</url>
-  </issueManagement>
-
-  <scm>
-    <connection>scm:svn:https://svn.codehaus.org/mojo/tags/animal-sniffer-parent-1.10</connection>
-    <developerConnection>scm:svn:https://svn.codehaus.org/mojo/tags/animal-sniffer-parent-1.10</developerConnection>
-    <url>http://fisheye.codehaus.org/browse/mojo/tags/animal-sniffer-parent-1.10</url>
-  </scm>
 
   <developers>
     <developer>
@@ -99,6 +68,36 @@
       <timezone>0</timezone>
     </developer>
   </developers>
+
+  <modules>
+    <module>java-boot-classpath-detector</module>
+    <module>animal-sniffer-annotations</module>
+    <module>animal-sniffer</module>
+    <module>animal-sniffer-maven-plugin</module>
+    <module>animal-sniffer-enforcer-rule</module>
+    <module>animal-sniffer-ant-tasks</module>
+  </modules>
+
+  <scm>
+    <connection>scm:svn:https://svn.codehaus.org/mojo/tags/animal-sniffer-parent-1.10</connection>
+    <developerConnection>scm:svn:https://svn.codehaus.org/mojo/tags/animal-sniffer-parent-1.10</developerConnection>
+    <url>http://fisheye.codehaus.org/browse/mojo/tags/animal-sniffer-parent-1.10</url>
+  </scm>
+  <issueManagement>
+    <system>jira</system>
+    <url>http://jira.codehaus.org/browse/MANIMALSNIFFER</url>
+  </issueManagement>
+  <distributionManagement>
+    <site>
+      <id>codehaus.org</id>
+      <name>Mojo Website</name>
+      <url>dav:https://dav.codehaus.org/mojo/animal-sniffer</url>
+    </site>    
+  </distributionManagement>
+
+  <properties>
+    <sitePluginVersion>3.3</sitePluginVersion>
+  </properties>
 
   <build>
     <pluginManagement>
@@ -120,5 +119,5 @@
       </plugins>
     </pluginManagement>
   </build>
-  
+
 </project>
