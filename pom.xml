@@ -33,7 +33,7 @@
 
   <groupId>org.codehaus.mojo</groupId>
   <artifactId>animal-sniffer-parent</artifactId>
-  <version>1.11-SNAPSHOT</version>
+  <version>1.10</version>
   <packaging>pom</packaging>
 
   <name>Animal Sniffer</name>
@@ -79,9 +79,9 @@
   </modules>
 
   <scm>
-    <connection>scm:svn:https://svn.codehaus.org/mojo/trunk/mojo/animal-sniffer</connection>
-    <developerConnection>scm:svn:https://svn.codehaus.org/mojo/trunk/mojo/animal-sniffer</developerConnection>
-    <url>http://fisheye.codehaus.org/browse/mojo/trunk/mojo/animal-sniffer</url>
+    <connection>scm:svn:https://svn.codehaus.org/mojo/tags/animal-sniffer-parent-1.10</connection>
+    <developerConnection>scm:svn:https://svn.codehaus.org/mojo/tags/animal-sniffer-parent-1.10</developerConnection>
+    <url>http://fisheye.codehaus.org/browse/mojo/tags/animal-sniffer-parent-1.10</url>
   </scm>
   <issueManagement>
     <system>jira</system>
