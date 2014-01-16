@@ -38,9 +38,7 @@ import org.codehaus.mojo.animal_sniffer.SignatureChecker;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.Iterator;
-import java.util.Set;
-import java.util.Vector;
+import java.util.*;
 
 /**
  * Checks the files against the provided signature.
@@ -55,6 +53,8 @@ public class CheckSignatureTask
     private File signature;
 
     private Path classpath;
+
+    private Path sourcepath;
 
     private Vector paths = new Vector();
 
@@ -106,6 +106,35 @@ public class CheckSignatureTask
         createClasspath().setRefid( r );
     }
 
+    public Path createSourcepath()
+    {
+        log( "In createSourcepath", Project.MSG_INFO );
+        if ( this.sourcepath == null )
+        {
+            this.sourcepath = new Path( getProject() );
+        }
+        return this.sourcepath.createPath();
+    }
+
+    public void setSourcepath( Path sourcepath )
+    {
+        log( "In setSourcepath", Project.MSG_INFO );
+        if ( this.sourcepath == null )
+        {
+            this.sourcepath = sourcepath;
+        }
+        else
+        {
+            this.sourcepath.append( sourcepath );
+        }
+    }
+
+    public void setSourcepathRef( Reference r )
+    {
+        log( "In setSourcepathRef", Project.MSG_INFO );
+        createSourcepath().setRefid( r );
+    }
+
     public void execute()
         throws BuildException
     {
@@ -131,6 +160,21 @@ public class CheckSignatureTask
 
             final SignatureChecker signatureChecker =
                 new SignatureChecker( new FileInputStream( signature ), ignoredPackages, new AntLogger( this ) );
+
+            final List tmp = new ArrayList();
+            if (sourcepath != null) {
+                i = sourcepath.iterator();
+                while ( i.hasNext() )
+                {
+                    Object next = i.next();
+                    if ( next instanceof FileResource )
+                    {
+                        final File file = ( (FileResource) next ).getFile();
+                        tmp.add(file);
+                    }
+                }
+            }
+            signatureChecker.setSourcePath(tmp);
 
             i = paths.iterator();
             while ( i.hasNext() )
