@@ -296,7 +296,7 @@ public final class MapFactory {
 ---
 
   Then whenever you safely reference a newer class, you just annotate the method with <<<@IgnoreJRERequirement>>>
-  for example:
+  (or a custom annotation if needed). For example:
 
 ---
 public final class Someclass {

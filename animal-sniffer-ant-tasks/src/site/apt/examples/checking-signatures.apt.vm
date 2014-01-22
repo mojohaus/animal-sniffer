@@ -159,9 +159,10 @@ public final class MapFactory {
   a version that supports annotations) it is preferable to annotate your <<<LinkageError>>> safe methods rather
   than using the <<<ignores>>> configuration element.
 
-  To annotate your methods, you need to add <<<animal-sniffer-annotations>>> to your compile classpath. 
+  To annotate your methods, you need to either add <<<animal-sniffer-annotations>>> to your compile classpath or
+  create your own annotation and configure it.
 
-  Then whenever you safely reference a newer class, you just annotate the method with <<<@IgnoreJRERequirement>>>
+  Then whenever you safely reference a newer class, you just annotate the method with the configured annotation,
   for example:
 
 ---
@@ -183,5 +184,24 @@ public final class Someclass {
 ---
 
   Note: if you have compiled with the <<<org.jvnet:animal-sniffer-annotation:1.0>>> you do not have to change 
-  anything as animal-sniffer automatically detects this annotation as well (even although it is in a different 
-  package.
+  anything by default as animal-sniffer automatically detects this annotation as well (even although it is in
+  a different package.
+
+  Let's assume you want to use your own annotation instead, <<com.foo.JavaGenerationDependent>>, you would use
+  a configuration like:
+
+---
+<project ... xmlns:as="antlib:org.codehaus.mojo.animal_sniffer">
+  ...
+  <target ...>
+    ...
+    <as:check-signature ...>
+      ...
+      <annotation className="com.foo.JavaGenerationDependent"/>
+      ...
+    </as:check-signature>
+  ...
+  </target>
+  ...
+</project>
+---

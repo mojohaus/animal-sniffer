@@ -41,7 +41,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -91,6 +91,18 @@ public class CheckSignatureMojo
      * @parameter
      */
     protected String[] ignores;
+
+    /**
+     * Annotation names to consider to ignore annotated methods, classes or fields.
+     * <p/>
+     * By default 'org.codehaus.mojo.animal_sniffer.IgnoreJRERequirement' and
+     * 'org.jvnet.animal_sniffer.IgnoreJRERequirement' are used.
+     *
+     * @parameter
+     * @see SignatureChecker#ANNOTATION_FQN
+     * @see SignatureChecker#PREVIOUS_ANNOTATION_FQN
+     */
+    protected String[] annotations;
 
     /**
      * Should dependencies be ignored.
@@ -175,12 +187,18 @@ public class CheckSignatureMojo
                 sourcePaths.add( new File( path ) );
             }
             signatureChecker.setSourcePath( sourcePaths );
+
+            if ( annotations != null )
+            {
+                signatureChecker.setAnnotationTypes( Arrays.asList( annotations ) );
+            }
+
             signatureChecker.process( outputDirectory );
 
             if ( signatureChecker.isSignatureBroken() )
             {
                 throw new MojoFailureException(
-                    "Signature errors found. Verify them and put @IgnoreJRERequirement on them." );
+                    "Signature errors found. Verify them and ignore them with the proper annotation if needed." );
             }
         }
         catch ( IOException e )

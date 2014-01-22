@@ -38,7 +38,13 @@ import org.codehaus.mojo.animal_sniffer.SignatureChecker;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+import java.util.Vector;
 
 /**
  * Checks the files against the provided signature.
@@ -60,6 +66,8 @@ public class CheckSignatureTask
 
     private Vector ignores = new Vector();
 
+    private Vector annotations = new Vector();
+
     public void addPath( Path path )
     {
         paths.add( path );
@@ -69,6 +77,13 @@ public class CheckSignatureTask
     {
         final Ignore result = new Ignore();
         ignores.add( result );
+        return result;
+    }
+
+    public Annotation createAnnotation()
+    {
+        final Annotation result = new Annotation();
+        annotations.add( result );
         return result;
     }
 
@@ -176,6 +191,18 @@ public class CheckSignatureTask
             }
             signatureChecker.setSourcePath(tmp);
 
+            final Collection annotationTypes = new HashSet();
+            i = annotations.iterator();
+            while ( i.hasNext() )
+            {
+                Annotation annotation = (Annotation) i.next();
+                if ( annotation != null && annotation.getClassName() != null )
+                {
+                    annotationTypes.add( annotation.getClassName() );
+                }
+            }
+            signatureChecker.setAnnotationTypes( annotationTypes );
+
             i = paths.iterator();
             while ( i.hasNext() )
             {
@@ -189,8 +216,8 @@ public class CheckSignatureTask
 
             if ( signatureChecker.isSignatureBroken() )
             {
-                throw new BuildException( "Signature errors found. Verify them and put @IgnoreJRERequirement on them.",
-                                          getLocation() );
+                throw new BuildException( "Signature errors found. Verify them and ignore them with the "
+                                              + "proper annotation if needed.", getLocation() );
             }
         }
         catch ( IOException e )

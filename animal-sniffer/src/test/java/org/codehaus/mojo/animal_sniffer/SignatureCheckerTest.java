@@ -45,12 +45,29 @@ public class SignatureCheckerTest extends TestCase
         assertSourceForm( "String[] my.Class.myfield", "my/Class", "myfield#[Ljava/lang/String;" );
         assertSourceForm( "double[][][] my.Class.myfield", "my/Class", "myfield#[[[D" );
         assertSourceForm( "void my.Class.mymethod()", "my/Class", "mymethod()V" );
-        assertSourceForm( "Object my.Class.mymethod(int, double, Thread)", "my/Class", "mymethod(IDLjava/lang/Thread;)Ljava/lang/Object;" );
+        assertSourceForm( "Object my.Class.mymethod(int, double, Thread)", "my/Class",
+                          "mymethod(IDLjava/lang/Thread;)Ljava/lang/Object;" );
     }
-    
+
+    public void testToAnnotationDescriptor()
+    {
+        assertAnnotationDescriptor( "Lorg/codehaus/mojo/animal_sniffer/IgnoreJRERequirement;",
+                                    "org.codehaus.mojo.animal_sniffer.IgnoreJRERequirement" );
+        assertAnnotationDescriptor( "Lorg/jvnet/animal_sniffer/IgnoreJRERequirement;",
+                                    "org.jvnet.animal_sniffer.IgnoreJRERequirement" );
+
+        assertAnnotationDescriptor( "Lcom/foo/Bar;", "com.foo.Bar" );
+        assertAnnotationDescriptor( "Lcom/foo/Bar;", "com/foo/Bar" );
+    }
+
     private static void assertSourceForm( String expected, String type, String sig )
     {
         assertEquals( expected, SignatureChecker.toSourceForm( type, sig ) );
+    }
+
+    private static void assertAnnotationDescriptor( String expected, String fqn )
+    {
+        assertEquals( expected, SignatureChecker.toAnnotationDescriptor( fqn ) );
     }
 
 }

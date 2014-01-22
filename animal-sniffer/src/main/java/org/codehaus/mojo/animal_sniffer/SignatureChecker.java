@@ -30,6 +30,7 @@ import org.codehaus.mojo.animal_sniffer.logging.PrintWriterLogger;
 import org.objectweb.asm.AnnotationVisitor;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassVisitor;
+import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 
@@ -39,6 +40,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.nio.CharBuffer;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -48,7 +50,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.zip.GZIPInputStream;
-import org.objectweb.asm.Label;
 
 /**
  * Checks the signature against classes in this list.
@@ -58,6 +59,17 @@ import org.objectweb.asm.Label;
 public class SignatureChecker
     extends ClassFileVisitor
 {
+    /**
+     * The fully qualified name of the annotation to use to annotate methods/fields/classes that are
+     * to be ignored by animal sniffer.
+     */
+    public static final String ANNOTATION_FQN = "org.codehaus.mojo.animal_sniffer.IgnoreJRERequirement";
+
+    /**
+     * Similar to {@link #ANNOTATION_FQN}. Kept for backward compatibility reasons
+     */
+    public static final String PREVIOUS_ANNOTATION_FQN = "org.jvnet.animal_sniffer.IgnoreJRERequirement";
+
     private final Map/*<String, Clazz>*/ classes = new HashMap();
 
     private final Logger logger;
@@ -75,6 +87,8 @@ public class SignatureChecker
     private boolean hadError = false;
 
     private List/*<File>*/ sourcePath;
+
+    private Collection/*<String>*/ annotationDescriptors;
 
     public static void main( String[] args )
         throws Exception
@@ -105,6 +119,10 @@ public class SignatureChecker
                 this.ignoredPackageRules.add( newMatchRule( wildcard.replace( '.', '/' ) ) );
             }
         }
+        this.annotationDescriptors = new HashSet();
+        this.annotationDescriptors.add( toAnnotationDescriptor( ANNOTATION_FQN ) );
+        this.annotationDescriptors.add( toAnnotationDescriptor( PREVIOUS_ANNOTATION_FQN ) );
+
         this.logger = logger;
         ObjectInputStream ois = null;
         try
@@ -144,6 +162,31 @@ public class SignatureChecker
     public void setSourcePath( List/*<File>*/ sourcePath )
     {
         this.sourcePath = sourcePath;
+    }
+
+    /**
+     * Sets the annotation type(s) that this checker should consider to ignore annotated
+     * methods, classes or fields.
+     * <p/>
+     * By default, the {@link #ANNOTATION_FQN} and {@link #PREVIOUS_ANNOTATION_FQN} are
+     * used.
+     * <p/>
+     * If you want to <strong>add</strong> an extra annotation types, make sure to add
+     * the standard one to the specified lists.
+     *
+     * @param annotationTypes a list of the fully qualified name of the annotation types
+     *                        to consider for ignoring annotated method, class and field
+     * @since 1.11
+     */
+    public void setAnnotationTypes( Collection/*<String>*/ annotationTypes )
+    {
+        this.annotationDescriptors.clear();
+        Iterator i = annotationTypes.iterator();
+        while ( i.hasNext() )
+        {
+            String annotationType = (String) i.next();
+            annotationDescriptors.add( toAnnotationDescriptor( annotationType ) );
+        }
     }
 
     protected void process( final String name, InputStream image )
@@ -287,8 +330,15 @@ public class SignatureChecker
 
         public boolean isIgnoreAnnotation(String desc)
         {
-            return desc.equals( "Lorg/jvnet/animal_sniffer/IgnoreJRERequirement;" )
-                || desc.equals( "Lorg/codehaus/mojo/animal_sniffer/IgnoreJRERequirement;" );
+            Iterator i = annotationDescriptors.iterator();
+            while ( i.hasNext() )
+            {
+                if ( desc.equals( i.next() ) )
+                {
+                    return true;
+                }
+            }
+            return false;
         }
 
 
@@ -497,6 +547,11 @@ public class SignatureChecker
         return "{" + type + ":" + sig + "}"; // ??
     }
 
+    static String toAnnotationDescriptor( String classFqn )
+    {
+        return "L" + fromSourceType( classFqn ) + ";";
+    }
+
     private static String toSourceType( CharBuffer type )
     {
         switch ( type.get() )
@@ -538,6 +593,11 @@ public class SignatureChecker
     private static String toSourceType( String text )
     {
         return text.replaceFirst( "^java/lang/([^/]+)$", "$1" ).replace( '/', '.' ).replace( '$', '.' );
+    }
+
+    private static String fromSourceType( String text )
+    {
+        return text.replace( '.', '/' ).replace( '.', '$' );
     }
 
 }

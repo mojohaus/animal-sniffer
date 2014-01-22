@@ -44,7 +44,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
@@ -75,12 +75,24 @@ public class CheckSignatureRule
     protected String[] ignores;
 
     /**
+     * Annotation names to consider to ignore annotated methods, classes or fields.
+     * <p/>
+     * By default {@value SignatureChecker#ANNOTATION_FQN} and
+     * {@value SignatureChecker#PREVIOUS_ANNOTATION_FQN} are used.
+     *
+     * @parameter
+     * @see SignatureChecker#ANNOTATION_FQN
+     * @see SignatureChecker#PREVIOUS_ANNOTATION_FQN
+     */
+    protected String[] annotations;
+
+    /**
      * Should dependencies be ignored.
      *
      * @parameter default-value="true"
      */
     protected boolean ignoreDependencies = true;
-    
+
     public void execute( EnforcerRuleHelper helper )
         throws EnforcerRuleException
     {
@@ -109,7 +121,7 @@ public class CheckSignatureRule
 
             final Set ignoredPackages = buildPackageList( outputDirectory, classpathElements, logger );
 
-            if ( ignores != null ) 
+            if ( ignores != null )
             {
                 for ( int i = 0; i < ignores.length; i++ )
                 {
@@ -134,12 +146,16 @@ public class CheckSignatureRule
                 sourcePaths.add( new File( path ) );
             }
             signatureChecker.setSourcePath( sourcePaths );
+            if ( annotations != null )
+            {
+                signatureChecker.setAnnotationTypes( Arrays.asList( annotations ) );
+            }
             signatureChecker.process( outputDirectory );
 
             if ( signatureChecker.isSignatureBroken() )
             {
                 throw new EnforcerRuleException(
-                    "Signature errors found. Verify them and put @IgnoreJRERequirement on them." );
+                    "Signature errors found. Verify them and ignore them with the proper annotation if needed." );
             }
         }
         catch ( IOException e )

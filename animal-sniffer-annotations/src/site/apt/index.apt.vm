@@ -73,8 +73,8 @@ public final class Someclass {
   The above code will require JDK 1.6 or newer to compile, but will safely run on JRE 1.5. When you run animal-sniffer
   over the above class with the signatures for JRE 1.5, however, animal sniffer will report a signature failure.
   
-  Animal Sniffer Annotations provides an annotation <<<@IgnoreJRERequirement>>> which you can use to annotate methods
-  which are to be ignored by animal sniffer, e.g. 
+  Animal Sniffer Annotations provides an out-of-the-box  annotation <<<@IgnoreJRERequirement>>> which you can use
+  to annotate methods which are to be ignored by animal sniffer, e.g.
 
 ---
 public final class MapFactory {
@@ -99,6 +99,9 @@ public final class MapFactory {
   Note: if you have compiled with the <<<org.jvnet:animal-sniffer-annotation:1.0>>> you do not have to change 
   anything as animal-sniffer automatically detects this annotation as well (even although it is in a different 
   package.
+
+  Animal sniffer also allows you to specify your own custom annotation if needed. Check the configuration of
+  the relevant task for more information.
 
 * Using animal-sniffer-annotations in Maven projects
 
