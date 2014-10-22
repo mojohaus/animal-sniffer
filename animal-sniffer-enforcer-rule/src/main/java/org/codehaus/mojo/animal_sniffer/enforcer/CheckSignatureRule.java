@@ -270,7 +270,7 @@ public class CheckSignatureRule
                     continue;
                 }
 
-                logger.debug( "Adding classes in artifact " + BuildSignaturesMojo.artifactId( artifact ) +
+                logger.debug( "Adding classes in artifact " + artifactId( artifact ) +
                                     " to the ignores" );
                 v.process( artifact.getFile() );
             }

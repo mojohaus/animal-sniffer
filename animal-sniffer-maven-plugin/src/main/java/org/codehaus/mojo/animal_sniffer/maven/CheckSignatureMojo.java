@@ -30,14 +30,12 @@ import org.apache.maven.artifact.factory.ArtifactFactory;
 import org.apache.maven.artifact.repository.ArtifactRepository;
 import org.apache.maven.artifact.resolver.AbstractArtifactResolutionException;
 import org.apache.maven.artifact.resolver.ArtifactResolver;
-import org.apache.maven.model.Build;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.shared.artifact.filter.PatternExcludesArtifactFilter;
 import org.apache.maven.shared.artifact.filter.PatternIncludesArtifactFilter;
-import org.apache.maven.shared.artifact.filter.collection.ScopeFilter;
 import org.codehaus.mojo.animal_sniffer.ClassFileVisitor;
 import org.codehaus.mojo.animal_sniffer.ClassListBuilder;
 import org.codehaus.mojo.animal_sniffer.SignatureChecker;
@@ -262,7 +260,6 @@ public class CheckSignatureMojo
             PatternExcludesArtifactFilter excludesFilter = excludeDependencies == null
                 ? null
                 : new PatternExcludesArtifactFilter( Arrays.asList( excludeDependencies ) );
-            ScopeFilter scopeFilter = new ScopeFilter(  )
 
             getLog().debug( "Building list of classes from dependencies" );
             for ( Iterator i = project.getArtifacts().iterator(); i.hasNext(); )
