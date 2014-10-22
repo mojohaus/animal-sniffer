@@ -273,8 +273,8 @@ public class CheckSignatureMojo
                     continue;
                 }
 
-                if ( Artifact.SCOPE_COMPILE.equals( artifact.getScope() ) || Artifact.SCOPE_PROVIDED.equals(
-                    artifact.getScope() ) || Artifact.SCOPE_SYSTEM.equals( artifact.getScope() ) )
+                if ( !( Artifact.SCOPE_COMPILE.equals( artifact.getScope() ) || Artifact.SCOPE_PROVIDED.equals(
+                    artifact.getScope() ) || Artifact.SCOPE_SYSTEM.equals( artifact.getScope() ) ) )
                 {
                     getLog().debug( "Skipping artifact " + BuildSignaturesMojo.artifactId( artifact )
                                         + " as it is not on the compile classpath." );

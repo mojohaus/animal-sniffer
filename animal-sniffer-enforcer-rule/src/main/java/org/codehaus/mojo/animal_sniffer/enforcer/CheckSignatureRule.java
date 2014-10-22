@@ -248,8 +248,8 @@ public class CheckSignatureRule
                     continue;
                 }
 
-                if ( Artifact.SCOPE_COMPILE.equals( artifact.getScope() ) || Artifact.SCOPE_PROVIDED.equals(
-                    artifact.getScope() ) || Artifact.SCOPE_SYSTEM.equals( artifact.getScope() ) )
+                if ( !( Artifact.SCOPE_COMPILE.equals( artifact.getScope() ) || Artifact.SCOPE_PROVIDED.equals(
+                    artifact.getScope() ) || Artifact.SCOPE_SYSTEM.equals( artifact.getScope() ) ) )
                 {
                     logger.debug( "Skipping artifact " + artifactId( artifact )
                                         + " as it is not on the compile classpath." );
