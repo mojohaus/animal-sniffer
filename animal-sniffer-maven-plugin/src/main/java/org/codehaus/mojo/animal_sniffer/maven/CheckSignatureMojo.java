@@ -37,6 +37,7 @@ import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.shared.artifact.filter.PatternExcludesArtifactFilter;
 import org.apache.maven.shared.artifact.filter.PatternIncludesArtifactFilter;
+import org.apache.maven.shared.artifact.filter.collection.ScopeFilter;
 import org.codehaus.mojo.animal_sniffer.ClassFileVisitor;
 import org.codehaus.mojo.animal_sniffer.ClassListBuilder;
 import org.codehaus.mojo.animal_sniffer.SignatureChecker;
@@ -261,6 +262,7 @@ public class CheckSignatureMojo
             PatternExcludesArtifactFilter excludesFilter = excludeDependencies == null
                 ? null
                 : new PatternExcludesArtifactFilter( Arrays.asList( excludeDependencies ) );
+            ScopeFilter scopeFilter = new ScopeFilter(  )
 
             getLog().debug( "Building list of classes from dependencies" );
             for ( Iterator i = project.getArtifacts().iterator(); i.hasNext(); )
@@ -271,6 +273,15 @@ public class CheckSignatureMojo
                 if ( !artifact.getArtifactHandler().isAddedToClasspath() ) {
                     getLog().debug( "Skipping artifact " + BuildSignaturesMojo.artifactId( artifact )
                                         + " as it is not added to the classpath." );
+                    continue;
+                }
+
+                if ( Artifact.SCOPE_COMPILE.equals( artifact.getScope() ) || Artifact.SCOPE_PROVIDED.equals(
+                    artifact.getScope() ) || Artifact.SCOPE_SYSTEM.equals( artifact.getScope() ) )
+                {
+                    getLog().debug( "Skipping artifact " + BuildSignaturesMojo.artifactId( artifact )
+                                        + " as it is not on the compile classpath." );
+                    continue;
                 }
 
                 if ( includesFilter != null && !includesFilter.include( artifact ) )
