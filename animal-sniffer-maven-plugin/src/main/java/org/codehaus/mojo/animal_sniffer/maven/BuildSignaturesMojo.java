@@ -76,7 +76,7 @@ public class BuildSignaturesMojo
     /**
      * Should the signatures from java home be included.
      *
-     * @parameter expression="${includeJavaHome}" default-value="true"
+     * @parameter property="includeJavaHome" default-value="true"
      * @since 1.3
      */
     private boolean includeJavaHome;
@@ -84,7 +84,7 @@ public class BuildSignaturesMojo
     /**
      * Should no signatures be generated if no java home is available.
      *
-     * @parameter expression="${skipIfNoJavaHome}" default-value="false"
+     * @parameter property="skipIfNoJavaHome" default-value="false"
      * @since 1.3
      */
     private boolean skipIfNoJavaHome;
@@ -92,7 +92,7 @@ public class BuildSignaturesMojo
     /**
      * Should the signatures from this module's classes be included..
      *
-     * @parameter expression="${includeJavaHome}" default-value="true"
+     * @parameter property="includeJavaHome" default-value="true"
      * @since 1.3
      */
     private boolean includeModuleClasses;
@@ -114,7 +114,15 @@ public class BuildSignaturesMojo
     private String[] excludeClasses = null;
 
     /**
-     * A list of artifact patterns to include. Follows the pattern "groupId:artifactId:type:classifier:version".
+     * A list of artifact patterns to include. Patterns can include <code>*</code> as a wildcard match for any
+     * <b>whole</b> segment, valid patterns are:
+     * <ul>
+     * <li><code>groupId:artifactId</code></li>
+     * <li><code>groupId:artifactId:type</code></li>
+     * <li><code>groupId:artifactId:type:version</code></li>
+     * <li><code>groupId:artifactId:type:classifier</code></li>
+     * <li><code>groupId:artifactId:type:classifier:version</code></li>
+     * </ul>
      *
      * @parameter
      * @since 1.3
@@ -122,7 +130,15 @@ public class BuildSignaturesMojo
     private String[] includeDependencies = null;
 
     /**
-     * A list of artifact patterns to exclude. Follows the pattern "groupId:artifactId:type:classifier:version".
+     * A list of artifact patterns to exclude. Patterns can include <code>*</code> as a wildcard match for any
+     * <b>whole</b> segment, valid patterns are:
+     * <ul>
+     * <li><code>groupId:artifactId</code></li>
+     * <li><code>groupId:artifactId:type</code></li>
+     * <li><code>groupId:artifactId:type:version</code></li>
+     * <li><code>groupId:artifactId:type:classifier</code></li>
+     * <li><code>groupId:artifactId:type:classifier:version</code></li>
+     * </ul>
      *
      * @parameter
      * @since 1.3
@@ -134,7 +150,7 @@ public class BuildSignaturesMojo
      * included. This parameter is overridden by {@link #javaHomeClassPath}.  This parameter overrides {@link #jdk}
      * and any java home specified by maven-toolchains-plugin.
      *
-     * @parameter expression="${javaHome}"
+     * @parameter property="javaHome"
      * @since 1.3
      */
     private String javaHome;
@@ -152,7 +168,7 @@ public class BuildSignaturesMojo
     /**
      * Where to put the generated signatures.
      *
-     * @parameter expression="${project.build.directory}"
+     * @parameter property="project.build.directory"
      * @required
      * @since 1.3
      */
@@ -161,7 +177,7 @@ public class BuildSignaturesMojo
     /**
      * Where to find this modules classes.
      *
-     * @parameter expression="${project.build.outputDirectory}"
+     * @parameter property="project.build.outputDirectory"
      * @required
      * @since 1.3
      */
@@ -170,7 +186,7 @@ public class BuildSignaturesMojo
     /**
      * The name of the generated signatures.
      *
-     * @parameter expression="${project.build.finalName}"
+     * @parameter property="project.build.finalName"
      * @required
      * @since 1.3
      */
@@ -192,7 +208,7 @@ public class BuildSignaturesMojo
     /**
      * The maven project.
      *
-     * @parameter expression="${project}"
+     * @parameter property="project"
      * @required
      * @readonly
      */
@@ -211,7 +227,7 @@ public class BuildSignaturesMojo
     /**
      * The current build session instance. This is used for toolchain manager API calls.
      *
-     * @parameter expression="${session}"
+     * @parameter property="session"
      * @required
      * @readonly
      */
@@ -227,7 +243,7 @@ public class BuildSignaturesMojo
     private JdkToolchain jdk;
 
     /**
-     * @parameter expression="${plugin.artifacts}"
+     * @parameter property="plugin.artifacts"
      * @required
      * @readonly
      */
@@ -530,7 +546,7 @@ public class BuildSignaturesMojo
                 continue;
             }
 
-            if ( StringUtils.equals( "jar", artifact.getType() ) )
+            if ( artifact.getArtifactHandler().isAddedToClasspath() )
             {
                 getLog().info( "Parsing sigantures from " + artifactId( artifact ) );
                 builder.process( artifact.getFile() );
@@ -652,7 +668,7 @@ public class BuildSignaturesMojo
         return null;
     }
 
-    private static String artifactId( Artifact artifact )
+    /*package*/ static String artifactId( Artifact artifact )
     {
         return artifact.getGroupId() + ":" + artifact.getArtifactId() + ":" + artifact.getType()
                 + ( artifact.getClassifier() != null ? ":" + artifact.getClassifier() : "" ) + ":"

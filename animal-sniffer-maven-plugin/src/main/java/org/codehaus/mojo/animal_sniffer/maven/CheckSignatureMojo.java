@@ -25,14 +25,18 @@ package org.codehaus.mojo.animal_sniffer.maven;
  *
  */
 
+import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.factory.ArtifactFactory;
 import org.apache.maven.artifact.repository.ArtifactRepository;
 import org.apache.maven.artifact.resolver.AbstractArtifactResolutionException;
 import org.apache.maven.artifact.resolver.ArtifactResolver;
+import org.apache.maven.model.Build;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.project.MavenProject;
+import org.apache.maven.shared.artifact.filter.PatternExcludesArtifactFilter;
+import org.apache.maven.shared.artifact.filter.PatternIncludesArtifactFilter;
 import org.codehaus.mojo.animal_sniffer.ClassFileVisitor;
 import org.codehaus.mojo.animal_sniffer.ClassListBuilder;
 import org.codehaus.mojo.animal_sniffer.SignatureChecker;
@@ -60,18 +64,9 @@ public class CheckSignatureMojo
 {
 
     /**
-     * Project classpath.
-     *
-     * @parameter expression="${project.compileClasspathElements}"
-     * @required
-     * @readonly
-     */
-    protected List classpathElements;
-
-    /**
      * The directory for compiled classes.
      *
-     * @parameter expression="${project.build.outputDirectory}"
+     * @parameter property="project.build.outputDirectory"
      * @required
      * @readonly
      */
@@ -112,9 +107,41 @@ public class CheckSignatureMojo
     protected boolean ignoreDependencies;
 
     /**
+     * A list of artifact patterns to include. Patterns can include <code>*</code> as a wildcard match for any
+     * <b>whole</b> segment, valid patterns are:
+     * <ul>
+     * <li><code>groupId:artifactId</code></li>
+     * <li><code>groupId:artifactId:type</code></li>
+     * <li><code>groupId:artifactId:type:version</code></li>
+     * <li><code>groupId:artifactId:type:classifier</code></li>
+     * <li><code>groupId:artifactId:type:classifier:version</code></li>
+     * </ul>
+     *
+     * @parameter
+     * @since 1.12
+     */
+    private String[] includeDependencies = null;
+
+    /**
+     * A list of artifact patterns to exclude. Patterns can include <code>*</code> as a wildcard match for any
+     * <b>whole</b> segment, valid patterns are:
+     * <ul>
+     * <li><code>groupId:artifactId</code></li>
+     * <li><code>groupId:artifactId:type</code></li>
+     * <li><code>groupId:artifactId:type:version</code></li>
+     * <li><code>groupId:artifactId:type:classifier</code></li>
+     * <li><code>groupId:artifactId:type:classifier:version</code></li>
+     * </ul>
+     *
+     * @parameter
+     * @since 1.12
+     */
+    private String[] excludeDependencies = null;
+
+    /**
      * Should signature checking be skipped?
      *
-     * @parameter default-value="false" expression="${animal.sniffer.skip}"
+     * @parameter default-value="false" property="animal.sniffer.skip"
      */
     protected boolean skip;
 
@@ -125,13 +152,13 @@ public class CheckSignatureMojo
     protected ArtifactResolver resolver;
 
     /**
-     * @parameter expression="${project}"
+     * @parameter property="project"
      * @readonly
      */
     protected MavenProject project;
 
     /**
-     * @parameter expression="${localRepository}"
+     * @parameter property="localRepository"
      * @readonly
      */
     protected ArtifactRepository localRepository;
@@ -228,11 +255,41 @@ public class CheckSignatureMojo
         v.process( outputDirectory );
         if ( ignoreDependencies )
         {
-            Iterator itr = classpathElements.iterator();
-            while ( itr.hasNext() )
+            PatternIncludesArtifactFilter includesFilter = includeDependencies == null
+                ? null
+                : new PatternIncludesArtifactFilter( Arrays.asList( includeDependencies ) );
+            PatternExcludesArtifactFilter excludesFilter = excludeDependencies == null
+                ? null
+                : new PatternExcludesArtifactFilter( Arrays.asList( excludeDependencies ) );
+
+            getLog().debug( "Building list of classes from dependencies" );
+            for ( Iterator i = project.getArtifacts().iterator(); i.hasNext(); )
             {
-                String path = (String) itr.next();
-                v.process( new File( path ) );
+
+                Artifact artifact = (Artifact) i.next();
+
+                if ( !artifact.getArtifactHandler().isAddedToClasspath() ) {
+                    getLog().debug( "Skipping artifact " + BuildSignaturesMojo.artifactId( artifact )
+                                        + " as it is not added to the classpath." );
+                }
+
+                if ( includesFilter != null && !includesFilter.include( artifact ) )
+                {
+                    getLog().debug( "Skipping classes in artifact " + BuildSignaturesMojo.artifactId( artifact )
+                                        + " as it does not match include rules." );
+                    continue;
+                }
+
+                if ( excludesFilter != null && !excludesFilter.include( artifact ) )
+                {
+                    getLog().debug( "Skipping classes in artifact " + BuildSignaturesMojo.artifactId( artifact )
+                                        + " as it does matches exclude rules." );
+                    continue;
+                }
+
+                getLog().debug( "Adding classes in artifact " + BuildSignaturesMojo.artifactId( artifact ) +
+                                    " to the ignores" );
+                v.process( artifact.getFile() );
             }
         }
     }

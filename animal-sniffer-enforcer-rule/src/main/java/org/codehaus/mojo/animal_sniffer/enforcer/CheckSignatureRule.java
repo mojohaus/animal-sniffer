@@ -25,6 +25,7 @@ package org.codehaus.mojo.animal_sniffer.enforcer;
  *
  */
 
+import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.factory.ArtifactFactory;
 import org.apache.maven.artifact.repository.ArtifactRepository;
 import org.apache.maven.artifact.resolver.AbstractArtifactResolutionException;
@@ -33,6 +34,8 @@ import org.apache.maven.enforcer.rule.api.EnforcerRule;
 import org.apache.maven.enforcer.rule.api.EnforcerRuleException;
 import org.apache.maven.enforcer.rule.api.EnforcerRuleHelper;
 import org.apache.maven.project.MavenProject;
+import org.apache.maven.shared.artifact.filter.PatternExcludesArtifactFilter;
+import org.apache.maven.shared.artifact.filter.PatternIncludesArtifactFilter;
 import org.codehaus.mojo.animal_sniffer.ClassFileVisitor;
 import org.codehaus.mojo.animal_sniffer.ClassListBuilder;
 import org.codehaus.mojo.animal_sniffer.SignatureChecker;
@@ -93,13 +96,43 @@ public class CheckSignatureRule
      */
     protected boolean ignoreDependencies = true;
 
+    /**
+     * A list of artifact patterns to include. Patterns can include <code>*</code> as a wildcard match for any
+     * <b>whole</b> segment, valid patterns are:
+     * <ul>
+     * <li><code>groupId:artifactId</code></li>
+     * <li><code>groupId:artifactId:type</code></li>
+     * <li><code>groupId:artifactId:type:version</code></li>
+     * <li><code>groupId:artifactId:type:classifier</code></li>
+     * <li><code>groupId:artifactId:type:classifier:version</code></li>
+     * </ul>
+     *
+     * @parameter
+     * @since 1.12
+     */
+    private String[] includeDependencies = null;
+
+    /**
+     * A list of artifact patterns to exclude. Patterns can include <code>*</code> as a wildcard match for any
+     * <b>whole</b> segment, valid patterns are:
+     * <ul>
+     * <li><code>groupId:artifactId</code></li>
+     * <li><code>groupId:artifactId:type</code></li>
+     * <li><code>groupId:artifactId:type:version</code></li>
+     * <li><code>groupId:artifactId:type:classifier</code></li>
+     * <li><code>groupId:artifactId:type:classifier:version</code></li>
+     * </ul>
+     *
+     * @parameter
+     * @since 1.12
+     */
+    private String[] excludeDependencies = null;
+
     public void execute( EnforcerRuleHelper helper )
         throws EnforcerRuleException
     {
         try
         {
-            List classpathElements = (List) helper.evaluate( "${project.compileClasspathElements}" );
-
             File outputDirectory = new File( (String) helper.evaluate( "${project.build.outputDirectory}" ) );
 
             ArtifactResolver resolver = (ArtifactResolver) helper.getComponent( ArtifactResolver.class );
@@ -119,7 +152,7 @@ public class CheckSignatureRule
 
             MavenLogger logger = new MavenLogger( helper.getLog() );
 
-            final Set ignoredPackages = buildPackageList( outputDirectory, classpathElements, logger );
+            final Set ignoredPackages = buildPackageList( outputDirectory, project, logger );
 
             if ( ignores != null )
             {
@@ -182,25 +215,53 @@ public class CheckSignatureRule
      * @param outputDirectory
      * @param logger
      */
-    private Set buildPackageList( File outputDirectory, List classpathElements, Logger logger )
+    private Set buildPackageList( File outputDirectory, MavenProject project, Logger logger )
         throws IOException
     {
         ClassListBuilder plb = new ClassListBuilder( logger );
-        apply( plb, outputDirectory, classpathElements );
+        apply( plb, outputDirectory, project, logger );
         return plb.getPackages();
     }
 
-    private void apply( ClassFileVisitor v, File outputDirectory, List classpathElements )
+    private void apply( ClassFileVisitor v, File outputDirectory, MavenProject project, Logger logger )
         throws IOException
     {
         v.process( outputDirectory );
         if ( ignoreDependencies )
         {
-            Iterator itr = classpathElements.iterator();
-            while ( itr.hasNext() )
+            PatternIncludesArtifactFilter includesFilter = includeDependencies == null
+                ? null
+                : new PatternIncludesArtifactFilter( Arrays.asList( includeDependencies ) );
+            PatternExcludesArtifactFilter excludesFilter = excludeDependencies == null
+                ? null
+                : new PatternExcludesArtifactFilter( Arrays.asList( excludeDependencies ) );
+
+            for ( Iterator i = project.getArtifacts().iterator(); i.hasNext(); )
             {
-                String path = (String) itr.next();
-                v.process( new File( path ) );
+                Artifact artifact = (Artifact) i.next();
+
+                if ( includesFilter != null && !includesFilter.include( artifact ) )
+                {
+                    logger.debug( "Artifact " + artifactId( artifact )
+                                      + " excluded from being ignored as it does not match include rules." );
+                    continue;
+                }
+
+                if ( excludesFilter != null && !excludesFilter.include( artifact ) )
+                {
+                    logger.debug( "Artifact " + artifactId( artifact )
+                                      + " excluded from being ignored ignored as it does matches exclude rules." );
+                    continue;
+                }
+
+                if ( !artifact.getArtifactHandler().isAddedToClasspath() )
+                {
+                    logger.debug( "Artifact " + artifactId( artifact )
+                                      + " excluded from being ignored ignored as it is not added to the classpath." );
+
+                }
+
+                v.process( artifact.getFile() );
             }
         }
     }
@@ -218,5 +279,12 @@ public class CheckSignatureRule
     public String getCacheId()
     {
         return getClass().getName() + new Random().nextLong();
+    }
+
+    private static String artifactId( Artifact artifact )
+    {
+        return artifact.getGroupId() + ":" + artifact.getArtifactId() + ":" + artifact.getType() + (
+            artifact.getClassifier() != null ? ":" + artifact.getClassifier() : "" ) + ":" + artifact.getBaseVersion();
+
     }
 }
