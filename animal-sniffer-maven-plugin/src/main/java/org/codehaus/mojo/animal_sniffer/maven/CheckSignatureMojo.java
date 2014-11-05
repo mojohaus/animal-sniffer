@@ -30,6 +30,7 @@ import org.apache.maven.artifact.factory.ArtifactFactory;
 import org.apache.maven.artifact.repository.ArtifactRepository;
 import org.apache.maven.artifact.resolver.AbstractArtifactResolutionException;
 import org.apache.maven.artifact.resolver.ArtifactResolver;
+import org.apache.maven.model.Dependency;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -39,6 +40,7 @@ import org.apache.maven.shared.artifact.filter.PatternIncludesArtifactFilter;
 import org.codehaus.mojo.animal_sniffer.ClassFileVisitor;
 import org.codehaus.mojo.animal_sniffer.ClassListBuilder;
 import org.codehaus.mojo.animal_sniffer.SignatureChecker;
+import org.codehaus.plexus.util.StringUtils;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -179,6 +181,27 @@ public class CheckSignatureMojo
 
         try
         {
+            if ( StringUtils.isBlank( signature.getVersion() ) )
+            {
+                getLog().debug( "Resolving signature " + signature.getGroupId() + ":" + signature.getArtifactId()
+                                   + " version from dependencies" );
+                String source = "dependencies";
+                Dependency match = findMatchingDependency( signature, project.getDependencies() );
+                if ( match == null )
+                {
+                    getLog().debug( "Resolving signature " + signature.getGroupId() + ":" + signature.getArtifactId()
+                                       + " version from dependencyManagement" );
+                    source = "dependencyManagement";
+                    match = findMatchingDependency( signature, project.getDependencyManagement().getDependencies() );
+                }
+                if ( match != null )
+                {
+                    getLog().info( "Resolved signature " + signature.getGroupId() + ":" + signature.getArtifactId()
+                                       + " version as " + match.getVersion() + " from " + source);
+                    signature.setVersion( match.getVersion() );
+                }
+            }
+
             getLog().info( "Checking unresolved references to " + signature );
 
             org.apache.maven.artifact.Artifact a = signature.createArtifact( artifactFactory );
@@ -235,6 +258,44 @@ public class CheckSignatureMojo
         {
             throw new MojoExecutionException( "Failed to obtain signature: " + signature, e );
         }
+    }
+
+    private static Dependency findMatchingDependency( Signature signature, List/*<Dependency>*/ dependencies )
+    {
+        Dependency match = null;
+        for ( Iterator/*<Dependency>*/ iterator = dependencies.iterator(); iterator.hasNext(); )
+        {
+            Dependency d = (Dependency) iterator.next();
+            if ( StringUtils.isBlank( d.getVersion() ) )
+            {
+                continue;
+            }
+            if ( StringUtils.equals( d.getGroupId(), signature.getGroupId() ) && StringUtils.equals( d.getArtifactId(),
+                                                                                                     signature.getArtifactId() ) )
+            {
+                if ( "signature".equals( d.getType() ) )
+                {
+                    // this is a perfect match
+                    match = d;
+                    break;
+                }
+                if ( "pom".equals( d.getType() ) )
+                {
+                    if ( match == null || "jar".equals( match.getType() ) )
+                    {
+                        match = d;
+                    }
+                }
+                if ( "jar".equals( d.getType() ) )
+                {
+                    if ( match == null )
+                    {
+                        match = d;
+                    }
+                }
+            }
+        }
+        return match;
     }
 
     /**

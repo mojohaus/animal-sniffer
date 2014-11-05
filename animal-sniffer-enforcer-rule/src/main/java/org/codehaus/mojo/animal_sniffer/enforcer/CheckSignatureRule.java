@@ -33,6 +33,7 @@ import org.apache.maven.artifact.resolver.ArtifactResolver;
 import org.apache.maven.enforcer.rule.api.EnforcerRule;
 import org.apache.maven.enforcer.rule.api.EnforcerRuleException;
 import org.apache.maven.enforcer.rule.api.EnforcerRuleHelper;
+import org.apache.maven.model.Dependency;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.shared.artifact.filter.PatternExcludesArtifactFilter;
 import org.apache.maven.shared.artifact.filter.PatternIncludesArtifactFilter;
@@ -42,6 +43,7 @@ import org.codehaus.mojo.animal_sniffer.SignatureChecker;
 import org.codehaus.mojo.animal_sniffer.logging.Logger;
 import org.codehaus.plexus.component.configurator.expression.ExpressionEvaluationException;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
+import org.codehaus.plexus.util.StringUtils;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -143,6 +145,27 @@ public class CheckSignatureRule
 
             ArtifactFactory artifactFactory = (ArtifactFactory) helper.getComponent( ArtifactFactory.class );
 
+            if ( StringUtils.isEmpty( signature.getVersion() ) )
+            {
+                helper.getLog().debug( "Resolving signature " + signature.getGroupId() + ":" + signature.getArtifactId()
+                                   + " version from dependencies" );
+                String source = "dependencies";
+                Dependency match = findMatchingDependency( signature, project.getDependencies() );
+                if ( match == null )
+                {
+                    helper.getLog().debug( "Resolving signature " + signature.getGroupId() + ":" + signature.getArtifactId()
+                                       + " version from dependencyManagement" );
+                    source = "dependencyManagement";
+                    match = findMatchingDependency( signature, project.getDependencyManagement().getDependencies() );
+                }
+                if ( match != null )
+                {
+                    helper.getLog().info( "Resolved signature " + signature.getGroupId() + ":" + signature.getArtifactId()
+                                       + " version as " + match.getVersion() + " from " + source);
+                    signature.setVersion( match.getVersion() );
+                }
+            }
+
             helper.getLog().info( "Checking unresolved references to " + signature );
 
             org.apache.maven.artifact.Artifact a = signature.createArtifact( artifactFactory );
@@ -207,6 +230,44 @@ public class CheckSignatureRule
         {
             throw new EnforcerRuleException( "Unable to lookup an expression " + e.getLocalizedMessage(), e );
         }
+    }
+
+    private static Dependency findMatchingDependency( Signature signature, List/*<Dependency>*/ dependencies )
+    {
+        Dependency match = null;
+        for ( Iterator/*<Dependency>*/ iterator = dependencies.iterator(); iterator.hasNext(); )
+        {
+            Dependency d = (Dependency) iterator.next();
+            if ( StringUtils.isEmpty( d.getVersion() ) )
+            {
+                continue;
+            }
+            if ( StringUtils.equals( d.getGroupId(), signature.getGroupId() ) && StringUtils.equals( d.getArtifactId(),
+                                                                                                     signature.getArtifactId() ) )
+            {
+                if ( "signature".equals( d.getType() ) )
+                {
+                    // this is a perfect match
+                    match = d;
+                    break;
+                }
+                if ( "pom".equals( d.getType() ) )
+                {
+                    if ( match == null || "jar".equals( match.getType() ) )
+                    {
+                        match = d;
+                    }
+                }
+                if ( "jar".equals( d.getType() ) )
+                {
+                    if ( match == null )
+                    {
+                        match = d;
+                    }
+                }
+            }
+        }
+        return match;
     }
 
     /**
