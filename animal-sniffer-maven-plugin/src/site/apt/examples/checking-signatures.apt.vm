@@ -67,6 +67,55 @@ Checking a project against API signatures
 </project>
 ---
 
+  Depending on how your tooling is configured, you may alternatively want to control the version
+  of the signatures from the <<<dependencies>>> or <<dependencyManagement>>> section of your project, e.g.
+
+---
+<project>
+  ...
+  <dependencyManagement>
+    <dependencies>
+      ...
+      <dependency>
+        <groupId>___group id of signature___</groupId>
+        <artifactId>___artifact id of signature___</artifactId>
+        <version>___version of signature___</version>
+        <!-- the type is optional, safer to include it though -->
+        <type>signature</type>
+        <!-- if there are multiple matches, then a type of "signature" wins and "pom" trumps "jar" or none -->
+      </dependency>
+      ...
+    </dependencies>
+  </dependencyManagement>
+  ...
+  <build>
+    ...
+    <plugins>
+      ...
+      <plugin>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>${project.artifactId}</artifactId>
+        <version>${project.version}</version>
+        ...
+        <configuration>
+          ...
+          <signature>
+            <groupId>___group id of signature___</groupId>
+            <artifactId>___artifact id of signature___</artifactId>
+          </signature>
+          ...
+        </configuration>
+        ...
+      </plugin>
+      ...
+    </plugins>
+    ...
+  </build>
+  ...
+</project>
+---
+
+
   Once you have configured your project with details of the signature to check, you have two ways to
   check your classes against this signature:
 
