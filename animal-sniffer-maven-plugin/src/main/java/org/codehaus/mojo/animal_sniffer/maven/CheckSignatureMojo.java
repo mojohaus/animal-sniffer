@@ -34,6 +34,11 @@ import org.apache.maven.model.Dependency;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.plugins.annotations.Component;
+import org.apache.maven.plugins.annotations.LifecyclePhase;
+import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.Parameter;
+import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.shared.artifact.filter.PatternExcludesArtifactFilter;
 import org.apache.maven.shared.artifact.filter.PatternIncludesArtifactFilter;
@@ -55,37 +60,29 @@ import java.util.Set;
  * Checks the classes compiled by this module.
  *
  * @author Kohsuke Kawaguchi
- * @phase process-classes
- * @requiresDependencyResolution compile
- * @goal check
- * @threadSafe
  */
+@Mojo( name = "check", defaultPhase = LifecyclePhase.PROCESS_CLASSES, requiresDependencyResolution = ResolutionScope.COMPILE, threadSafe = true )
 public class CheckSignatureMojo
     extends AbstractMojo
 {
 
     /**
      * The directory for compiled classes.
-     *
-     * @parameter property="project.build.outputDirectory"
-     * @required
-     * @readonly
      */
+    @Parameter( defaultValue = "${project.build.outputDirectory}", required = true, readonly = true )
     protected File outputDirectory;
 
     /**
      * Signature module to use.
-     *
-     * @required
-     * @parameter
      */
+    @Parameter( required = true )
     protected Signature signature;
 
     /**
      * Class names to ignore signatures for (wildcards accepted).
      *
-     * @parameter
      */
+    @Parameter
     protected String[] ignores;
 
     /**
@@ -94,17 +91,17 @@ public class CheckSignatureMojo
      * By default 'org.codehaus.mojo.animal_sniffer.IgnoreJRERequirement' and
      * 'org.jvnet.animal_sniffer.IgnoreJRERequirement' are used.
      *
-     * @parameter
      * @see SignatureChecker#ANNOTATION_FQN
      * @see SignatureChecker#PREVIOUS_ANNOTATION_FQN
      */
+    @Parameter
     protected String[] annotations;
 
     /**
      * Should dependencies be ignored.
      *
-     * @parameter default-value="true"
      */
+    @Parameter( defaultValue = "true" )
     protected boolean ignoreDependencies;
 
     /**
@@ -118,9 +115,9 @@ public class CheckSignatureMojo
      * <li><code>groupId:artifactId:type:classifier:version</code></li>
      * </ul>
      *
-     * @parameter
      * @since 1.12
      */
+    @Parameter
     private String[] includeDependencies = null;
 
     /**
@@ -134,40 +131,36 @@ public class CheckSignatureMojo
      * <li><code>groupId:artifactId:type:classifier:version</code></li>
      * </ul>
      *
-     * @parameter
      * @since 1.12
      */
+    @Parameter
     private String[] excludeDependencies = null;
 
     /**
      * Should signature checking be skipped?
      *
-     * @parameter default-value="false" property="animal.sniffer.skip"
      */
+    @Parameter( defaultValue = "false", property = "animal.sniffer.skip" )
     protected boolean skip;
 
     /**
-     * @component
-     * @readonly
      */
+    @Component
     protected ArtifactResolver resolver;
 
     /**
-     * @parameter property="project"
-     * @readonly
      */
+    @Parameter( defaultValue = "${project}", readonly = true )
     protected MavenProject project;
 
     /**
-     * @parameter property="localRepository"
-     * @readonly
      */
+    @Parameter( defaultValue = "${localRepository}", readonly=true )
     protected ArtifactRepository localRepository;
 
     /**
-     * @component
-     * @readonly
      */
+    @Component
     protected ArtifactFactory artifactFactory;
 
     public void execute()

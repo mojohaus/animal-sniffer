@@ -31,6 +31,10 @@ import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.plugins.annotations.Component;
+import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.Parameter;
+import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.MavenProjectHelper;
 import org.apache.maven.shared.artifact.filter.PatternExcludesArtifactFilter;
@@ -65,52 +69,49 @@ import java.util.List;
  * module dependencies and the module classes.
  *
  * @author Stephen Connolly
- * @goal build
- * @configurator override
- * @requiresDependencyResolution compile
- * @threadSafe
  */
+@Mojo( name = "build", configurator = "override", requiresDependencyResolution = ResolutionScope.COMPILE, threadSafe = true )
 public class BuildSignaturesMojo
     extends AbstractMojo
 {
     /**
      * Should the signatures from java home be included.
      *
-     * @parameter property="includeJavaHome" default-value="true"
      * @since 1.3
      */
+    @Parameter( property = "includeJavaHome", defaultValue = "true" )
     private boolean includeJavaHome;
 
     /**
      * Should no signatures be generated if no java home is available.
      *
-     * @parameter property="skipIfNoJavaHome" default-value="false"
      * @since 1.3
      */
+    @Parameter( property = "skipIfNoJavaHome", defaultValue = "false" )
     private boolean skipIfNoJavaHome;
 
     /**
      * Should the signatures from this module's classes be included..
      *
-     * @parameter property="includeJavaHome" default-value="true"
      * @since 1.3
      */
+    @Parameter( property = "includeJavaHome", defaultValue = "true" )
     private boolean includeModuleClasses;
 
     /**
      * Classes to generate signatures of.
      *
-     * @parameter
      * @since 1.3
      */
+    @Parameter
     private String[] includeClasses = null;
 
     /**
      * Classes to exclude from generating signatures of.
      *
-     * @parameter
      * @since 1.3
      */
+    @Parameter
     private String[] excludeClasses = null;
 
     /**
@@ -124,9 +125,9 @@ public class BuildSignaturesMojo
      * <li><code>groupId:artifactId:type:classifier:version</code></li>
      * </ul>
      *
-     * @parameter
      * @since 1.3
      */
+    @Parameter
     private String[] includeDependencies = null;
 
     /**
@@ -140,9 +141,9 @@ public class BuildSignaturesMojo
      * <li><code>groupId:artifactId:type:classifier:version</code></li>
      * </ul>
      *
-     * @parameter
      * @since 1.3
      */
+    @Parameter
     private String[] excludeDependencies = null;
 
     /**
@@ -150,9 +151,9 @@ public class BuildSignaturesMojo
      * included. This parameter is overridden by {@link #javaHomeClassPath}.  This parameter overrides {@link #jdk}
      * and any java home specified by maven-toolchains-plugin.
      *
-     * @parameter property="javaHome"
      * @since 1.3
      */
+    @Parameter( property = "javaHome" )
     private String javaHome;
 
     /**
@@ -160,93 +161,82 @@ public class BuildSignaturesMojo
      * {@link #javaHome} or {@link #jdk}.  For example, the automatic boot classpath detection does not work with
      * Sun Java 1.1. This parameter overrides {@link #javaHome}, {@link #jdk} and the maven-toolchains-plugin.
      *
-     * @parameter
      * @since 1.3
      */
+    @Parameter
     private File[] javaHomeClassPath;
 
     /**
      * Where to put the generated signatures.
      *
-     * @parameter property="project.build.directory"
-     * @required
      * @since 1.3
      */
+    @Parameter( defaultValue = "${project.build.directory}", required = true )
     private File outputDirectory;
 
     /**
      * Where to find this modules classes.
      *
-     * @parameter property="project.build.outputDirectory"
-     * @required
      * @since 1.3
      */
+    @Parameter( defaultValue = "${project.build.outputDirectory}", required = true )
     private File classesDirectory;
 
     /**
      * The name of the generated signatures.
      *
-     * @parameter property="project.build.finalName"
-     * @required
      * @since 1.3
      */
+    @Parameter( defaultValue = "${project.build.finalName}", required = true )
     private String signaturesName;
 
     /**
      * The classifier to add to the generated signatures.
      *
-     * @parameter
      * @since 1.3
      */
+    @Parameter
     private String classifier;
 
     /**
-     * @component
      */
+    @Component
     private MavenProjectHelper projectHelper;
 
     /**
      * The maven project.
-     *
-     * @parameter property="project"
-     * @required
-     * @readonly
      */
+    @Parameter( defaultValue = "${project}", required = true, readonly = true )
     private MavenProject project;
 
     /**
-     * @component
      */
+    @Component
     private ToolchainManager toolchainManager;
 
     /**
-     * @component
      */
+    @Component
     private ToolchainManagerPrivate toolchainManagerPrivate;
 
     /**
      * The current build session instance. This is used for toolchain manager API calls.
-     *
-     * @parameter property="session"
-     * @required
-     * @readonly
      */
+    @Parameter( defaultValue = "${session}", required = true, readonly = true )
     private MavenSession session;
 
     /**
      * The JDK Toolchain to use.  This parameter can be overridden by {@link #javaHome} or {@link #javaHomeClassPath}.
      * This parameter overrides any toolchain specified with maven-toolchains-plugin.
      *
-     * @parameter
      * @since 1.3
      */
+    @Parameter
     private JdkToolchain jdk;
 
     /**
-     * @parameter property="plugin.artifacts"
-     * @required
-     * @readonly
      */
+    @Parameter( defaultValue = "${plugin.artifacts}", required = true, readonly = true )
     private List/*<Artifact>*/ pluginArtifacts;
 
     /**
@@ -256,9 +246,9 @@ public class BuildSignaturesMojo
      * line separated using {@link File#pathSeparatorChar} or else exits with a non-zero return code if it cannot determine
      * the java boot classpath.
      *
-     * @parameter default-value="${plugin.groupId}"
      * @since 1.3
      */
+    @Parameter( defaultValue = "${plugin.groupId}" )
     private String jbcpdGroupId;
 
     /**
@@ -268,9 +258,9 @@ public class BuildSignaturesMojo
      * line separated using {@link File#pathSeparatorChar} or else exits with a non-zero return code if it cannot determine
      * the java boot classpath.
      *
-     * @parameter default-value="java-boot-classpath-detector"
      * @since 1.3
      */
+    @Parameter( defaultValue = "java-boot-classpath-detector" )
     private String jbcpdArtifactId;
 
     public void execute()
