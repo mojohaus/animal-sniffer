@@ -25,15 +25,6 @@ package org.codehaus.mojo.animal_sniffer;
  *
  */
 
-import org.codehaus.mojo.animal_sniffer.logging.Logger;
-import org.codehaus.mojo.animal_sniffer.logging.PrintWriterLogger;
-import org.objectweb.asm.AnnotationVisitor;
-import org.objectweb.asm.ClassReader;
-import org.objectweb.asm.ClassVisitor;
-import org.objectweb.asm.Label;
-import org.objectweb.asm.MethodVisitor;
-import org.objectweb.asm.Opcodes;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -43,13 +34,21 @@ import java.nio.CharBuffer;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.zip.GZIPInputStream;
+
+import org.codehaus.mojo.animal_sniffer.logging.Logger;
+import org.codehaus.mojo.animal_sniffer.logging.PrintWriterLogger;
+import org.objectweb.asm.AnnotationVisitor;
+import org.objectweb.asm.ClassReader;
+import org.objectweb.asm.ClassVisitor;
+import org.objectweb.asm.Label;
+import org.objectweb.asm.MethodVisitor;
+import org.objectweb.asm.Opcodes;
 
 /**
  * Checks the signature against classes in this list.
@@ -70,7 +69,7 @@ public class SignatureChecker
      */
     public static final String PREVIOUS_ANNOTATION_FQN = "org.jvnet.animal_sniffer.IgnoreJRERequirement";
 
-    private final Map/*<String, Clazz>*/ classes = new HashMap();
+    private final Map<String, Clazz> classes = new HashMap<String, Clazz>();
 
     private final Logger logger;
 
@@ -78,22 +77,22 @@ public class SignatureChecker
      * Classes in this packages are considered to be resolved elsewhere and
      * thus not a subject of the error checking when referenced.
      */
-    private final List ignoredPackageRules;
+    private final List<MatchRule> ignoredPackageRules;
 
-    private final Set ignoredPackages;
+    private final Set<String> ignoredPackages;
 
-    private final Set/*<String>*/ ignoredOuterClassesOrMethods = new HashSet();
+    private final Set<String> ignoredOuterClassesOrMethods = new HashSet<String>();
 
     private boolean hadError = false;
 
-    private List/*<File>*/ sourcePath;
+    private List<File> sourcePath;
 
-    private Collection/*<String>*/ annotationDescriptors;
+    private Collection<String> annotationDescriptors;
 
     public static void main( String[] args )
         throws Exception
     {
-        Set ignoredPackages = new HashSet();
+        Set<String> ignoredPackages = new HashSet<String>();
         ignoredPackages.add( "org.jvnet.animal_sniffer.*" );
         ignoredPackages.add( "org.codehaus.mojo.animal_sniffer.*" );
         ignoredPackages.add( "org.objectweb.*" );
@@ -101,15 +100,13 @@ public class SignatureChecker
                               new PrintWriterLogger( System.out ) ).process( new File( "target/classes" ) );
     }
 
-    public SignatureChecker( InputStream in, Set ignoredPackages, Logger logger )
+    public SignatureChecker( InputStream in, Set<String> ignoredPackages, Logger logger )
         throws IOException
     {
-        this.ignoredPackages = new HashSet();
-        this.ignoredPackageRules = new LinkedList();
-        Iterator i = ignoredPackages.iterator();
-        while ( i.hasNext() )
+        this.ignoredPackages = new HashSet<String>();
+        this.ignoredPackageRules = new LinkedList<MatchRule>();
+        for(String wildcard : ignoredPackages )
         {
-            String wildcard = (String) i.next();
             if ( wildcard.indexOf( '*' ) == -1 && wildcard.indexOf( '?' ) == -1 )
             {
                 this.ignoredPackages.add( wildcard.replace( '.', '/' ) );
@@ -119,7 +116,7 @@ public class SignatureChecker
                 this.ignoredPackageRules.add( newMatchRule( wildcard.replace( '.', '/' ) ) );
             }
         }
-        this.annotationDescriptors = new HashSet();
+        this.annotationDescriptors = new HashSet<String>();
         this.annotationDescriptors.add( toAnnotationDescriptor( ANNOTATION_FQN ) );
         this.annotationDescriptors.add( toAnnotationDescriptor( PREVIOUS_ANNOTATION_FQN ) );
 
@@ -159,7 +156,7 @@ public class SignatureChecker
     }
 
     /** @since 1.9 */
-    public void setSourcePath( List/*<File>*/ sourcePath )
+    public void setSourcePath( List<File> sourcePath )
     {
         this.sourcePath = sourcePath;
     }
@@ -178,13 +175,11 @@ public class SignatureChecker
      *                        to consider for ignoring annotated method, class and field
      * @since 1.11
      */
-    public void setAnnotationTypes( Collection/*<String>*/ annotationTypes )
+    public void setAnnotationTypes( Collection<String> annotationTypes )
     {
         this.annotationDescriptors.clear();
-        Iterator i = annotationTypes.iterator();
-        while ( i.hasNext() )
+        for ( String annotationType : annotationTypes )
         {
-            String annotationType = (String) i.next();
             annotationDescriptors.add( toAnnotationDescriptor( annotationType ) );
         }
     }
@@ -284,7 +279,7 @@ public class SignatureChecker
     private class CheckingVisitor
         extends ClassVisitor
     {
-        private final Set ignoredPackageCache;
+        private final Set<String> ignoredPackageCache;
 
         private String packagePrefix;
         private int line;
@@ -296,7 +291,7 @@ public class SignatureChecker
         public CheckingVisitor( String name )
         {
             super(Opcodes.ASM4);
-            this.ignoredPackageCache = new HashSet( 50 * ignoredPackageRules.size() );
+            this.ignoredPackageCache = new HashSet<String>( 50 * ignoredPackageRules.size() );
             this.name = name;
         }
 
@@ -308,9 +303,8 @@ public class SignatureChecker
 
         public void visitSource( String source, String debug )
         {
-            for ( Iterator it = sourcePath.iterator(); it.hasNext(); )
+            for ( File root : sourcePath )
             {
-                File root = ( File ) it.next();
                 File s = new File( root, packagePrefix + source );
                 if ( s.isFile() )
                 {
@@ -330,10 +324,9 @@ public class SignatureChecker
 
         public boolean isIgnoreAnnotation(String desc)
         {
-            Iterator i = annotationDescriptors.iterator();
-            while ( i.hasNext() )
+            for ( String annoDesc : annotationDescriptors )
             {
-                if ( desc.equals( i.next() ) )
+                if ( desc.equals( annoDesc ) )
                 {
                     return true;
                 }
@@ -431,10 +424,8 @@ public class SignatureChecker
                     {
                         return true;
                     }
-                    Iterator i = ignoredPackageRules.iterator();
-                    while ( i.hasNext() )
+                    for ( MatchRule rule : ignoredPackageRules )
                     {
-                        MatchRule rule = (MatchRule) i.next();
                         if ( rule.matches( type ) )
                         {
                             ignoredPackageCache.add( type );
@@ -510,7 +501,7 @@ public class SignatureChecker
             int rparen = sig.indexOf( ')' );
             if ( rparen != -1 )
             {
-                StringBuffer b = new StringBuffer();
+                StringBuilder b = new StringBuilder();
                 String returnType = sig.substring( rparen + 1 );
                 if ( returnType.equals( "V" ) )
                 {

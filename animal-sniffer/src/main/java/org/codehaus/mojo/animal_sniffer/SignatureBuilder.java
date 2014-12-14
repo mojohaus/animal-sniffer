@@ -25,14 +25,6 @@ package org.codehaus.mojo.animal_sniffer;
  *
  */
 
-import org.codehaus.mojo.animal_sniffer.logging.Logger;
-import org.codehaus.mojo.animal_sniffer.logging.PrintWriterLogger;
-import org.objectweb.asm.ClassReader;
-import org.objectweb.asm.ClassVisitor;
-import org.objectweb.asm.FieldVisitor;
-import org.objectweb.asm.MethodVisitor;
-import org.objectweb.asm.Opcodes;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -42,13 +34,20 @@ import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.regex.Pattern;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
+
+import org.codehaus.mojo.animal_sniffer.logging.Logger;
+import org.codehaus.mojo.animal_sniffer.logging.PrintWriterLogger;
+import org.objectweb.asm.ClassReader;
+import org.objectweb.asm.ClassVisitor;
+import org.objectweb.asm.FieldVisitor;
+import org.objectweb.asm.MethodVisitor;
+import org.objectweb.asm.Opcodes;
 
 /**
  * Builds up a signature list from the given classes.
@@ -62,11 +61,11 @@ public class SignatureBuilder
 
     private final Logger logger;
 
-    private List/*<Pattern>*/ includeClasses;
+    private List<Pattern> includeClasses;
 
-    private List/*<Pattern>*/ excludeClasses;
+    private List<Pattern> excludeClasses;
 
-    private final Map classes = new TreeMap();
+    private final Map<String,Clazz> classes = new TreeMap<String,Clazz>();
 
     public static void main( String[] args )
         throws IOException
@@ -89,7 +88,7 @@ public class SignatureBuilder
     {
         if ( includeClasses == null )
         {
-            includeClasses = new ArrayList();
+            includeClasses = new ArrayList<Pattern>();
         }
         includeClasses.add( RegexUtils.compileWildcard( className ) );
     }
@@ -98,7 +97,7 @@ public class SignatureBuilder
     {
         if ( excludeClasses == null )
         {
-            excludeClasses = new ArrayList();
+            excludeClasses = new ArrayList<Pattern>();
         }
         excludeClasses.add( RegexUtils.compileWildcard( className ) );
     }
@@ -143,18 +142,14 @@ public class SignatureBuilder
         throws IOException
     {
         int count = 0;
-        Iterator i = classes.entrySet().iterator();
-        while ( i.hasNext() )
+        for ( Map.Entry<String,Clazz> entry : classes.entrySet() )
         {
-            Map.Entry entry = (Map.Entry) i.next();
             final String className = ( (String) entry.getKey() ).replace( '/', '.' );
             if ( includeClasses != null )
             {
                 boolean included = false;
-                Iterator j = includeClasses.iterator();
-                while ( !included && j.hasNext() )
+                for( Pattern p : includeClasses )
                 {
-                    Pattern p = (Pattern) j.next();
                     included = p.matcher( className ).matches();
                 }
                 if ( !included )
@@ -165,10 +160,8 @@ public class SignatureBuilder
             if ( excludeClasses != null )
             {
                 boolean excluded = false;
-                Iterator j = excludeClasses.iterator();
-                while ( !excluded && j.hasNext() )
+                for( Pattern p : excludeClasses )
                 {
-                    Pattern p = (Pattern) j.next();
                     excluded = p.matcher( className ).matches();
                 }
                 if ( excluded )
@@ -213,7 +206,7 @@ public class SignatureBuilder
         public void visit( int version, int access, String name, String signature, String superName,
                            String[] interfaces )
         {
-            this.clazz = new Clazz( name, new HashSet(), superName, interfaces );
+            this.clazz = new Clazz( name, new HashSet<String>(), superName, interfaces );
         }
 
         public void end()

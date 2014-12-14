@@ -46,7 +46,7 @@ public final class Clazz
     /**
      * The set of methods and constants that form the signature of the class.
      */
-    private final Set signatures;
+    private final Set<String> signatures;
 
     /**
      * The superclass of the class.
@@ -66,7 +66,7 @@ public final class Clazz
      * @param superClass      the superclass.
      * @param superInterfaces the interfaces implemented by the class.
      */
-    public Clazz( String name, Set signatures, String superClass, String[] superInterfaces )
+    public Clazz( String name, Set<String> signatures, String superClass, String[] superInterfaces )
     {
         this.name = name;
         this.signatures = signatures;
@@ -93,7 +93,7 @@ public final class Clazz
             // nothing we can do... this is a breaking change
             throw new ClassCastException( "Cannot merger class " + defB.name + " as it has changed superclass:" );
         }
-        Set superInterfaces = new HashSet();
+        Set<String> superInterfaces = new HashSet<String>();
         if ( defA.superInterfaces != null )
         {
             superInterfaces.addAll( Arrays.asList( defA.superInterfaces ) );
@@ -102,7 +102,7 @@ public final class Clazz
         {
             superInterfaces.addAll( Arrays.asList( defB.superInterfaces ) );
         }
-        Set signatures = new HashSet();
+        Set<String> signatures = new HashSet<String>();
         signatures.addAll( defA.signatures );
         signatures.addAll( defB.signatures );
         this.name = defA.getName();
@@ -116,7 +116,7 @@ public final class Clazz
         return name;
     }
 
-    public Set getSignatures()
+    public Set<String> getSignatures()
     {
         return signatures;
     }

@@ -25,18 +25,17 @@ package org.codehaus.mojo.animal_sniffer;
  *
  */
 
-import org.codehaus.mojo.animal_sniffer.logging.Logger;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
+
+import org.codehaus.mojo.animal_sniffer.logging.Logger;
 
 /**
  * Merges signature files.
@@ -45,7 +44,7 @@ import java.util.zip.GZIPOutputStream;
  */
 public class SignatureMerger
 {
-    private final Map/*<String, Clazz>*/ classes = new HashMap();
+    private final Map<String, Clazz> classes = new HashMap<String, Clazz>();
 
     private final Logger logger;
 
@@ -73,7 +72,7 @@ public class SignatureMerger
                     {
                         return; // finished
                     }
-                    Clazz cur = (Clazz) classes.get( c.getName() );
+                    Clazz cur = classes.get( c.getName() );
                     if ( cur == null )
                     {
                         classes.put( c.getName(), c );
@@ -90,11 +89,9 @@ public class SignatureMerger
             }
         }
         ObjectOutputStream oos = new ObjectOutputStream( new GZIPOutputStream( out ) );
-        Iterator i = classes.entrySet().iterator();
-        while ( i.hasNext() )
+        for ( Map.Entry<String, Clazz> entry : classes.entrySet() )
         {
-            Map.Entry entry = (Map.Entry) i.next();
-            logger.info( (String) entry.getKey() );
+            logger.info( entry.getKey() );
             oos.writeObject( entry.getValue() );
         }
         oos.writeObject( null );   // EOF marker

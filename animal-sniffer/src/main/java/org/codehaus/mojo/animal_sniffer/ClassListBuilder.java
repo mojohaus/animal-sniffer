@@ -43,16 +43,16 @@ import java.util.Set;
 public class ClassListBuilder
     extends ClassFileVisitor
 {
-    private final Set packages;
+    private final Set<String> packages;
 
     private final Logger logger;
 
-    public Set getPackages()
+    public Set<String> getPackages()
     {
         return packages;
     }
 
-    public ClassListBuilder( Set packages, Logger logger )
+    public ClassListBuilder( Set<String> packages, Logger logger )
     {
         this.packages = packages;
         this.logger = logger;
@@ -60,7 +60,7 @@ public class ClassListBuilder
 
     public ClassListBuilder( Logger logger )
     {
-        this( new HashSet(), logger );
+        this( new HashSet<String>(), logger );
     }
 
     protected void process( String name, InputStream image )
