@@ -33,11 +33,11 @@ try
     String buf = FileUtils.fileRead( file, "UTF-8" );
 
     String[] expected = {
-        "manimalsniffer-41/src/main/java/localhost/Bad.java:9: Undefined reference: void java.util.concurrent.DelayQueue.<init>()",
-        "manimalsniffer-41/src/main/java/localhost/Bad.java:9: Undefined reference: java.util.concurrent.ScheduledFuture",
-        "manimalsniffer-41/src/main/java/localhost/Bad.java:11: Undefined reference: boolean java.util.concurrent.ScheduledFuture.isCancelled()",
-        "manimalsniffer-41/src/main/java/localhost/Bad.java:15: Undefined reference: java.util.concurrent.Callable java.util.concurrent.Executors.callable(Runnable)",
-        "manimalsniffer-41/src/main/java/localhost/Bad.java:15: Undefined reference: Object java.util.concurrent.Callable.call()",
+        "Bad.java:9: Undefined reference: void java.util.concurrent.DelayQueue.<init>()",
+        "Bad.java:9: Undefined reference: java.util.concurrent.ScheduledFuture",
+        "Bad.java:11: Undefined reference: boolean java.util.concurrent.ScheduledFuture.isCancelled()",
+        "Bad.java:15: Undefined reference: java.util.concurrent.Callable java.util.concurrent.Executors.callable(Runnable)",
+        "Bad.java:15: Undefined reference: Object java.util.concurrent.Callable.call()",
         // XXX seems like there should be more of them...
     };
     for (String s : expected) {
