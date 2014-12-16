@@ -290,17 +290,19 @@ public class SignatureChecker
 
         public CheckingVisitor( String name )
         {
-            super(Opcodes.ASM4);
+            super(Opcodes.ASM5);
             this.ignoredPackageCache = new HashSet<String>( 50 * ignoredPackageRules.size() );
             this.name = name;
         }
 
+        @Override
         public void visit( int version, int access, String name, String signature, String superName, String[] interfaces )
         {
             internalName = name;
             packagePrefix = name.substring(0, name.lastIndexOf( '/' ) + 1 );
         }
 
+        @Override
         public void visitSource( String source, String debug )
         {
             for ( File root : sourcePath )
@@ -313,6 +315,7 @@ public class SignatureChecker
             }
         }
 
+        @Override
         public void visitOuterClass( String owner, String name, String desc )
         {
             if ( ignoredOuterClassesOrMethods.contains( owner ) ||
@@ -334,7 +337,7 @@ public class SignatureChecker
             return false;
         }
 
-
+        @Override
         public AnnotationVisitor visitAnnotation(String desc, boolean visible)
         {
             if ( isIgnoreAnnotation( desc ) )
@@ -345,15 +348,17 @@ public class SignatureChecker
             return super.visitAnnotation(desc, visible);
         }
 
+        @Override
         public MethodVisitor visitMethod( int access, final String name, final String desc, String signature, String[] exceptions )
         {
-            return new MethodVisitor(Opcodes.ASM4)
+            return new MethodVisitor(Opcodes.ASM5)
             {
                 /**
                  * True if @IgnoreJRERequirement is set.
                  */
                 boolean ignoreError = ignoreClass;
 
+                @Override
                 public AnnotationVisitor visitAnnotation( String annoDesc, boolean visible )
                 {
                     if ( isIgnoreAnnotation(annoDesc) )
@@ -364,11 +369,14 @@ public class SignatureChecker
                     return super.visitAnnotation( annoDesc, visible );
                 }
 
-                public void visitMethodInsn( int opcode, String owner, String name, String desc )
+                
+                @Override
+                public void visitMethodInsn( int opcode, String owner, String name, String desc, boolean itf )
                 {
                     check( owner, name + desc );
                 }
-
+                
+                @Override
                 public void visitTypeInsn( int opcode, String type )
                 {
                     if ( shouldBeIgnored( type ) )
@@ -379,18 +387,20 @@ public class SignatureChecker
                     {
                         return; // array
                     }
-                    Clazz sigs = (Clazz) classes.get( type );
+                    Clazz sigs = classes.get( type );
                     if ( sigs == null )
                     {
                         error( type, null );
                     }
                 }
 
+                @Override
                 public void visitFieldInsn( int opcode, String owner, String name, String desc )
                 {
                     check( owner, name + '#' + desc );
                 }
 
+                @Override
                 public void visitLineNumber( int line, Label start )
                 {
                     CheckingVisitor.this.line = line;
