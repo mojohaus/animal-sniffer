@@ -175,7 +175,7 @@ public class CheckSignatureRule
 
             MavenLogger logger = new MavenLogger( helper.getLog() );
 
-            final Set ignoredPackages = buildPackageList( outputDirectory, project, logger );
+            final Set<String> ignoredPackages = buildPackageList( outputDirectory, project, logger );
 
             if ( ignores != null )
             {
@@ -194,7 +194,7 @@ public class CheckSignatureRule
                 new SignatureChecker( new FileInputStream( a.getFile() ), ignoredPackages, logger );
             signatureChecker.setCheckJars( false ); // don't want to descend into jar files that have been copied to
             // the output directory as resources.
-            List sourcePaths = new ArrayList();
+            List<File> sourcePaths = new ArrayList<File>();
             Iterator iterator = project.getCompileSourceRoots().iterator();
             while ( iterator.hasNext() )
             {
@@ -232,12 +232,11 @@ public class CheckSignatureRule
         }
     }
 
-    private static Dependency findMatchingDependency( Signature signature, List/*<Dependency>*/ dependencies )
+    private static Dependency findMatchingDependency( Signature signature, List<Dependency> dependencies )
     {
         Dependency match = null;
-        for ( Iterator/*<Dependency>*/ iterator = dependencies.iterator(); iterator.hasNext(); )
+        for ( Dependency d : dependencies )
         {
-            Dependency d = (Dependency) iterator.next();
             if ( StringUtils.isEmpty( d.getVersion() ) )
             {
                 continue;
@@ -276,7 +275,7 @@ public class CheckSignatureRule
      * @param outputDirectory
      * @param logger
      */
-    private Set buildPackageList( File outputDirectory, MavenProject project, Logger logger )
+    private Set<String> buildPackageList( File outputDirectory, MavenProject project, Logger logger )
         throws IOException
     {
         ClassListBuilder plb = new ClassListBuilder( logger );

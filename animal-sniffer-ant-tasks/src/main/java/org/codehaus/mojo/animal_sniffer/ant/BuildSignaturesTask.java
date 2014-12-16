@@ -25,19 +25,18 @@ package org.codehaus.mojo.animal_sniffer.ant;
  *
  */
 
-import org.apache.tools.ant.BuildException;
-import org.apache.tools.ant.Project;
-import org.apache.tools.ant.Task;
-import org.apache.tools.ant.types.Path;
-import org.codehaus.mojo.animal_sniffer.SignatureBuilder;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Iterator;
 import java.util.Vector;
+
+import org.apache.tools.ant.BuildException;
+import org.apache.tools.ant.Project;
+import org.apache.tools.ant.Task;
+import org.apache.tools.ant.types.Path;
+import org.codehaus.mojo.animal_sniffer.SignatureBuilder;
 
 /**
  * @author Kohsuke Kawaguchi
@@ -48,13 +47,13 @@ public class BuildSignaturesTask
 
     private File destfile;
 
-    private Vector paths = new Vector();
+    private Vector<Path> paths = new Vector<Path>();
 
-    private Vector signatures = new Vector();
+    private Vector<Signature> signatures = new Vector<Signature>();
 
-    private Vector includeClasses = new Vector();
+    private Vector<Ignore> includeClasses = new Vector<Ignore>();
 
-    private Vector excludeClasses = new Vector();
+    private Vector<Ignore> excludeClasses = new Vector<Ignore>();
 
     public void setDestfile( File dest )
     {
@@ -97,10 +96,8 @@ public class BuildSignaturesTask
         {
             throw new BuildException( "path not set" );
         }
-        Iterator i = signatures.iterator();
-        while ( i.hasNext() )
+        for ( Signature signature : signatures )
         {
-            Signature signature = (Signature) i.next();
             if ( signature.getSrc() == null )
             {
                 throw new BuildException( "signature src not set" );
@@ -110,19 +107,15 @@ public class BuildSignaturesTask
                 throw new BuildException( "signature " + signature.getSrc() + " does not exist" );
             }
         }
-        i = includeClasses.iterator();
-        while ( i.hasNext() )
+        for ( Ignore tmp : includeClasses )
         {
-            Ignore tmp = (Ignore) i.next();
             if ( tmp.getClassName() == null )
             {
                 throw new BuildException( "includeClasses className not set" );
             }
         }
-        i = excludeClasses.iterator();
-        while ( i.hasNext() )
+        for ( Ignore tmp : excludeClasses )
         {
-            Ignore tmp = (Ignore) i.next();
             if ( tmp.getClassName() == null )
             {
                 throw new BuildException( "excludeClasses className not set" );
@@ -137,34 +130,26 @@ public class BuildSignaturesTask
         validate();
         try
         {
-            Vector inStreams = new Vector();
-            Iterator i = signatures.iterator();
-            while ( i.hasNext() )
+            Vector<InputStream> inStreams = new Vector<InputStream>();
+            for ( Signature signature : signatures )
             {
-                Signature signature = (Signature) i.next();
                 log( "Importing signatures from " + signature.getSrc() );
                 inStreams.add( new FileInputStream( signature.getSrc() ) );
             }
 
             SignatureBuilder builder =
-                new SignatureBuilder( (InputStream[]) inStreams.toArray( new InputStream[inStreams.size()] ),
+                new SignatureBuilder( inStreams.toArray( new InputStream[inStreams.size()] ),
                                       new FileOutputStream( destfile ), new AntLogger( this ) );
-            i = includeClasses.iterator();
-            while ( i.hasNext() )
+            for ( Ignore tmp: includeClasses )
             {
-                Ignore tmp = (Ignore) i.next();
                 builder.addInclude( tmp.getClassName() );
             }
-            i = excludeClasses.iterator();
-            while ( i.hasNext() )
+            for ( Ignore tmp : excludeClasses )
             {
-                Ignore tmp = (Ignore) i.next();
                 builder.addExclude( tmp.getClassName() );
             }
-            i = paths.iterator();
-            while ( i.hasNext() )
+            for ( Path path : paths )
             {
-                Path path = (Path) i.next();
                 final String[] files = path.list();
                 for ( int j = 0; j < files.length; j++ )
                 {

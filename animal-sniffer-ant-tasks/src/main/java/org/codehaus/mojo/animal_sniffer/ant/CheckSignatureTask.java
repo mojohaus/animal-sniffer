@@ -25,16 +25,6 @@ package org.codehaus.mojo.animal_sniffer.ant;
  *
  */
 
-import org.apache.tools.ant.BuildException;
-import org.apache.tools.ant.Project;
-import org.apache.tools.ant.Task;
-import org.apache.tools.ant.types.Path;
-import org.apache.tools.ant.types.Reference;
-import org.apache.tools.ant.types.resources.FileResource;
-import org.codehaus.mojo.animal_sniffer.ClassFileVisitor;
-import org.codehaus.mojo.animal_sniffer.ClassListBuilder;
-import org.codehaus.mojo.animal_sniffer.SignatureChecker;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -45,6 +35,16 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.Vector;
+
+import org.apache.tools.ant.BuildException;
+import org.apache.tools.ant.Project;
+import org.apache.tools.ant.Task;
+import org.apache.tools.ant.types.Path;
+import org.apache.tools.ant.types.Reference;
+import org.apache.tools.ant.types.resources.FileResource;
+import org.codehaus.mojo.animal_sniffer.ClassFileVisitor;
+import org.codehaus.mojo.animal_sniffer.ClassListBuilder;
+import org.codehaus.mojo.animal_sniffer.SignatureChecker;
 
 /**
  * Checks the files against the provided signature.
@@ -62,11 +62,11 @@ public class CheckSignatureTask
 
     private Path sourcepath;
 
-    private Vector paths = new Vector();
+    private Vector<Path> paths = new Vector<Path>();
 
-    private Vector ignores = new Vector();
+    private Vector<Ignore> ignores = new Vector<Ignore>();
 
-    private Vector annotations = new Vector();
+    private Vector<Annotation> annotations = new Vector<Annotation>();
 
     public void addPath( Path path )
     {
@@ -163,22 +163,23 @@ public class CheckSignatureTask
                 throw new BuildException( "Could not find signature: " + signature );
             }
 
-            final Set ignoredPackages = buildPackageList();
+            final Set<String> ignoredPackages = buildPackageList();
 
-            Iterator i = ignores.iterator();
-            while ( i.hasNext() )
+            for ( Ignore ignore: ignores )
             {
-                Ignore ignore = (Ignore) i.next();
-                if (ignore == null|| ignore.getClassName()== null) continue;
+                if ( ignore == null || ignore.getClassName() == null )
+                {
+                    continue;
+                }
                 ignoredPackages.add( ignore.getClassName().replace( '.', '/' ) );
             }
 
             final SignatureChecker signatureChecker =
                 new SignatureChecker( new FileInputStream( signature ), ignoredPackages, new AntLogger( this ) );
 
-            final List tmp = new ArrayList();
+            final List<File> tmp = new ArrayList<File>();
             if (sourcepath != null) {
-                i = sourcepath.iterator();
+                Iterator<?> i = sourcepath.iterator();
                 while ( i.hasNext() )
                 {
                     Object next = i.next();
@@ -191,11 +192,9 @@ public class CheckSignatureTask
             }
             signatureChecker.setSourcePath(tmp);
 
-            final Collection annotationTypes = new HashSet();
-            i = annotations.iterator();
-            while ( i.hasNext() )
+            final Collection<String> annotationTypes = new HashSet<String>();
+            for ( Annotation annotation : annotations )
             {
-                Annotation annotation = (Annotation) i.next();
                 if ( annotation != null && annotation.getClassName() != null )
                 {
                     annotationTypes.add( annotation.getClassName() );
@@ -203,10 +202,8 @@ public class CheckSignatureTask
             }
             signatureChecker.setAnnotationTypes( annotationTypes );
 
-            i = paths.iterator();
-            while ( i.hasNext() )
+            for ( Path path : paths )
             {
-                Path path = (Path) i.next();
                 final String[] files = path.list();
                 for ( int j = 0; j < files.length; j++ )
                 {
@@ -242,7 +239,7 @@ public class CheckSignatureTask
     /**
      * List of packages defined in the application.
      */
-    private Set buildPackageList()
+    private Set<String> buildPackageList()
         throws IOException
     {
         ClassListBuilder plb = new ClassListBuilder( new AntLogger( this ) );
@@ -253,10 +250,8 @@ public class CheckSignatureTask
     private void apply( ClassFileVisitor v )
         throws IOException
     {
-        Iterator i = paths.iterator();
-        while ( i.hasNext() )
+        for ( Path path : paths )
         {
-            Path path = (Path) i.next();
             final String[] files = path.list();
             for ( int j = 0; j < files.length; j++ )
             {
@@ -266,7 +261,7 @@ public class CheckSignatureTask
         }
         if ( classpath != null )
         {
-            i = classpath.iterator();
+            Iterator<?> i = classpath.iterator();
             while ( i.hasNext() )
             {
                 Object next = i.next();
