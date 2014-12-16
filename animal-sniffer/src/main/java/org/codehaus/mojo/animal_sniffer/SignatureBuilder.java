@@ -144,7 +144,7 @@ public class SignatureBuilder
         int count = 0;
         for ( Map.Entry<String,Clazz> entry : classes.entrySet() )
         {
-            final String className = ( (String) entry.getKey() ).replace( '/', '.' );
+            final String className = entry.getKey().replace( '/', '.' );
             if ( includeClasses != null )
             {
                 boolean included = false;
@@ -200,7 +200,7 @@ public class SignatureBuilder
         private Clazz clazz;
 
         public SignatureVisitor() {
-            super(Opcodes.ASM4);
+            super(Opcodes.ASM5);
         }
 
         public void visit( int version, int access, String name, String signature, String superName,
@@ -212,7 +212,7 @@ public class SignatureBuilder
         public void end()
             throws IOException
         {
-            Clazz cur = (Clazz) classes.get( clazz.getName() );
+            Clazz cur = classes.get( clazz.getName() );
             if ( cur == null )
             {
                 classes.put( clazz.getName(), clazz );

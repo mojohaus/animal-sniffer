@@ -31,9 +31,7 @@
     <version>1.14-SNAPSHOT</version>
   </parent>
 
-  <groupId>org.codehaus.mojo</groupId>
   <artifactId>animal-sniffer</artifactId>
-  <packaging>jar</packaging>
 
   <name>Animal Sniffer</name>
   <description>
@@ -44,13 +42,12 @@
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>3.8.1</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.ow2.asm</groupId>
       <artifactId>asm-all</artifactId>
-      <version>4.0</version>
+      <version>5.0.3</version>
     </dependency>
   </dependencies>
 

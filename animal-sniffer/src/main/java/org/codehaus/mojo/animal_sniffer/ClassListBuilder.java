@@ -69,7 +69,7 @@ public class ClassListBuilder
         try
         {
             ClassReader cr = new ClassReader( image );
-            cr.accept( new ClassVisitor(Opcodes.ASM4)
+            cr.accept( new ClassVisitor(Opcodes.ASM5)
             {
                 public void visit( int version, int access, String name, String signature, String superName,
                                    String[] interfaces )
