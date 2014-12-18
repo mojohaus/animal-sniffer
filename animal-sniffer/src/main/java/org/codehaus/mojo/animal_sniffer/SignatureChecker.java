@@ -38,6 +38,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.GZIPInputStream;
 
@@ -412,7 +413,7 @@ public class SignatureChecker
                     {
                         return;
                     }
-                    if ( find( (Clazz) classes.get( owner ), sig ) )
+                    if ( find( classes.get( owner ), sig, true ) )
                     {
                         return; // found it
                     }
@@ -449,8 +450,9 @@ public class SignatureChecker
 
         /**
          * If the given signature is found in the specified class, return true.
+         * @param baseFind TODO
          */
-        private boolean find( Clazz c, String sig )
+        private boolean find( Clazz c , String sig , boolean baseFind  )
         {
             if ( c == null )
             {
@@ -467,7 +469,7 @@ public class SignatureChecker
                 return false;
             }
 
-            if ( find( (Clazz) classes.get( c.getSuperClass() ), sig ) )
+            if ( find( (Clazz) classes.get( c.getSuperClass() ), sig, false ) )
             {
                 return true;
             }
@@ -476,13 +478,41 @@ public class SignatureChecker
             {
                 for ( int i = 0; i < c.getSuperInterfaces().length; i++ )
                 {
-                    if ( find( (Clazz) classes.get( c.getSuperInterfaces()[i] ), sig ) )
+                    if ( find( classes.get( c.getSuperInterfaces()[i] ), sig, false ) )
                     {
                         return true;
                     }
                 }
             }
 
+            // This is a rare case and quite expensive, so moving it to the end of this method and only execute it from
+            // first find-call.
+            if ( baseFind )
+            {
+                // MANIMALSNIFFER-49
+                Pattern returnTypePattern = Pattern.compile( "(.+\\))L(.+);" );
+                Matcher returnTypeMatcher = returnTypePattern.matcher( sig );
+                if ( returnTypeMatcher.matches() )
+                {
+                    String method = returnTypeMatcher.group( 1 );
+                    String returnType = returnTypeMatcher.group( 2 );
+
+                    Clazz returnClass = classes.get( returnType );
+
+                    if ( returnClass.getSuperClass() != null )
+                    {
+                        String oldSignature = method + 'L' + returnClass.getSuperClass() + ';';
+                        if ( find( c, oldSignature, false ) )
+                        {
+                            logger.info( name + ( line > 0 ? ":" + line : "" )
+                                + ": Covariant return type change detected: "
+                                + toSourceForm( c.getName(), oldSignature ) + " has been changed to "
+                                + toSourceForm( c.getName(), sig ) );
+                            return true;
+                        }
+                    }
+                }
+            }
             return false;
         }
 
