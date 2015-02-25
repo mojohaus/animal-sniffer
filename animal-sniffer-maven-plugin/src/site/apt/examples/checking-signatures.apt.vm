@@ -381,7 +381,7 @@ public final class Someclass {
   By default, animal-sniffer will automatically ignore any classes and methods defined in your dependencies.
   This is usually what you want.
 
-  In certain rare situations, you may want to ignore your project dependencies by setting the <<<ignoreDependencies>>>
+  In certain rare situations, you may want to include your project dependencies by setting the <<<ignoreDependencies>>>
   parameter to <<<false>>>.
 
   For example, you might be compiling your project against the JavaEE 5 specification but want to check compatibility
