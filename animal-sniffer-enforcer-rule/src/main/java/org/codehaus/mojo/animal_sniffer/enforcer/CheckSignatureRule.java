@@ -81,7 +81,7 @@ public class CheckSignatureRule
 
     /**
      * Annotation names to consider to ignore annotated methods, classes or fields.
-     * <p/>
+     * <p>
      * By default {@value SignatureChecker#ANNOTATION_FQN} and
      * {@value SignatureChecker#PREVIOUS_ANNOTATION_FQN} are used.
      *

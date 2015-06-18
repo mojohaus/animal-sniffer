@@ -165,10 +165,10 @@ public class SignatureChecker
     /**
      * Sets the annotation type(s) that this checker should consider to ignore annotated
      * methods, classes or fields.
-     * <p/>
+     * <p>
      * By default, the {@link #ANNOTATION_FQN} and {@link #PREVIOUS_ANNOTATION_FQN} are
      * used.
-     * <p/>
+     * <p>
      * If you want to <strong>add</strong> an extra annotation types, make sure to add
      * the standard one to the specified lists.
      *

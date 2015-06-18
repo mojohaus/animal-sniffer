@@ -75,8 +75,25 @@ public class CheckSignatureMojo
     /**
      * Signature module to use.
      */
-    @Parameter( required = true )
+    @Parameter( required = true, property="animal.sniffer.signature" )
     protected Signature signature;
+
+	/**
+	 * @param signatureId
+	 *            A fully-qualified path to a signature jar. This allows users
+	 *            to set a signature for command-line invocations, such as:
+	 *            <p>
+	 *            <code>mvn org.codehaus.mojo:animal-sniffer-maven-plugin:1.15:check -Dsignature=org.codehaus.mojo.signature:java17:1.0</code>
+	 */
+    public void setSignature( String signatureId ) {
+		String[] signatureParts = signatureId.split(":");
+		if(signatureParts.length == 3) {
+			this.signature = new Signature();
+			this.signature.setGroupId(signatureParts[0]);
+			this.signature.setArtifactId(signatureParts[1]);
+			this.signature.setVersion(signatureParts[2]);
+		}
+    }
 
     /**
      * Class names to ignore signatures for (wildcards accepted).
@@ -87,7 +104,7 @@ public class CheckSignatureMojo
 
     /**
      * Annotation names to consider to ignore annotated methods, classes or fields.
-     * <p/>
+     * <p>
      * By default 'org.codehaus.mojo.animal_sniffer.IgnoreJRERequirement' and
      * 'org.jvnet.animal_sniffer.IgnoreJRERequirement' are used.
      *
@@ -171,6 +188,12 @@ public class CheckSignatureMojo
             getLog().info( "Signature checking is skipped." );
             return;
         }
+
+		if ( signature == null || StringUtils.isBlank(signature.getGroupId()) || signature.getGroupId() == "null") {
+			getLog().info( "Signature version is: " + signature.getVersion() );
+			return;
+        }
+
 
         try
         {
