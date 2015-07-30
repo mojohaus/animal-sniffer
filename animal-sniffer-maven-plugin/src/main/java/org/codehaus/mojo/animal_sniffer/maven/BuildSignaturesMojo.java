@@ -44,7 +44,7 @@ import org.apache.maven.toolchain.Toolchain;
 import org.apache.maven.toolchain.ToolchainManager;
 import org.apache.maven.toolchain.ToolchainManagerPrivate;
 import org.apache.maven.toolchain.ToolchainPrivate;
-import org.apache.maven.toolchain.java.JavaToolChain;
+import org.apache.maven.toolchain.java.JavaToolchain;
 import org.codehaus.mojo.animal_sniffer.SignatureBuilder;
 import org.codehaus.plexus.util.StringUtils;
 import org.codehaus.plexus.util.cli.CommandLineException;
@@ -318,7 +318,7 @@ public class BuildSignaturesMojo
                         return;
                     }
                 }
-                else if ( tc != null && tc instanceof JavaToolChain )
+                else if ( tc != null && tc instanceof JavaToolchain )
                 {
                     getLog().info( "Toolchain in animal-sniffer-maven-plugin: " + tc );
 
