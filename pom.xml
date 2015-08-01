@@ -93,6 +93,7 @@
   </ciManagement>
   <properties>
     <sitePluginVersion>3.3</sitePluginVersion>
+    <scmpublish.content>target/staging/animal-sniffer</scmpublish.content>
   </properties>
 
   <build>
