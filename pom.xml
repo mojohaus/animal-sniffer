@@ -28,7 +28,7 @@
   <parent>
     <groupId>org.codehaus.mojo</groupId>
     <artifactId>mojo-parent</artifactId>
-    <version>34</version>
+    <version>36</version>
   </parent>
 
   <groupId>org.codehaus.mojo</groupId>
@@ -40,7 +40,7 @@
   <description>
     Animal Sniffer Parent project.
   </description>
-  <url>http://mojo.codehaus.org/animal-sniffer</url>
+  <url>http://www.mojohaus.org/animal-sniffer</url>
   <inceptionYear>2008</inceptionYear>
   <licenses>
     <license>
@@ -79,22 +79,18 @@
   </modules>
 
   <scm>
-    <connection>scm:svn:https://svn.codehaus.org/mojo/trunk/mojo/animal-sniffer</connection>
-    <developerConnection>scm:svn:https://svn.codehaus.org/mojo/trunk/mojo/animal-sniffer</developerConnection>
-    <url>http://fisheye.codehaus.org/browse/mojo/trunk/mojo/animal-sniffer</url>
+    <connection>scm:git:https://github.com/mojohaus/animal-sniffer.git</connection>
+    <developerConnection>scm:git:ssh://git@github.com/mojohaus/animal-sniffer.git</developerConnection>
+    <url>https://github.com/mojohaus/animal-sniffer</url>
   </scm>
   <issueManagement>
-    <system>jira</system>
-    <url>http://jira.codehaus.org/browse/MANIMALSNIFFER</url>
+    <system>GitHub</system>
+    <url>https://github.com/mojohaus/animal-sniffer/issues</url>
   </issueManagement>
-  <distributionManagement>
-    <site>
-      <id>codehaus.org</id>
-      <name>Mojo Website</name>
-      <url>dav:https://dav.codehaus.org/mojo/animal-sniffer</url>
-    </site>    
-  </distributionManagement>
-
+  <ciManagement>
+    <system>Travis</system>
+    <url>https://travis-ci.org/mojohaus/animal-sniffer</url>
+  </ciManagement>
   <properties>
     <sitePluginVersion>3.3</sitePluginVersion>
   </properties>
@@ -105,7 +101,6 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-invoker-plugin</artifactId>
-          <version>1.9</version>
           <configuration>
             <projectsDirectory>src/it</projectsDirectory>
             <cloneProjectsTo>${project.build.directory}/it</cloneProjectsTo>
