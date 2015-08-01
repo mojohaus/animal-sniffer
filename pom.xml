@@ -114,5 +114,45 @@
       </plugins>
     </pluginManagement>
   </build>
-
+  <profiles>
+    <profile>
+      <id>disable-doclint-for-jdk8</id>
+      <activation>
+        <jdk>1.8</jdk>
+      </activation>
+      <properties>
+        <additionalparam>-Xdoclint:none</additionalparam>
+      </properties>
+    </profile>
+    <profile>
+      <!-- run integration tests
+          to use this profile:
+          or run integration tests: mvn -Prun-its
+          Always run on travis
+      -->
+      <id>run-its</id>
+      <activation>
+        <property>
+          <name>env.CONTINUOUS_INTEGRATION</name>
+        </property>
+      </activation>
+      <build>
+        <defaultGoal>verify</defaultGoal>
+        <plugins>
+          <plugin>
+            <artifactId>maven-invoker-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>integration-test</id>
+                <goals>
+                  <goal>install</goal>
+                  <goal>run</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 </project>
