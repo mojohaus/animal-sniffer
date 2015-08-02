@@ -38,15 +38,6 @@
   <description>
     Animal Sniffer Maven Plugin.
   </description>
-  <url>http://mojo.codehaus.org/animal-sniffer-parent/animal-sniffer-maven-plugin</url>
-
-  <distributionManagement>
-    <site>
-      <id>codehaus.org</id>
-      <name>Mojo Website</name>
-      <url>dav:https://dav.codehaus.org/mojo/animal-sniffer-maven-plugin</url>
-    </site>
-  </distributionManagement>
 
   <dependencies>
     <dependency>
