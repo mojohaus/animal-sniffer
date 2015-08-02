@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+<rss version="0.91">
+  <channel>
+    <title>Animal Sniffer - Checkstyle report</title>
+    <link>http://www.mojohaus.org/animal-sniffer/animal-sniffer</link>
+    <description>Animal Sniffer - Checkstyle report</description>
+    <language>en-us</language>
+    <copyright>&#169;2008 - 2015 MojoHaus</copyright>
+    <item>
+      <title>File: 10,
+             Errors: 127,
+             Warnings: 59,
+             Infos: 0
+      </title>
+            <link>http://www.mojohaus.org/animal-sniffer/animal-sniffer/checkstyle.html</link>
+      <description>
+        <p>Click <a href="http://www.mojohaus.org/animal-sniffer/animal-sniffer/checkstyle.html">here</a> for the full Checkstyle report.</p>
+
+        <table summary="Files" boder="1">
+          <thead>
+            <tr>
+              <th>Files</th>
+              <th style="width:30px;"><abbr title="Info">I</abbr></th>
+              <th style="width:30px;"><abbr title="Warning">W</abbr></th>
+              <th style="width:30px;"><abbr title="Error">E</abbr></th>
+            </tr>
+          </thead>
+          <tbody>
+                          <tr>
+                <td>
+                  <a href="http://www.mojohaus.org/animal-sniffer/animal-sniffer/checkstyle.html#org.codehaus.mojo.animal_sniffer.SignatureChecker.java">org/codehaus/mojo/animal_sniffer/SignatureChecker.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  11
+                </td>
+                <td>
+                  25
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://www.mojohaus.org/animal-sniffer/animal-sniffer/checkstyle.html#org.codehaus.mojo.animal_sniffer.Clazz.java">org/codehaus/mojo/animal_sniffer/Clazz.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  7
+                </td>
+                <td>
+                  1
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://www.mojohaus.org/animal-sniffer/animal-sniffer/checkstyle.html#org.codehaus.mojo.animal_sniffer.logging.Logger.java">org/codehaus/mojo/animal_sniffer/logging/Logger.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  8
+                </td>
+                <td>
+                  1
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://www.mojohaus.org/animal-sniffer/animal-sniffer/checkstyle.html#org.codehaus.mojo.animal_sniffer.ClassFileVisitor.java">org/codehaus/mojo/animal_sniffer/ClassFileVisitor.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  9
+                </td>
+                <td>
+                  2
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://www.mojohaus.org/animal-sniffer/animal-sniffer/checkstyle.html#org.codehaus.mojo.animal_sniffer.SignatureMerger.java">org/codehaus/mojo/animal_sniffer/SignatureMerger.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  2
+                </td>
+                <td>
+                  1
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://www.mojohaus.org/animal-sniffer/animal-sniffer/checkstyle.html#org.codehaus.mojo.animal_sniffer.RegexUtils.java">org/codehaus/mojo/animal_sniffer/RegexUtils.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  1
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://www.mojohaus.org/animal-sniffer/animal-sniffer/checkstyle.html#org.codehaus.mojo.animal_sniffer.logging.PrintWriterLogger.java">org/codehaus/mojo/animal_sniffer/logging/PrintWriterLogger.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  9
+                </td>
+                <td>
+                  1
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://www.mojohaus.org/animal-sniffer/animal-sniffer/checkstyle.html#org.codehaus.mojo.animal_sniffer.SignatureBuilder.java">org/codehaus/mojo/animal_sniffer/SignatureBuilder.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  7
+                </td>
+                <td>
+                  9
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://www.mojohaus.org/animal-sniffer/animal-sniffer/checkstyle.html#org.codehaus.mojo.animal_sniffer.ClassListBuilder.java">org/codehaus/mojo/animal_sniffer/ClassListBuilder.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  4
+                </td>
+                <td>
+                  3
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://www.mojohaus.org/animal-sniffer/animal-sniffer/checkstyle.html#org.codehaus.mojo.animal_sniffer.Main.java">org/codehaus/mojo/animal_sniffer/Main.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  2
+                </td>
+                <td>
+                  83
+                </td>
+              </tr>
+                      </tbody>
+        </table>
+        
+      </description>
+    </item>
+  </channel>
+</rss>
+
