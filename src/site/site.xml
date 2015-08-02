@@ -32,7 +32,7 @@
       <item name="Java boot classpath detector" href="java-boot-classpath-detector/index.html"/>
       <item name="Animal Sniffer Annotations" href="animal-sniffer-annotations/index.html"/>
       <item name="Animal Sniffer" href="animal-sniffer/index.html"/>
-      <item name="Animal Sniffer Maven Plugin" href="../animal-sniffer-maven-plugin/index.html"/>
+      <item name="Animal Sniffer Maven Plugin" href="animal-sniffer-maven-plugin/index.html"/>
       <item name="Animal Sniffer Maven Enforcer Rule" href="animal-sniffer-enforcer-rule/index.html"/>
       <item name="Animal Sniffer ANT Tasks" href="animal-sniffer-ant-tasks/index.html"/>
     </menu>
