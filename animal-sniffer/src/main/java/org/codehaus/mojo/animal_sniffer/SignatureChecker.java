@@ -499,7 +499,7 @@ public class SignatureChecker
 
                     Clazz returnClass = classes.get( returnType );
 
-                    if ( returnClass.getSuperClass() != null )
+                    if ( returnClass != null && returnClass.getSuperClass() != null )
                     {
                         String oldSignature = method + 'L' + returnClass.getSuperClass() + ';';
                         if ( find( c, oldSignature, false ) )
