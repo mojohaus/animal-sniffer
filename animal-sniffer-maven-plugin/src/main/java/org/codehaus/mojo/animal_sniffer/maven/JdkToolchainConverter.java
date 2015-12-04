@@ -74,16 +74,9 @@ public class JdkToolchainConverter
         Map parameters = new HashMap();
         for ( int j = 0; j < params.length; j++ )
         {
-            try
-            {
-                String name = params[j].getName();
-                String val = params[j].getValue();
-                parameters.put( name, val );
-            }
-            catch ( PlexusConfigurationException ex )
-            {
-                throw new ComponentConfigurationException( ex );
-            }
+            String name = params[j].getName();
+            String val = params[j].getValue();
+            parameters.put( name, val );
         }
         final JdkToolchain result = new JdkToolchain();
         result.setParameters( Collections.unmodifiableMap( parameters ) );
