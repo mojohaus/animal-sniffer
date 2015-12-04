@@ -1,7 +1,10 @@
 language: java
 env:
   - MAVEN_VERSION=3.0.5
+  - MAVEN_VERSION=3.2.3
+  - MAVEN_VERSION=3.2.5
   - MAVEN_VERSION=3.3.3
+  - MAVEN_VERSION=3.3.9
 jdk:
   - oraclejdk7
   - oraclejdk8
