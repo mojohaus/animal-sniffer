@@ -288,11 +288,12 @@ public class BuildSignaturesMojo
             }
             else
             {
-                Toolchain tc = getToolchain();
+                Toolchain tc = getJdkToolchain();
 
                 if ( tc == null && jdk == null )
                 {
                     String jvm = null;
+                    // TODO: how could this give non null result here if tc was null when doing same???
                     tc = toolchainManager.getToolchainFromBuildContext( "jdk", //NOI18N
                                                                         session );
                     getLog().info( "Toolchain from session: " + tc );
@@ -531,13 +532,13 @@ public class BuildSignaturesMojo
 
             if ( excludesFilter != null && !excludesFilter.include( artifact ) )
             {
-                getLog().debug( "Artifact " + artifactId( artifact ) + " ignored as it does matches exclude rules." );
+                getLog().debug( "Artifact " + artifactId( artifact ) + " ignored as it does match exclude rules." );
                 continue;
             }
 
             if ( artifact.getArtifactHandler().isAddedToClasspath() )
             {
-                getLog().info( "Parsing sigantures from " + artifactId( artifact ) );
+                getLog().info( "Parsing signatures from " + artifactId( artifact ) );
                 builder.process( artifact.getFile() );
             }
 
@@ -549,7 +550,7 @@ public class BuildSignaturesMojo
     {
         if ( includeModuleClasses && classesDirectory.isDirectory() )
         {
-            getLog().info( "Parsing sigantures from " + classesDirectory );
+            getLog().info( "Parsing signatures from " + classesDirectory );
             builder.process( classesDirectory );
         }
     }
@@ -559,7 +560,7 @@ public class BuildSignaturesMojo
     {
         if ( includeJavaHome && javaHomeClassPath != null && javaHomeClassPath.length > 0 )
         {
-            getLog().debug( "Parsing sigantures java classpath:" );
+            getLog().debug( "Parsing signatures java classpath:" );
             for ( int i = 0; i < javaHomeClassPath.length; i++ )
             {
                 if ( javaHomeClassPath[i].isFile() || javaHomeClassPath[i].isDirectory() )
@@ -595,18 +596,18 @@ public class BuildSignaturesMojo
     }
 
     /**
-     * Gets the toolchain to use.
+     * Gets the <code>jdk</code> toolchain to use.
      *
-     * @return the toolchain to use or <code>null</code> if no toolchain is configured or if no toolchain can be found.
+     * @return the <code>jdk</code> toolchain to use or <code>null</code> if no toolchain is configured or if no toolchain can be found.
      * @throws MojoExecutionException if toolchains are misconfigured.
      */
-    private Toolchain getToolchain()
+    private Toolchain getJdkToolchain()
         throws MojoExecutionException
     {
-        Toolchain tc = getToolchainFromConfiguration();
+        Toolchain tc = getJdkToolchainFromConfiguration();
         if ( tc == null )
         {
-            tc = getToolchainFromContext();
+            tc = getJdkToolchainFromContext();
         }
         return tc;
     }
@@ -616,7 +617,7 @@ public class BuildSignaturesMojo
      *
      * @return the toolchain from the context or <code>null</code> if there is no such toolchain.
      */
-    private Toolchain getToolchainFromContext()
+    private Toolchain getJdkToolchainFromContext()
     {
         if ( toolchainManager != null )
         {
@@ -627,23 +628,24 @@ public class BuildSignaturesMojo
     }
 
     /**
-     * Gets the toolchain from this plugin's configuration.
+     * Gets the <code>jdk</code> toolchain from this plugin's configuration.
      *
      * @return the toolchain from this plugin's configuration, or <code>null</code> if no matching toolchain can be
      *         found.
      * @throws MojoExecutionException if the toolchains are configured incorrectly.
      */
-    private Toolchain getToolchainFromConfiguration()
+    private Toolchain getJdkToolchainFromConfiguration()
         throws MojoExecutionException
     {
         if ( toolchainManager != null && jdk != null && jdk.getParameters() != null )
         {
             try
             {
-                final ToolchainPrivate[] tcp = getToolchains( jdk.getToolchain() );
+                final ToolchainPrivate[] tcp = getToolchains( "jdk" );
                 for ( int i = 0; i < tcp.length; i++ )
                 {
-                    if ( tcp[i].matchesRequirements( jdk.getParameters() ) )
+                    if ( tcp[i].getType().equals( "jdk" ) /* MNG-5716 */
+                                    && tcp[i].matchesRequirements( jdk.getParameters() ) )
                     {
                         return tcp[i];
                     }
