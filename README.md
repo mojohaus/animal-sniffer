@@ -1,8 +1,8 @@
 # MojoHaus AnimalSniffer Maven Plugin
 
-This is the [animal-sniffer-maven-plugin](http://www.mojohaus.org/animal-sniffer-maven-plugin/).
+This is the [animal-sniffer-maven-plugin](http://www.mojohaus.org/animal-sniffer/animal-sniffer-maven-plugin/).
  
-[![Build Status](https://travis-ci.org/mojohaus/animal-sniffer-maven-plugin.svg?branch=master)](https://travis-ci.org/mojohaus/animal-sniffer-maven-plugin)
+[![Build Status](https://travis-ci.org/mojohaus/animal-sniffer.svg?branch=master)](https://travis-ci.org/mojohaus/animal-sniffer)
 
 ## Releasing
 

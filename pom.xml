@@ -31,14 +31,13 @@
     <version>36</version>
   </parent>
 
-  <groupId>org.codehaus.mojo</groupId>
   <artifactId>animal-sniffer-parent</artifactId>
   <version>1.15-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <name>Animal Sniffer</name>
   <description>
-    Animal Sniffer Parent project.
+    Animal Sniffer Parent POM.
   </description>
   <url>http://www.mojohaus.org/animal-sniffer</url>
   <inceptionYear>2008</inceptionYear>

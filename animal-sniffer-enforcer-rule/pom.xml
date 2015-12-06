@@ -31,7 +31,6 @@
     <version>1.15-SNAPSHOT</version>
   </parent>
 
-  <groupId>org.codehaus.mojo</groupId>
   <artifactId>animal-sniffer-enforcer-rule</artifactId>
   <packaging>jar</packaging>
 
