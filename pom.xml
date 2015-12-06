@@ -93,6 +93,7 @@
   <properties>
     <sitePluginVersion>3.3</sitePluginVersion>
     <scmpublish.content>target/staging/animal-sniffer-parent</scmpublish.content>
+    <maven.version>2.2.1</maven.version>
   </properties>
 
   <build>

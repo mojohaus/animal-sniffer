@@ -31,7 +31,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -59,7 +58,7 @@ public class Main
         Main m = new Main();
         String threshold = null;
 
-        List files = new ArrayList();
+        List<File> files = new ArrayList<File>();
         for ( int i = 0; i < args.length; i++ )
         {
             if (args[i].equals("-h"))
@@ -70,12 +69,11 @@ public class Main
             if (args[i].equals("-t"))
             {
                 threshold = args[++i];
-                for (Iterator j=HUMAN_READABLE_NAME.entrySet().iterator(); j.hasNext(); )
+                for ( Map.Entry<String, String> entry : HUMAN_READABLE_NAME.entrySet() )
                 {
-                    Map.Entry v = ((Map.Entry)j.next());
-                    if (v.getValue().equals(threshold))
+                    if ( entry.getValue().equals( threshold ) )
                     {
-                        threshold = (String)v.getKey();
+                        threshold = entry.getKey();
                         break;
                     }
                 }
@@ -121,7 +119,7 @@ public class Main
         return ( (int) u ) * 256 + d;
     }
 
-    private static final Map HUMAN_READABLE_NAME = new HashMap();
+    private static final Map<String, String> HUMAN_READABLE_NAME = new HashMap<String, String>();
 
     static
     {

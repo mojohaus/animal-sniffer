@@ -60,11 +60,11 @@ public class SignatureMerger
         throws IOException
     {
         this.logger = logger;
-        for ( int i = 0; i < in.length; i++ )
+        for ( InputStream i : in )
         {
             try
             {
-                ObjectInputStream ois = new ObjectInputStream( new GZIPInputStream( in[i] ) );
+                ObjectInputStream ois = new ObjectInputStream( new GZIPInputStream( i ) );
                 while ( true )
                 {
                     Clazz c = (Clazz) ois.readObject();

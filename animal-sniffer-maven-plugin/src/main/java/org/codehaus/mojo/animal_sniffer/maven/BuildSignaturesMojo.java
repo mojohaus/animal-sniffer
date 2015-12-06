@@ -236,7 +236,7 @@ public class BuildSignaturesMojo
     /**
      */
     @Parameter( defaultValue = "${plugin.artifacts}", required = true, readonly = true )
-    private List/*<Artifact>*/ pluginArtifacts;
+    private List<Artifact> pluginArtifacts;
 
     /**
      * The groupId of the Java Boot Classpath Detector to use. The plugin's dependencies will be searched for a
@@ -415,7 +415,7 @@ public class BuildSignaturesMojo
         throws MojoFailureException, MojoExecutionException
     {
         getLog().info( "Attempting to auto-detect the boot classpath for " + javaExecutable );
-        Iterator i = pluginArtifacts.iterator();
+        Iterator<Artifact> i = pluginArtifacts.iterator();
         Artifact javaBootClasspathDetector = null;
         while ( i.hasNext() && javaBootClasspathDetector == null )
         {
@@ -519,9 +519,9 @@ public class BuildSignaturesMojo
             ? null
             : new PatternExcludesArtifactFilter( Arrays.asList( excludeDependencies ) );
 
-        for ( Iterator i = project.getArtifacts().iterator(); i.hasNext(); )
+        for ( Iterator<Artifact> i = project.getArtifacts().iterator(); i.hasNext(); )
         {
-            Artifact artifact = (Artifact) i.next();
+            Artifact artifact = i.next();
 
             if ( includesFilter != null && !includesFilter.include( artifact ) )
             {
@@ -579,10 +579,10 @@ public class BuildSignaturesMojo
     private InputStream[] getBaseSignatures()
         throws FileNotFoundException
     {
-        List baseSignatures = new ArrayList();
-        for ( Iterator i = project.getArtifacts().iterator(); i.hasNext(); )
+        List<InputStream> baseSignatures = new ArrayList<InputStream>();
+        for ( Iterator<Artifact> i = project.getArtifacts().iterator(); i.hasNext(); )
         {
-            Artifact artifact = (Artifact) i.next();
+            Artifact artifact = i.next();
             if ( StringUtils.equals( "signature", artifact.getType() ) )
             {
                 getLog().info( "Importing sigantures from " + artifact.getFile() );
@@ -672,7 +672,7 @@ public class BuildSignaturesMojo
         // successful enumeration of all the toolchains of the required type.
         // This method is only ever called in versions of Maven that have toolchain support.
 
-        Class managerClass = toolchainManagerPrivate.getClass();
+        Class<?> managerClass = toolchainManagerPrivate.getClass();
         try
         {
             try

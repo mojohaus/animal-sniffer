@@ -71,7 +71,7 @@ public class JdkToolchainConverter
         throws ComponentConfigurationException
     {
         PlexusConfiguration[] params = configuration.getChildren();
-        Map parameters = new HashMap();
+        Map<String, String> parameters = new HashMap<String, String>();
         for ( int j = 0; j < params.length; j++ )
         {
             try

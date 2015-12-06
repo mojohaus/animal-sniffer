@@ -201,7 +201,7 @@ public class CheckSignatureMojo
 
             resolver.resolve( a, project.getRemoteArtifactRepositories(), localRepository );
             // just check code from this module
-            final Set ignoredPackages = buildPackageList();
+            final Set<String> ignoredPackages = buildPackageList();
 
             if ( ignores != null )
             {
@@ -221,11 +221,11 @@ public class CheckSignatureMojo
                                       new MavenLogger( getLog() ) );
             signatureChecker.setCheckJars( false ); // don't want to decend into jar files that have been copied to
                                                     // the output directory as resources.
-            List sourcePaths = new ArrayList();
-            Iterator iterator = project.getCompileSourceRoots().iterator();
+            List<File> sourcePaths = new ArrayList<File>();
+            Iterator<String> iterator = project.getCompileSourceRoots().iterator();
             while ( iterator.hasNext() )
             {
-                String path = (String) iterator.next();
+                String path = iterator.next();
                 sourcePaths.add( new File( path ) );
             }
             signatureChecker.setSourcePath( sourcePaths );
@@ -253,12 +253,12 @@ public class CheckSignatureMojo
         }
     }
 
-    private static Dependency findMatchingDependency( Signature signature, List/*<Dependency>*/ dependencies )
+    private static Dependency findMatchingDependency( Signature signature, List<Dependency> dependencies )
     {
         Dependency match = null;
-        for ( Iterator/*<Dependency>*/ iterator = dependencies.iterator(); iterator.hasNext(); )
+        for ( Iterator<Dependency> iterator = dependencies.iterator(); iterator.hasNext(); )
         {
-            Dependency d = (Dependency) iterator.next();
+            Dependency d = iterator.next();
             if ( StringUtils.isBlank( d.getVersion() ) )
             {
                 continue;
@@ -294,7 +294,7 @@ public class CheckSignatureMojo
     /**
      * List of packages defined in the application.
      */
-    private Set buildPackageList()
+    private Set<String> buildPackageList()
         throws IOException
     {
         ClassListBuilder plb = new ClassListBuilder( new MavenLogger( getLog() ) );
@@ -316,10 +316,10 @@ public class CheckSignatureMojo
                 : new PatternExcludesArtifactFilter( Arrays.asList( excludeDependencies ) );
 
             getLog().debug( "Building list of classes from dependencies" );
-            for ( Iterator i = project.getArtifacts().iterator(); i.hasNext(); )
+            for ( Iterator<Artifact> i = project.getArtifacts().iterator(); i.hasNext(); )
             {
 
-                Artifact artifact = (Artifact) i.next();
+                Artifact artifact = i.next();
 
                 if ( !artifact.getArtifactHandler().isAddedToClasspath() ) {
                     getLog().debug( "Skipping artifact " + BuildSignaturesMojo.artifactId( artifact )

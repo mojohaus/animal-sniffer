@@ -34,19 +34,19 @@ import java.util.Map;
  */
 public class JdkToolchain
 {
-    private Map parameters;
+    private Map<String, String> parameters;
 
     public String getToolchain()
     {
         return "jdk";
     }
 
-    public Map getParameters()
+    public Map<String, String> getParameters()
     {
         return parameters;
     }
 
-    public void setParameters( Map parameters )
+    public void setParameters( Map<String, String> parameters )
     {
         this.parameters = parameters;
     }
