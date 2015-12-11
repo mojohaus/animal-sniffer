@@ -150,7 +150,7 @@ public class SignatureBuilder
                 boolean included = false;
                 for( Pattern p : includeClasses )
                 {
-                    included = p.matcher( className ).matches();
+                    included |= p.matcher( className ).matches();
                 }
                 if ( !included )
                 {
@@ -162,7 +162,7 @@ public class SignatureBuilder
                 boolean excluded = false;
                 for( Pattern p : excludeClasses )
                 {
-                    excluded = p.matcher( className ).matches();
+                    excluded |= p.matcher( className ).matches();
                 }
                 if ( excluded )
                 {
