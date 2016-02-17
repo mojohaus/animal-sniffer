@@ -197,7 +197,7 @@ public class CheckSignatureMojo
 
             getLog().info( "Checking unresolved references to " + signature );
 
-            org.apache.maven.artifact.Artifact a = signature.createArtifact( artifactFactory );
+            Artifact a = signature.createArtifact( artifactFactory );
 
             resolver.resolve( a, project.getRemoteArtifactRepositories(), localRepository );
             // just check code from this module

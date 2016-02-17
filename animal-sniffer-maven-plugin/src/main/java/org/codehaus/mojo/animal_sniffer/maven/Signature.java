@@ -25,6 +25,7 @@ package org.codehaus.mojo.animal_sniffer.maven;
  *
  */
 
+import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.factory.ArtifactFactory;
 
 /**
@@ -71,7 +72,7 @@ public class Signature
         this.version = version;
     }
 
-    public org.apache.maven.artifact.Artifact createArtifact( ArtifactFactory factory )
+    public Artifact createArtifact( ArtifactFactory factory )
     {
         return factory.createArtifact( groupId, artifactId, version, null, "signature" );
     }
