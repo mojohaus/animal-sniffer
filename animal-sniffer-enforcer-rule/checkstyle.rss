@@ -23,7 +23,7 @@ under the License.
     <link>http://www.mojohaus.org/animal-sniffer/animal-sniffer-enforcer-rule</link>
     <description>Animal Sniffer Maven Enforcer Rule - Checkstyle report</description>
     <language>en-us</language>
-    <copyright>&#169;2008 - 2015 MojoHaus</copyright>
+    <copyright>&#169;2008 - 2016 MojoHaus</copyright>
     <item>
       <title>File: 3,
              Errors: 9,
@@ -44,6 +44,20 @@ under the License.
             </tr>
           </thead>
           <tbody>
+                          <tr>
+                <td>
+                  <a href="http://www.mojohaus.org/animal-sniffer/animal-sniffer-enforcer-rule/checkstyle.html#org.codehaus.mojo.animal_sniffer.enforcer.Signature.java">org/codehaus/mojo/animal_sniffer/enforcer/Signature.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  8
+                </td>
+                <td>
+                  1
+                </td>
+              </tr>
                           <tr>
                 <td>
                   <a href="http://www.mojohaus.org/animal-sniffer/animal-sniffer-enforcer-rule/checkstyle.html#org.codehaus.mojo.animal_sniffer.enforcer.MavenLogger.java">org/codehaus/mojo/animal_sniffer/enforcer/MavenLogger.java</a>
@@ -70,20 +84,6 @@ under the License.
                 </td>
                 <td>
                   7
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="http://www.mojohaus.org/animal-sniffer/animal-sniffer-enforcer-rule/checkstyle.html#org.codehaus.mojo.animal_sniffer.enforcer.Signature.java">org/codehaus/mojo/animal_sniffer/enforcer/Signature.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  8
-                </td>
-                <td>
-                  1
                 </td>
               </tr>
                       </tbody>

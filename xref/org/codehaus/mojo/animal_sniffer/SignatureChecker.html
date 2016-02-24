@@ -173,10 +173,10 @@
 <a class="jxr_linenumber" name="L165" href="#L165">165</a>     <em class="jxr_javadoccomment">/**</em>
 <a class="jxr_linenumber" name="L166" href="#L166">166</a> <em class="jxr_javadoccomment">     * Sets the annotation type(s) that this checker should consider to ignore annotated</em>
 <a class="jxr_linenumber" name="L167" href="#L167">167</a> <em class="jxr_javadoccomment">     * methods, classes or fields.</em>
-<a class="jxr_linenumber" name="L168" href="#L168">168</a> <em class="jxr_javadoccomment">     * &lt;p/&gt;</em>
+<a class="jxr_linenumber" name="L168" href="#L168">168</a> <em class="jxr_javadoccomment">     * &lt;p&gt;</em>
 <a class="jxr_linenumber" name="L169" href="#L169">169</a> <em class="jxr_javadoccomment">     * By default, the {@link #ANNOTATION_FQN} and {@link #PREVIOUS_ANNOTATION_FQN} are</em>
 <a class="jxr_linenumber" name="L170" href="#L170">170</a> <em class="jxr_javadoccomment">     * used.</em>
-<a class="jxr_linenumber" name="L171" href="#L171">171</a> <em class="jxr_javadoccomment">     * &lt;p/&gt;</em>
+<a class="jxr_linenumber" name="L171" href="#L171">171</a> <em class="jxr_javadoccomment">     * &lt;p&gt;</em>
 <a class="jxr_linenumber" name="L172" href="#L172">172</a> <em class="jxr_javadoccomment">     * If you want to &lt;strong&gt;add&lt;/strong&gt; an extra annotation types, make sure to add</em>
 <a class="jxr_linenumber" name="L173" href="#L173">173</a> <em class="jxr_javadoccomment">     * the standard one to the specified lists.</em>
 <a class="jxr_linenumber" name="L174" href="#L174">174</a> <em class="jxr_javadoccomment">     *</em>
@@ -507,7 +507,7 @@
 <a class="jxr_linenumber" name="L499" href="#L499">499</a> 
 <a class="jxr_linenumber" name="L500" href="#L500">500</a>                     <a href="../../../../org/codehaus/mojo/animal_sniffer/Clazz.html">Clazz</a> returnClass = classes.get( returnType );
 <a class="jxr_linenumber" name="L501" href="#L501">501</a> 
-<a class="jxr_linenumber" name="L502" href="#L502">502</a>                     <strong class="jxr_keyword">if</strong> ( returnClass.getSuperClass() != <strong class="jxr_keyword">null</strong> )
+<a class="jxr_linenumber" name="L502" href="#L502">502</a>                     <strong class="jxr_keyword">if</strong> ( returnClass != <strong class="jxr_keyword">null</strong> &amp;&amp; returnClass.getSuperClass() != <strong class="jxr_keyword">null</strong> )
 <a class="jxr_linenumber" name="L503" href="#L503">503</a>                     {
 <a class="jxr_linenumber" name="L504" href="#L504">504</a>                         String oldSignature = method + 'L' + returnClass.getSuperClass() + ';';
 <a class="jxr_linenumber" name="L505" href="#L505">505</a>                         <strong class="jxr_keyword">if</strong> ( find( c, oldSignature, false ) )
@@ -642,6 +642,6 @@
 <a class="jxr_linenumber" name="L634" href="#L634">634</a> }
 </pre>
 <hr/>
-<div id="footer">Copyright &#169; 2008&#x2013;2015 <a href="http://www.mojohaus.org">MojoHaus</a>. All rights reserved.</div>
+<div id="footer">Copyright &#169; 2008&#x2013;2016 <a href="http://www.mojohaus.org">MojoHaus</a>. All rights reserved.</div>
 </body>
 </html>

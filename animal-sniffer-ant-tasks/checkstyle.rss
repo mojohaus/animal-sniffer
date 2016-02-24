@@ -23,7 +23,7 @@ under the License.
     <link>http://www.mojohaus.org/animal-sniffer/animal-sniffer-ant-tasks</link>
     <description>Animal Sniffer Ant Tasks - Checkstyle report</description>
     <language>en-us</language>
-    <copyright>&#169;2008 - 2015 MojoHaus</copyright>
+    <copyright>&#169;2008 - 2016 MojoHaus</copyright>
     <item>
       <title>File: 6,
              Errors: 15,
@@ -46,48 +46,6 @@ under the License.
           <tbody>
                           <tr>
                 <td>
-                  <a href="http://www.mojohaus.org/animal-sniffer/animal-sniffer-ant-tasks/checkstyle.html#org.codehaus.mojo.animal_sniffer.ant.CheckSignatureTask.java">org/codehaus/mojo/animal_sniffer/ant/CheckSignatureTask.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  12
-                </td>
-                <td>
-                  9
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="http://www.mojohaus.org/animal-sniffer/animal-sniffer-ant-tasks/checkstyle.html#org.codehaus.mojo.animal_sniffer.ant.BuildSignaturesTask.java">org/codehaus/mojo/animal_sniffer/ant/BuildSignaturesTask.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  7
-                </td>
-                <td>
-                  2
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="http://www.mojohaus.org/animal-sniffer/animal-sniffer-ant-tasks/checkstyle.html#org.codehaus.mojo.animal_sniffer.ant.Annotation.java">org/codehaus/mojo/animal_sniffer/ant/Annotation.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  5
-                </td>
-                <td>
-                  1
-                </td>
-              </tr>
-                          <tr>
-                <td>
                   <a href="http://www.mojohaus.org/animal-sniffer/animal-sniffer-ant-tasks/checkstyle.html#org.codehaus.mojo.animal_sniffer.ant.AntLogger.java">org/codehaus/mojo/animal_sniffer/ant/AntLogger.java</a>
                 </td>
                 <td>
@@ -102,7 +60,35 @@ under the License.
               </tr>
                           <tr>
                 <td>
+                  <a href="http://www.mojohaus.org/animal-sniffer/animal-sniffer-ant-tasks/checkstyle.html#org.codehaus.mojo.animal_sniffer.ant.CheckSignatureTask.java">org/codehaus/mojo/animal_sniffer/ant/CheckSignatureTask.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  12
+                </td>
+                <td>
+                  9
+                </td>
+              </tr>
+                          <tr>
+                <td>
                   <a href="http://www.mojohaus.org/animal-sniffer/animal-sniffer-ant-tasks/checkstyle.html#org.codehaus.mojo.animal_sniffer.ant.Signature.java">org/codehaus/mojo/animal_sniffer/ant/Signature.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  5
+                </td>
+                <td>
+                  1
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://www.mojohaus.org/animal-sniffer/animal-sniffer-ant-tasks/checkstyle.html#org.codehaus.mojo.animal_sniffer.ant.Annotation.java">org/codehaus/mojo/animal_sniffer/ant/Annotation.java</a>
                 </td>
                 <td>
                   0
@@ -126,6 +112,20 @@ under the License.
                 </td>
                 <td>
                   1
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://www.mojohaus.org/animal-sniffer/animal-sniffer-ant-tasks/checkstyle.html#org.codehaus.mojo.animal_sniffer.ant.BuildSignaturesTask.java">org/codehaus/mojo/animal_sniffer/ant/BuildSignaturesTask.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  7
+                </td>
+                <td>
+                  2
                 </td>
               </tr>
                       </tbody>
