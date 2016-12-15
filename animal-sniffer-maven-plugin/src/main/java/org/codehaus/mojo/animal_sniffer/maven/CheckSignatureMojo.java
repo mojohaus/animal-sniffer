@@ -203,7 +203,7 @@ public class CheckSignatureMojo
                                    + " version from dependencies" );
                 String source = "dependencies";
                 Dependency match = findMatchingDependency( signature, project.getDependencies() );
-                if ( match == null )
+                if ( match == null && project.getDependencyManagement() != null )
                 {
                     getLog().debug( "Resolving signature " + signature.getGroupId() + ":" + signature.getArtifactId()
                                        + " version from dependencyManagement" );
