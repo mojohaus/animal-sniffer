@@ -207,7 +207,7 @@ public class SignatureChecker
         }
     }
 
-    private static interface MatchRule
+    private interface MatchRule
     {
         boolean matches( String text );
     }
@@ -354,12 +354,15 @@ public class SignatureChecker
         @Override
         public MethodVisitor visitMethod( int access, final String name, final String desc, String signature, String[] exceptions )
         {
+            line = 0;
             return new MethodVisitor(Opcodes.ASM5)
             {
                 /**
                  * True if @IgnoreJRERequirement is set.
                  */
                 boolean ignoreError = ignoreClass;
+                Label label = null;
+                Map<Label, Set<String>> exceptions = new HashMap<Label, Set<String>>();
 
                 @Override
                 public AnnotationVisitor visitAnnotation( String annoDesc, boolean visible )
@@ -411,12 +414,58 @@ public class SignatureChecker
                 }
 
                 @Override
+                public void visitTryCatchBlock( Label start, Label end, Label handler, String type )
+                {
+                    if ( type != null )
+                    {
+                        Set<String> exceptionTypes = exceptions.get( handler );
+                        if ( exceptionTypes == null )
+                        {
+                            exceptionTypes = new HashSet<String>();
+                            exceptions.put( handler, exceptionTypes );
+                        }
+                        // we collect the types for the handler
+                        // because we do not have the line number here
+                        // and we need a list for a multi catch block
+                        exceptionTypes.add( type );
+                    }
+                }
+
+                @Override
+                public void visitFrame( int type, int nLocal, Object[] local, int nStack, Object[] stack )
+                {
+                    Set<String> exceptionTypes = exceptions.remove(label);
+                    if ( exceptionTypes != null )
+                    {
+                        for (String exceptionType: exceptionTypes)
+                        {
+                            checkType( exceptionType );
+                        }
+                        for ( int i = 0; i < nStack; i++ )
+                        {
+                            Object obj = stack[i];
+                            // on the frame stack we check if we have a type which is not
+                            // present in the catch/multi catch statement
+                            if ( obj instanceof String && !exceptionTypes.contains( obj ) )
+                            {
+                                checkType( obj.toString() );
+                            }
+                        }
+                    }
+                }
+
+                @Override
                 public void visitLineNumber( int line, Label start )
                 {
                     CheckingVisitor.this.line = line;
                 }
 
-                private void checkType( Type asmType )
+                @Override
+                public void visitLabel( Label label ) {
+                    this.label = label;
+                }
+
+                private void checkType(Type asmType )
                 {
                     if ( asmType == null )
                     {
@@ -512,7 +561,7 @@ public class SignatureChecker
                 return false;
             }
 
-            if ( find( (Clazz) classes.get( c.getSuperClass() ), sig, false ) )
+            if ( find( classes.get( c.getSuperClass() ), sig, false ) )
             {
                 return true;
             }
