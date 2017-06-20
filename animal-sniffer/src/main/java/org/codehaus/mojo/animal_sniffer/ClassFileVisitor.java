@@ -138,7 +138,8 @@ public abstract class ClassFileVisitor
             while ( e.hasMoreElements() )
             {
                 JarEntry x = e.nextElement();
-                if ( !x.getName().endsWith( ".class" ) )
+                String name = x.getName();
+                if ( !name.endsWith( ".class" ) || name.startsWith("META-INF/") )
                 {
                     continue;
                 }
