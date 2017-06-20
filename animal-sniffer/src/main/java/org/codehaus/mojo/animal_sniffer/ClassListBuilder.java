@@ -87,5 +87,12 @@ public class ClassListBuilder
             ioException.initCause( e );
             throw ioException;
         }
+        catch ( IllegalArgumentException e )
+        {
+            logger.error( "Bad class file " + name );
+            IOException ioException = new IOException( "Bad class file " + name );
+            ioException.initCause( e );
+            throw ioException;
+        }
     }
 }
