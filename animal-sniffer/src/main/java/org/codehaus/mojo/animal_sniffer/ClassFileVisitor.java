@@ -164,6 +164,13 @@ public abstract class ClassFileVisitor
             e.initCause( cause );
             throw e;
         }
+        catch( Exception cause )
+        {
+            IOException e = new IOException( " exception while processing jar " + file.getPath() + " : " + cause.getMessage() );
+            e.initCause( cause );
+            throw e;
+        }
+
 
     }
 
