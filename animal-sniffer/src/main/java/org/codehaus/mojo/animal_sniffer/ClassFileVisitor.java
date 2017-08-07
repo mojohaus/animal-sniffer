@@ -139,7 +139,7 @@ public abstract class ClassFileVisitor
             {
                 JarEntry x = e.nextElement();
                 String name = x.getName();
-                if ( !name.endsWith( ".class" ) || name.startsWith("META-INF/") )
+                if ( !name.endsWith( ".class" ) || name.startsWith( "META-INF/" ) || name.equals( "module-info.class" ) )
                 {
                     continue;
                 }
