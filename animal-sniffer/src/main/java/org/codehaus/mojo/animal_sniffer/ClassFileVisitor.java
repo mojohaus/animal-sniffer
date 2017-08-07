@@ -37,12 +37,27 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
+import org.codehaus.mojo.animal_sniffer.logging.Logger;
+import org.codehaus.mojo.animal_sniffer.logging.PrintWriterLogger;
 
 /**
  * @author Kohsuke Kawaguchi
  */
 public abstract class ClassFileVisitor
 {
+
+    protected final Logger logger;
+
+    protected ClassFileVisitor()
+    {
+        this( new PrintWriterLogger( System.err ) );
+    }
+
+    protected ClassFileVisitor( Logger logger )
+    {
+        this.logger = logger;
+    }
+
     /**
      * Whether to check inside <code>.jar</code> files
      */
@@ -139,8 +154,13 @@ public abstract class ClassFileVisitor
             {
                 JarEntry x = e.nextElement();
                 String name = x.getName();
-                if ( !name.endsWith( ".class" ) || name.startsWith( "META-INF/" ) || name.equals( "module-info.class" ) )
+                if ( !name.endsWith( ".class" ) )
                 {
+                    continue; // uninteresting to log even at debug
+                }
+                if ( name.startsWith( "META-INF/" ) || name.equals( "module-info.class" ) )
+                {
+                    logger.debug( "Ignoring " + name );
                     continue;
                 }
                 entries.add( x );
@@ -148,6 +168,7 @@ public abstract class ClassFileVisitor
             Iterator<JarEntry> it = entries.iterator();
             while ( it.hasNext() ) {
                 JarEntry x = it.next();
+                // Even debug level seems too verbose for: logger.debug( "Processing " + x.getName() + " in " + file );
                 InputStream is = jar.getInputStream( x );
                 try
                 {
