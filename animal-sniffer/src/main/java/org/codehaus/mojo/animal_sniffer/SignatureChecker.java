@@ -47,9 +47,11 @@ import org.codehaus.mojo.animal_sniffer.logging.PrintWriterLogger;
 import org.objectweb.asm.AnnotationVisitor;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassVisitor;
+import org.objectweb.asm.Handle;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.Type;
 
 /**
  * Checks the signature against classes in this list.
@@ -370,15 +372,68 @@ public class SignatureChecker
                     return super.visitAnnotation( annoDesc, visible );
                 }
 
-                
+                private static final String LAMBDA_METAFACTORY = "java/lang/invoke/LambdaMetafactory";
+
+                @Override
+                public void visitInvokeDynamicInsn( String name, String desc, Handle bsm, Object... bsmArgs )
+                {
+                    if ( LAMBDA_METAFACTORY.equals( bsm.getOwner() ) )
+                    {
+                        if ( "metafactory".equals( bsm.getName() ) ||
+                             "altMetafactory".equals( bsm.getName() ) )
+                        {
+                            // check the method reference
+                            Handle methodHandle = (Handle) bsmArgs[1];
+                            check( methodHandle.getOwner(), methodHandle.getName() + methodHandle.getDesc() );
+                            // check the functional interface type
+                            checkType( Type.getReturnType( desc ) );
+                        }
+                    }
+                }
+
                 @Override
                 public void visitMethodInsn( int opcode, String owner, String name, String desc, boolean itf )
                 {
+                    checkType( Type.getReturnType( desc ) );
                     check( owner, name + desc );
                 }
-                
+
                 @Override
                 public void visitTypeInsn( int opcode, String type )
+                {
+                    checkType( type );
+                }
+
+                @Override
+                public void visitFieldInsn( int opcode, String owner, String name, String desc )
+                {
+                    check( owner, name + '#' + desc );
+                }
+
+                @Override
+                public void visitLineNumber( int line, Label start )
+                {
+                    CheckingVisitor.this.line = line;
+                }
+
+                private void checkType( Type asmType )
+                {
+                    if ( asmType == null )
+                    {
+                        return;
+                    }
+                    if ( asmType.getSort() == Type.OBJECT )
+                    {
+                        checkType( asmType.getInternalName() );
+                    }
+                    if ( asmType.getSort() == Type.ARRAY )
+                    {
+                        // recursive call
+                        checkType( asmType.getElementType() );
+                    }
+                }
+
+                private void checkType( String type )
                 {
                     if ( shouldBeIgnored( type ) )
                     {
@@ -393,18 +448,6 @@ public class SignatureChecker
                     {
                         error( type, null );
                     }
-                }
-
-                @Override
-                public void visitFieldInsn( int opcode, String owner, String name, String desc )
-                {
-                    check( owner, name + '#' + desc );
-                }
-
-                @Override
-                public void visitLineNumber( int line, Label start )
-                {
-                    CheckingVisitor.this.line = line;
                 }
 
                 private void check( String owner, String sig )
