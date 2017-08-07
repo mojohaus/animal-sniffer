@@ -45,8 +45,6 @@ public class ClassListBuilder
 {
     private final Set<String> packages;
 
-    private final Logger logger;
-
     public Set<String> getPackages()
     {
         return packages;
@@ -54,8 +52,8 @@ public class ClassListBuilder
 
     public ClassListBuilder( Set<String> packages, Logger logger )
     {
+        super( logger );
         this.packages = packages;
-        this.logger = logger;
     }
 
     public ClassListBuilder( Logger logger )
