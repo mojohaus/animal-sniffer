@@ -64,12 +64,7 @@ public class JdkToolchain
 
         JdkToolchain that = (JdkToolchain) o;
 
-        if ( parameters != null ? !parameters.equals( that.parameters ) : that.parameters != null )
-        {
-            return false;
-        }
-
-        return true;
+        return parameters != null ? parameters.equals( that.parameters ) : that.parameters == null;
     }
 
     public int hashCode()

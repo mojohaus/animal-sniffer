@@ -590,9 +590,7 @@ public class BuildSignaturesMojo
                 baseSignatures.add( new FileInputStream( artifact.getFile() ) );
             }
         }
-        final InputStream[] baseSignatureInputStreams =
-            (InputStream[]) baseSignatures.toArray( new InputStream[baseSignatures.size()] );
-        return baseSignatureInputStreams;
+        return baseSignatures.toArray( new InputStream[baseSignatures.size()] );
     }
 
     /**

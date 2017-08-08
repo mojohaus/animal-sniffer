@@ -189,9 +189,10 @@ public class CheckSignatureMojo
             return;
         }
 
-		if ( signature == null || StringUtils.isBlank(signature.getGroupId()) || signature.getGroupId() == "null") {
-			getLog().info( "Signature version is: " + signature.getVersion() );
-			return;
+        if ( signature == null || StringUtils.isBlank( signature.getGroupId() ) || "null".equals( signature.getGroupId()) )
+        {
+            getLog().info( "Signature version is: " + signature.getVersion() );
+            return;
         }
 
 
