@@ -7,8 +7,9 @@ env:
   - MAVEN_VERSION=3.3.9
   - MAVEN_VERSION=3.5.0
 jdk:
-  - oraclejdk7
+  - openjdk7
   - oraclejdk8
+dist: trusty
 install:
   - "mvn -N io.takari:maven:wrapper -Dmaven=${MAVEN_VERSION}"
   - "./mvnw --show-version --errors --batch-mode test-compile dependency:go-offline"
