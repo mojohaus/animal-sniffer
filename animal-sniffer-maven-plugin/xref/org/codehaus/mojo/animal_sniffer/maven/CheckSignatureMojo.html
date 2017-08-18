@@ -211,7 +211,7 @@
 <a class="jxr_linenumber" name="L203" href="#L203">203</a>                                    + <span class="jxr_string">" version from dependencies"</span> );
 <a class="jxr_linenumber" name="L204" href="#L204">204</a>                 String source = <span class="jxr_string">"dependencies"</span>;
 <a class="jxr_linenumber" name="L205" href="#L205">205</a>                 Dependency match = findMatchingDependency( signature, project.getDependencies() );
-<a class="jxr_linenumber" name="L206" href="#L206">206</a>                 <strong class="jxr_keyword">if</strong> ( match == <strong class="jxr_keyword">null</strong> )
+<a class="jxr_linenumber" name="L206" href="#L206">206</a>                 <strong class="jxr_keyword">if</strong> ( match == <strong class="jxr_keyword">null</strong> &amp;&amp; project.getDependencyManagement() != <strong class="jxr_keyword">null</strong> )
 <a class="jxr_linenumber" name="L207" href="#L207">207</a>                 {
 <a class="jxr_linenumber" name="L208" href="#L208">208</a>                     getLog().debug( <span class="jxr_string">"Resolving signature "</span> + signature.getGroupId() + <span class="jxr_string">":"</span> + signature.getArtifactId()
 <a class="jxr_linenumber" name="L209" href="#L209">209</a>                                        + <span class="jxr_string">" version from dependencyManagement"</span> );
@@ -389,6 +389,6 @@
 <a class="jxr_linenumber" name="L381" href="#L381">381</a> }
 </pre>
 <hr/>
-<div id="footer">Copyright &#169; 2008&#x2013;2016 <a href="http://www.mojohaus.org">MojoHaus</a>. All rights reserved.</div>
+<div id="footer">Copyright &#169; 2008&#x2013;2017 <a href="http://www.mojohaus.org">MojoHaus</a>. All rights reserved.</div>
 </body>
 </html>

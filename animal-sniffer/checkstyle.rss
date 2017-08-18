@@ -23,12 +23,12 @@ under the License.
     <link>http://www.mojohaus.org/animal-sniffer/animal-sniffer</link>
     <description>Animal Sniffer - Checkstyle report</description>
     <language>en-us</language>
-    <copyright>&#169;2008 - 2016 MojoHaus</copyright>
+    <copyright>&#169;2008 - 2017 MojoHaus</copyright>
     <item>
       <title>File: 10,
-             Errors: 116,
-             Warnings: 59,
-             Infos: 0
+             Errors: 117,
+             Warnings: 62,
+             Infos: 1
       </title>
             <link>http://www.mojohaus.org/animal-sniffer/animal-sniffer/checkstyle.html</link>
       <description>
@@ -108,10 +108,10 @@ under the License.
                   0
                 </td>
                 <td>
-                  11
+                  12
                 </td>
                 <td>
-                  25
+                  26
                 </td>
               </tr>
                           <tr>
@@ -161,10 +161,10 @@ under the License.
                   <a href="http://www.mojohaus.org/animal-sniffer/animal-sniffer/checkstyle.html#org.codehaus.mojo.animal_sniffer.ClassFileVisitor.java">org/codehaus/mojo/animal_sniffer/ClassFileVisitor.java</a>
                 </td>
                 <td>
-                  0
+                  1
                 </td>
                 <td>
-                  9
+                  11
                 </td>
                 <td>
                   2

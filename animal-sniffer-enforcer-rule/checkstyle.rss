@@ -23,7 +23,7 @@ under the License.
     <link>http://www.mojohaus.org/animal-sniffer/animal-sniffer-enforcer-rule</link>
     <description>Animal Sniffer Maven Enforcer Rule - Checkstyle report</description>
     <language>en-us</language>
-    <copyright>&#169;2008 - 2016 MojoHaus</copyright>
+    <copyright>&#169;2008 - 2017 MojoHaus</copyright>
     <item>
       <title>File: 3,
              Errors: 9,
