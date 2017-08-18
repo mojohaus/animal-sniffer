@@ -26,6 +26,12 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
+  <parent>
+    <groupId>org.codehaus.mojo.its</groupId>
+    <artifactId>animal-sniffer-parent</artifactId>
+    <version>1.0-SNAPSHOT</version>
+  </parent>
+
   <groupId>localdomain.localhost</groupId>
   <artifactId>real-test</artifactId>
   <version>1.0-SNAPSHOT</version>
@@ -75,13 +81,6 @@
       </plugins>
     </pluginManagement>
     <plugins>
-      <plugin>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <configuration>
-          <source>1.5</source>
-          <target>1.5</target>
-        </configuration>
-      </plugin>
       <plugin>
         <groupId>${pluginGroupId}</groupId>
         <artifactId>${pluginArtifactId}</artifactId>

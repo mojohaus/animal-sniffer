@@ -100,6 +100,21 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.build.outputEncoding>UTF-8</project.build.outputEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    <maven.compiler.source>1.5</maven.compiler.source>
+    <maven.compiler.target>1.5</maven.compiler.target>
   </properties>
+
+  <profiles>
+    <profile>
+      <id>jdk9</id>
+      <activation>
+        <jdk>9</jdk>
+      </activation>
+      <properties>
+        <maven.compiler.source>1.6</maven.compiler.source>
+        <maven.compiler.target>1.6</maven.compiler.target>
+      </properties>
+    </profile>
+  </profiles>
 
 </project>
