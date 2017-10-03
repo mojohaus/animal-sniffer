@@ -161,6 +161,13 @@ public class CheckSignatureMojo
     protected boolean skip;
 
     /**
+     * Should signature check failures throw an error?
+     *
+     */
+    @Parameter( defaultValue = "true", property = "animal.sniffer.failOnError" )
+    protected boolean failOnError;
+
+    /**
      */
     @Component
     protected ArtifactResolver resolver;
@@ -262,8 +269,16 @@ public class CheckSignatureMojo
 
             if ( signatureChecker.isSignatureBroken() )
             {
-                throw new MojoFailureException(
-                    "Signature errors found. Verify them and ignore them with the proper annotation if needed." );
+	        if (failOnError)
+		{
+                    throw new MojoFailureException(
+                        "Signature errors found. Verify them and ignore them with the proper annotation if needed." );
+	        }
+		else
+		{
+		    getLog().info(
+		        "Signature errors found. Verify them and ignore them with the proper annotation if needed." );
+		}
             }
         }
         catch ( IOException e )
