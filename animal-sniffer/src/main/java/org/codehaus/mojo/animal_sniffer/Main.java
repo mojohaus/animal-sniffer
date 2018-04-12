@@ -83,13 +83,15 @@ public class Main
             files.add(new File(args[i]));
         }
 
-        for (int i = 0; i < files.size(); i++)
+        for ( File file : files )
         {
-            m.process((File) files.get(i));
+            m.process(file);
         }
 
-        if (threshold!=null && m.maximumVersion.compareTo(threshold)>0)
+        if ( threshold != null && m.maximumVersion.compareTo( threshold ) > 0 )
+        {
             System.exit(1);
+        }
     }
 
     protected void process( String name, InputStream image )
@@ -107,8 +109,8 @@ public class Main
 
         if (humanReadableName)
         {
-            String hn = (String)HUMAN_READABLE_NAME.get(v);
-            if (hn!=null)   v = hn;
+            String hn = HUMAN_READABLE_NAME.get(v);
+            if ( hn != null ) v = hn;
         }
 
         System.out.println( v + " " + name );
@@ -129,5 +131,7 @@ public class Main
         HUMAN_READABLE_NAME.put("48.0","Java4");
         HUMAN_READABLE_NAME.put("49.0","Java5");
         HUMAN_READABLE_NAME.put("50.0","Java6");
+        HUMAN_READABLE_NAME.put("51.0","Java7");
+        HUMAN_READABLE_NAME.put("52.0","Java8");
     }
 }

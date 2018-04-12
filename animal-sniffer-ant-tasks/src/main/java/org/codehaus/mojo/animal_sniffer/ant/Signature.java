@@ -53,12 +53,7 @@ public class Signature
 
         Signature signature = (Signature) o;
 
-        if ( src != null ? !src.equals( signature.src ) : signature.src != null )
-        {
-            return false;
-        }
-
-        return true;
+        return src != null ? src.equals( signature.src ) : signature.src == null;
     }
 
     public int hashCode()
