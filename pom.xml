@@ -28,7 +28,7 @@
   <parent>
     <groupId>org.codehaus.mojo</groupId>
     <artifactId>mojo-parent</artifactId>
-    <version>36</version>
+    <version>40</version>
   </parent>
 
   <artifactId>animal-sniffer-parent</artifactId>
@@ -116,6 +116,15 @@
       </plugins>
     </pluginManagement>
   </build>
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.ow2.asm</groupId>
+        <artifactId>asm</artifactId>
+        <version>6.2</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
   <profiles>
     <profile>
       <id>disable-doclint-for-jdk8</id>
