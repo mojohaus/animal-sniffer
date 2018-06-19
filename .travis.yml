@@ -1,11 +1,8 @@
 language: java
 env:
-  - MAVEN_VERSION=3.0.5
   - MAVEN_VERSION=3.2.3
-  - MAVEN_VERSION=3.2.5
   - MAVEN_VERSION=3.3.3
-  - MAVEN_VERSION=3.3.9
-  - MAVEN_VERSION=3.5.0
+  - MAVEN_VERSION=3.5.3
 jdk:
   - openjdk7
   - oraclejdk8
