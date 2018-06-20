@@ -482,7 +482,7 @@ public class BuildSignaturesMojo
                                    + javaExecutable );
                 return false;
             }
-            if ( SystemUtils.IS_JAVA_9 || SystemUtils.IS_JAVA_10 )
+            if ( SystemUtils.isJavaVersionAtLeast( JavaVersion.JAVA_9 ))
             {
                 getLog().warn( "Skipping signature generation as this java version has no more java boot classpath "
                                    + javaExecutable );
