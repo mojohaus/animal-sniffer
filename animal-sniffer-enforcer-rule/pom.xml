@@ -41,7 +41,6 @@
 
   <properties>
     <enforcer-api.version>1.0</enforcer-api.version>
-    <build-helper.version>1.7</build-helper.version>
   </properties>
 
   <dependencies>
@@ -112,7 +111,6 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>build-helper-maven-plugin</artifactId>
-        <version>${build-helper.version}</version>
       </plugin>
     </plugins>
   </build>

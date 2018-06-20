@@ -5,7 +5,7 @@ import java.text.SimpleDateFormat;
 import org.apache.commons.codec.binary.Base64;
 
 /**
- * Classe fournissant des méthodes utilitaires pour la vérification et la génération des tickets de SSO
+ * Classe fournissant des methodes utilitaires pour la verification et la generation des tickets de SSO
  */
 public final class SSOUtils {
 
@@ -15,12 +15,12 @@ public final class SSOUtils {
     private static final Base64 BASE64_ENCODER = new Base64();
 
     /**
-     * Durée de vie par défaut d'un ticket : 1 heure
+     * Duree de vie par defaut d'un ticket : 1 heure
      */
     private static final int DEFAULT_TICKET_LIFE_TIME = 3600;
 
     /**
-     * La durée de vie d'un ticket exprimée en secondes
+     * La duree de vie d'un ticket exprimee en secondes
      */
     private static int ticketLifeTimeSeconds = SSOUtils.DEFAULT_TICKET_LIFE_TIME;
 
@@ -33,7 +33,7 @@ public final class SSOUtils {
     }
 
     /**
-     * La phrase secrète qui permet de sceller les tickets
+     * La phrase secrete qui permet de sceller les tickets
      */
     private static String secretPhrase = "toto";
 
@@ -46,7 +46,7 @@ public final class SSOUtils {
     }
 
     /**
-     * Le format de date à utiliser pour la gestion du SSO
+     * Le format de date e utiliser pour la gestion du SSO
      */
     public static final SimpleDateFormat SSO_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd:HH-mm-ss");
 
@@ -55,7 +55,7 @@ public final class SSOUtils {
     }
 
     /**
-     * Initialise les données de SSOUtils
+     * Initialise les donnees de SSOUtils
      */
     private void init() {
         // TODO alimenter #secretPhrase
