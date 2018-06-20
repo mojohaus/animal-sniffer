@@ -75,6 +75,11 @@
       <version>${maven.version}</version>
     </dependency>
     <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-lang3</artifactId>
+      <version>3.7</version>
+    </dependency>
+    <dependency>
       <groupId>org.apache.maven.shared</groupId>
       <artifactId>maven-common-artifact-filters</artifactId>
       <version>1.4</version>
@@ -142,6 +147,9 @@
           or run integration tests: mvn -Prun-its
       -->
       <id>run-its</id>
+      <properties>
+        <invoker.streamLogs>false</invoker.streamLogs>
+      </properties>
       <build>
         <defaultGoal>verify</defaultGoal>
         <plugins>
@@ -156,7 +164,7 @@
                   <goal>run</goal>
                 </goals>
                 <configuration>
-                  <streamLogs>false</streamLogs>
+                  <streamLogs>${invoker.streamLogs}</streamLogs>
                   <debug>true</debug>
                 </configuration>
               </execution>

@@ -25,6 +25,8 @@ package org.codehaus.mojo.animal_sniffer.maven;
  *
  */
 
+import org.apache.commons.lang3.JavaVersion;
+import org.apache.commons.lang3.SystemUtils;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.ArtifactUtils;
 import org.apache.maven.execution.MavenSession;
@@ -477,6 +479,12 @@ public class BuildSignaturesMojo
             if ( skipIfNoJavaHome )
             {
                 getLog().warn( "Skipping signature generation as could not auto-detect java boot classpath for "
+                                   + javaExecutable );
+                return false;
+            }
+            if ( SystemUtils.IS_JAVA_9 || SystemUtils.IS_JAVA_10 )
+            {
+                getLog().warn( "Skipping signature generation as this java version has no more java boot classpath "
                                    + javaExecutable );
                 return false;
             }
