@@ -96,6 +96,8 @@
     <scmpublish.content>target/staging/animal-sniffer-parent</scmpublish.content>
     <maven.version>2.2.1</maven.version>
     <mojo.java.target>1.7</mojo.java.target>
+    <build-helper.version>1.7</build-helper.version>
+    <invoker.streamLogs>false</invoker.streamLogs>
   </properties>
 
   <build>
@@ -163,12 +165,13 @@
             <showErrors>true</showErrors>
             <streamLogs>true</streamLogs>
             <postBuildHookScript>verify</postBuildHookScript>
+            <streamLogs>${invoker.streamLogs}</streamLogs>
           </configuration>          
         </plugin>
         <plugin>
           <groupId>org.codehaus.mojo</groupId>
           <artifactId>build-helper-maven-plugin</artifactId>
-          <version>3.0.0</version>
+          <version>${build-helper.version}</version>
         </plugin>
       </plugins>
     </pluginManagement>
