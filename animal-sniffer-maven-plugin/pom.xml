@@ -182,6 +182,7 @@
                 </goals>
                 <configuration>
                   <debug>true</debug>
+                  <streamLogs>true</streamLogs>
                 </configuration>
               </execution>
             </executions>
