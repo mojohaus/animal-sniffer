@@ -165,7 +165,7 @@
                   <groupId>org.codehaus.mojo.its</groupId>
                   <artifactId>fields-core</artifactId>
                   <version>1.0.0-SNAPSHOT</version>
-                  <localRepositoryPath>${project.build.directory}/local-repo</localRepositoryPath>
+                  <!--localRepositoryPath>${project.build.directory}/local-repo</localRepositoryPath-->
                 </configuration>
               </execution>
             </executions>
