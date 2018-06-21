@@ -201,7 +201,6 @@ public class CheckSignatureMojo
 			return;
         }
 
-
         try
         {
             if ( StringUtils.isBlank( signature.getVersion() ) )
@@ -251,7 +250,7 @@ public class CheckSignatureMojo
                                       new MavenLogger( getLog() ) );
             signatureChecker.setCheckJars( false ); // don't want to decend into jar files that have been copied to
                                                     // the output directory as resources.
-            List<File> sourcePaths = new ArrayList<File>();
+            List<File> sourcePaths = new ArrayList<>();
             Iterator<String> iterator = project.getCompileSourceRoots().iterator();
             while ( iterator.hasNext() )
             {
@@ -269,16 +268,18 @@ public class CheckSignatureMojo
 
             if ( signatureChecker.isSignatureBroken() )
             {
-	        if (failOnError)
-		{
-                    throw new MojoFailureException(
-                        "Signature errors found. Verify them and ignore them with the proper annotation if needed." );
-	        }
-		else
-		{
-		    getLog().info(
-		        "Signature errors found. Verify them and ignore them with the proper annotation if needed." );
-		}
+                if (failOnError)
+                {
+                        throw new MojoFailureException(
+                            "Signature errors found. Verify them and ignore them with the proper annotation if needed." );
+                }
+                else
+                {
+                    getLog().info(
+                    "Signature errors found. Verify them and ignore them with the proper annotation if needed." );
+                }
+            } else {
+                getLog().debug( "No signature errors" );
             }
         }
         catch ( IOException e )
