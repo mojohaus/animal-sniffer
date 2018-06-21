@@ -156,7 +156,7 @@
             <executions>
               <execution>
                 <id>install-multi-release-jar</id>
-                <phase>pre-integration-test</phase>
+                <phase>test</phase>
                 <goals>
                   <goal>install-file</goal>
                 </goals>
