@@ -21,4 +21,7 @@ branches:
         - gh-pages
 notifications:
     email:
-        - olamy@apache.org        
+        - olamy@apache.org
+
+after_failure:
+  - "cat /home/travis/build/mojohaus/animal-sniffer/animal-sniffer-maven-plugin/target/it/using-multi-release-jar/build.log"
