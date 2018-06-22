@@ -135,6 +135,26 @@
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-gpg-plugin</artifactId>
+          <version>1.6</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-source-plugin</artifactId>
+          <version>3.0.1</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-javadoc-plugin</artifactId>
+          <version>3.0.0</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-assembly-plugin</artifactId>
+          <version>3.1.0</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-install-plugin</artifactId>
           <version>2.5.2</version>
         </plugin>
@@ -163,7 +183,7 @@
             <localRepositoryPath>${project.build.directory}/local-repo</localRepositoryPath>
             <settingsFile>src/it/settings.xml</settingsFile>
             <showErrors>true</showErrors>
-            <streamLogs>true</streamLogs>
+            <streamLogs>${invoker.streamLogs}</streamLogs>
             <postBuildHookScript>verify</postBuildHookScript>
             <streamLogs>${invoker.streamLogs}</streamLogs>
           </configuration>          
