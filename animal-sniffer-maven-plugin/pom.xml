@@ -152,26 +152,6 @@
         <plugins>
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-install-plugin</artifactId>
-            <executions>
-              <execution>
-                <id>install-multi-release-jar</id>
-                <phase>test</phase>
-                <goals>
-                  <goal>install-file</goal>
-                </goals>
-                <configuration>
-                  <file>${basedir}/lib/fields-core-1.0.0-SNAPSHOT.jar</file>
-                  <groupId>org.codehaus.mojo.its</groupId>
-                  <artifactId>fields-core</artifactId>
-                  <version>1.0.0-SNAPSHOT</version>
-                  <!--localRepositoryPath>${project.build.directory}/local-repo</localRepositoryPath-->
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-invoker-plugin</artifactId>
             <executions>
               <execution>
