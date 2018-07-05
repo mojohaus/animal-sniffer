@@ -137,9 +137,8 @@ public abstract class ClassFileVisitor
     protected void processJarFile( File file )
         throws IOException
     {
-        try
+        try ( JarFile jar = new JarFile( file ) )
         {
-            JarFile jar = new JarFile( file );
             SortedSet<JarEntry> entries = new TreeSet<JarEntry>( new Comparator<JarEntry>() {
                 public int compare( JarEntry e1, JarEntry e2 )
                 {
