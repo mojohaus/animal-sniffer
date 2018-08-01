@@ -9,7 +9,7 @@ jdk:
   - oraclejdk10
 dist: trusty
 install:
-  - "mvn -N io.takari:maven:wrapper -Dmaven=${MAVEN_VERSION}"
+  - "mvn -N io.takari:maven:0.6.1:wrapper -Dmaven=${MAVEN_VERSION}"
   - "./mvnw -U --show-version --errors --batch-mode test-compile dependency:go-offline"
 script: "./mvnw -U --show-version --errors --batch-mode clean verify -Dinvoker.streamLogs=true"
 cache:
