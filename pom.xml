@@ -95,7 +95,7 @@
     <sitePluginVersion>3.3</sitePluginVersion>
     <scmpublish.content>target/staging/animal-sniffer-parent</scmpublish.content>
     <maven.version>2.2.1</maven.version>
-    <mojo.java.target>1.7</mojo.java.target>
+    <mojo.java.target>1.8</mojo.java.target>
     <build-helper.version>1.7</build-helper.version>
     <invoker.streamLogs>false</invoker.streamLogs>
   </properties>
