@@ -330,6 +330,13 @@ public class CheckSignatureRule
                     continue;
                 }
 
+                if ( artifact.getFile() == null )
+                {
+                    logger.warn( "Skipping classes in artifact " + artifactId( artifact )
+                                        + " as there are unresolved dependencies." );
+                    continue;
+                }
+
                 logger.debug( "Adding classes in artifact " + artifactId( artifact ) +
                                     " to the ignores" );
                 v.process( artifact.getFile() );
