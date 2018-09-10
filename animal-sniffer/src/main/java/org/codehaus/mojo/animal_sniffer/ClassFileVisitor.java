@@ -115,7 +115,7 @@ public abstract class ClassFileVisitor
         {
             processClassFile( file );
         }
-        else if ( file.getName().endsWith( ".jar" ) && checkJars )
+        else if ( ( file.getName().endsWith( ".jar" ) || file.getName().endsWith( ".jmod" ) ) && checkJars )
         {
             processJarFile( file );
         }
