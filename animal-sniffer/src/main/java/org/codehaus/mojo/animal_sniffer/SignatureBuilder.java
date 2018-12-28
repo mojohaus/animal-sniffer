@@ -201,7 +201,7 @@ public class SignatureBuilder
 
         @SuppressWarnings("deprecation")
         public SignatureVisitor() {
-            super(Opcodes.ASM7_EXPERIMENTAL);
+            super(Opcodes.ASM7);
         }
 
         public void visit( int version, int access, String name, String signature, String superName,
