@@ -62,6 +62,8 @@ public class CheckSignatureTask
 
     private Path sourcepath;
 
+    private boolean failOnError = true;
+
     private Vector<Path> paths = new Vector<Path>();
 
     private Vector<Ignore> ignores = new Vector<Ignore>();
@@ -150,6 +152,12 @@ public class CheckSignatureTask
         createSourcepath().setRefid( r );
     }
 
+    public void setFailOnError( boolean failOnError )
+    {
+        log( "In setFailOnError", Project.MSG_INFO );
+        this.failOnError = failOnError;
+    }
+
     public void execute()
         throws BuildException
     {
@@ -213,8 +221,16 @@ public class CheckSignatureTask
 
             if ( signatureChecker.isSignatureBroken() )
             {
-                throw new BuildException( "Signature errors found. Verify them and ignore them with the "
-                                              + "proper annotation if needed.", getLocation() );
+                String message = "Signature errors found. Verify them and ignore them with the "
+                                              + "proper annotation if needed.";
+                if ( failOnError )
+                {
+                    throw new BuildException( message, getLocation() );
+                }
+                else
+                {
+                    log( message, Project.MSG_WARN );
+                }
             }
         }
         catch ( IOException e )
