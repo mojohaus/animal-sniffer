@@ -28,6 +28,7 @@ package org.codehaus.mojo.animal_sniffer;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -83,12 +84,12 @@ public final class Clazz
      */
     public Clazz( Clazz defA, Clazz defB )
     {
-        if ( !defA.name.equals( defB.name ) )
+        if ( !Objects.equals(defA.name, defB.name ) )
         {
             // nothing we can do... this is an invalid argument
             throw new ClassCastException( "Cannot merge different classes: " + defA.name + " and " + defB.name );
         }
-        if ( !defA.superClass.equals( defB.superClass ) )
+        if ( !Objects.equals(defA.superClass, defB.superClass ) )
         {
             // nothing we can do... this is a breaking change
             throw new ClassCastException( "Cannot merger class " + defB.name + " as it has changed superclass:" );
