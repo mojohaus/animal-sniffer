@@ -672,7 +672,7 @@ public class BuildSignaturesMojo
             {
                 // try 3.x style API
                 Method newMethod =
-                    managerClass.getMethod( "getToolchainsForType", new Class[]{ String.class, MavenSession.class } );
+                    managerClass.getMethod( "getToolchainsForType", String.class, MavenSession.class);
 
                 return (ToolchainPrivate[]) newMethod.invoke( toolchainManagerPrivate, new Object[]{ type, session } );
             }
@@ -681,7 +681,7 @@ public class BuildSignaturesMojo
                 try
                 {
                     // try 2.2.1 style API
-                    Method oldMethod = managerClass.getMethod( "getToolchainsForType", new Class[]{ String.class } );
+                    Method oldMethod = managerClass.getMethod( "getToolchainsForType", String.class);
 
                     return (ToolchainPrivate[]) oldMethod.invoke( toolchainManagerPrivate, new Object[]{ type } );
                 }
