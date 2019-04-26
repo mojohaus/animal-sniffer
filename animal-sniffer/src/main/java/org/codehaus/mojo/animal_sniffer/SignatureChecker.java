@@ -398,12 +398,7 @@ public class SignatureChecker
                 {
                     if ( type != null )
                     {
-                        Set<String> exceptionTypes = exceptions.get( handler );
-                        if ( exceptionTypes == null )
-                        {
-                            exceptionTypes = new HashSet<>();
-                            exceptions.put( handler, exceptionTypes );
-                        }
+                        Set<String> exceptionTypes = exceptions.computeIfAbsent(handler, k -> new HashSet<>());
                         // we collect the types for the handler
                         // because we do not have the line number here
                         // and we need a list for a multi catch block
