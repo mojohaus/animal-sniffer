@@ -25,6 +25,8 @@ package org.codehaus.mojo.animal_sniffer.ant;
  *
  */
 
+import java.util.Objects;
+
 /**
  * Created by IntelliJ IDEA.
  *
@@ -58,12 +60,8 @@ public class Ignore
 
         Ignore ignore = (Ignore) o;
 
-        if ( className != null ? !className.equals( ignore.className ) : ignore.className != null )
-        {
-            return false;
-        }
+        return Objects.equals(className, ignore.className);
 
-        return true;
     }
 
     public int hashCode()
