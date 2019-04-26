@@ -72,7 +72,7 @@ public final class Clazz
         this.name = name;
         this.signatures = signatures;
         this.superClass = superClass;
-        this.superInterfaces = (String[]) superInterfaces.clone();
+        this.superInterfaces = superInterfaces.clone();
     }
 
     /**
@@ -109,7 +109,7 @@ public final class Clazz
         this.name = defA.getName();
         this.signatures = signatures;
         this.superClass = defA.superClass;
-        this.superInterfaces = (String[]) superInterfaces.toArray(new String[0]);
+        this.superInterfaces = superInterfaces.toArray(new String[0]);
     }
 
     public String getName()

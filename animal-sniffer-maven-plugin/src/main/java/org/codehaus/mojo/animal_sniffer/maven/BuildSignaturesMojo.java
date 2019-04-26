@@ -420,7 +420,7 @@ public class BuildSignaturesMojo
         Artifact javaBootClasspathDetector = null;
         while ( i.hasNext() && javaBootClasspathDetector == null )
         {
-            Artifact candidate = (Artifact) i.next();
+            Artifact candidate = i.next();
 
             if ( StringUtils.equals( jbcpdGroupId, candidate.getGroupId() )
                 && StringUtils.equals( jbcpdArtifactId, candidate.getArtifactId() ) && candidate.getFile() != null
@@ -584,7 +584,7 @@ public class BuildSignaturesMojo
             }
         }
         final InputStream[] baseSignatureInputStreams =
-            (InputStream[]) baseSignatures.toArray(new InputStream[0]);
+                baseSignatures.toArray(new InputStream[0]);
         return baseSignatureInputStreams;
     }
 

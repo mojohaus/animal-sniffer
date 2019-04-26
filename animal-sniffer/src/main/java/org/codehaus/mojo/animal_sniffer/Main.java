@@ -84,7 +84,7 @@ public class Main
         }
 
         for (File file : files) {
-            m.process((File) file);
+            m.process(file);
         }
 
         if (threshold!=null && m.maximumVersion.compareTo(threshold)>0)
@@ -106,7 +106,7 @@ public class Main
 
         if (humanReadableName)
         {
-            String hn = (String)HUMAN_READABLE_NAME.get(v);
+            String hn = HUMAN_READABLE_NAME.get(v);
             if (hn!=null)   v = hn;
         }
 
