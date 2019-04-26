@@ -94,7 +94,7 @@ public final class Clazz
             // nothing we can do... this is a breaking change
             throw new ClassCastException( "Cannot merger class " + defB.name + " as it has changed superclass:" );
         }
-        Set<String> superInterfaces = new HashSet<String>();
+        Set<String> superInterfaces = new HashSet<>();
         if ( defA.superInterfaces != null )
         {
             superInterfaces.addAll( Arrays.asList( defA.superInterfaces ) );
@@ -103,7 +103,7 @@ public final class Clazz
         {
             superInterfaces.addAll( Arrays.asList( defB.superInterfaces ) );
         }
-        Set<String> signatures = new HashSet<String>();
+        Set<String> signatures = new HashSet<>();
         signatures.addAll( defA.signatures );
         signatures.addAll( defB.signatures );
         this.name = defA.getName();

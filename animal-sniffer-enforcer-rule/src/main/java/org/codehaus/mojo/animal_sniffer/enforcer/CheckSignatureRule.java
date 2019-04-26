@@ -190,7 +190,7 @@ public class CheckSignatureRule
                 new SignatureChecker( new FileInputStream( a.getFile() ), ignoredPackages, logger );
             signatureChecker.setCheckJars( false ); // don't want to descend into jar files that have been copied to
             // the output directory as resources.
-            List<File> sourcePaths = new ArrayList<File>();
+            List<File> sourcePaths = new ArrayList<>();
             for (Object o : project.getCompileSourceRoots()) {
                 String path = (String) o;
                 sourcePaths.add(new File(path));

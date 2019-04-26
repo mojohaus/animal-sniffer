@@ -63,11 +63,11 @@ public class CheckSignatureTask
 
     private boolean failOnError = true;
 
-    private Vector<Path> paths = new Vector<Path>();
+    private Vector<Path> paths = new Vector<>();
 
-    private Vector<Ignore> ignores = new Vector<Ignore>();
+    private Vector<Ignore> ignores = new Vector<>();
 
-    private Vector<Annotation> annotations = new Vector<Annotation>();
+    private Vector<Annotation> annotations = new Vector<>();
 
     public void addPath( Path path )
     {
@@ -184,7 +184,7 @@ public class CheckSignatureTask
             final SignatureChecker signatureChecker =
                 new SignatureChecker( new FileInputStream( signature ), ignoredPackages, new AntLogger( this ) );
 
-            final List<File> tmp = new ArrayList<File>();
+            final List<File> tmp = new ArrayList<>();
             if (sourcepath != null) {
                 for (Object next : sourcepath) {
                     if (next instanceof FileResource) {
@@ -195,7 +195,7 @@ public class CheckSignatureTask
             }
             signatureChecker.setSourcePath(tmp);
 
-            final Collection<String> annotationTypes = new HashSet<String>();
+            final Collection<String> annotationTypes = new HashSet<>();
             for ( Annotation annotation : annotations )
             {
                 if ( annotation != null && annotation.getClassName() != null )

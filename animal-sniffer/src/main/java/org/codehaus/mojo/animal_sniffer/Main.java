@@ -58,7 +58,7 @@ public class Main
         Main m = new Main();
         String threshold = null;
 
-        List<File> files = new ArrayList<File>();
+        List<File> files = new ArrayList<>();
         for ( int i = 0; i < args.length; i++ )
         {
             if (args[i].equals("-h"))
@@ -118,7 +118,7 @@ public class Main
         return ( (int) u ) * 256 + d;
     }
 
-    private static final Map<String, String> HUMAN_READABLE_NAME = new HashMap<String, String>();
+    private static final Map<String, String> HUMAN_READABLE_NAME = new HashMap<>();
 
     static
     {

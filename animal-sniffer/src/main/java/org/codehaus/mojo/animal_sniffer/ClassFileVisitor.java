@@ -137,15 +137,14 @@ public abstract class ClassFileVisitor
     {
         try ( JarFile jar = new JarFile( file ) )
         {
-            SortedSet<JarEntry> entries = new TreeSet<JarEntry>( new Comparator<JarEntry>() {
-                public int compare( JarEntry e1, JarEntry e2 )
-                {
+            SortedSet<JarEntry> entries = new TreeSet<>(new Comparator<JarEntry>() {
+                public int compare(JarEntry e1, JarEntry e2) {
                     String n1 = e1.getName();
                     String n2 = e2.getName();
                     int diff = n1.length() - n2.length();
-                    return diff != 0 ? diff : n1.compareTo( n2 );
+                    return diff != 0 ? diff : n1.compareTo(n2);
                 }
-            } );
+            });
             Enumeration<JarEntry> e = jar.entries();
             while ( e.hasMoreElements() )
             {

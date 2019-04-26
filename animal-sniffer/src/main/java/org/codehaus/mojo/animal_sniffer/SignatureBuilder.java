@@ -65,7 +65,7 @@ public class SignatureBuilder
 
     private List<Pattern> excludeClasses;
 
-    private final Map<String,Clazz> classes = new TreeMap<String,Clazz>();
+    private final Map<String,Clazz> classes = new TreeMap<>();
 
     public static void main( String[] args )
         throws IOException
@@ -88,7 +88,7 @@ public class SignatureBuilder
     {
         if ( includeClasses == null )
         {
-            includeClasses = new ArrayList<Pattern>();
+            includeClasses = new ArrayList<>();
         }
         includeClasses.add( RegexUtils.compileWildcard( className ) );
     }
@@ -97,7 +97,7 @@ public class SignatureBuilder
     {
         if ( excludeClasses == null )
         {
-            excludeClasses = new ArrayList<Pattern>();
+            excludeClasses = new ArrayList<>();
         }
         excludeClasses.add( RegexUtils.compileWildcard( className ) );
     }
@@ -199,7 +199,7 @@ public class SignatureBuilder
         public void visit( int version, int access, String name, String signature, String superName,
                            String[] interfaces )
         {
-            this.clazz = new Clazz( name, new HashSet<String>(), superName, interfaces );
+            this.clazz = new Clazz( name, new HashSet<>(), superName, interfaces );
         }
 
         public void end()

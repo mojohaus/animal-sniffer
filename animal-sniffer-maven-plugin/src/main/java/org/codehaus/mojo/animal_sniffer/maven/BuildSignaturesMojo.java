@@ -576,7 +576,7 @@ public class BuildSignaturesMojo
     private InputStream[] getBaseSignatures()
         throws FileNotFoundException
     {
-        List<InputStream> baseSignatures = new ArrayList<InputStream>();
+        List<InputStream> baseSignatures = new ArrayList<>();
         for (Artifact artifact : (Iterable<Artifact>) project.getArtifacts()) {
             if (StringUtils.equals("signature", artifact.getType())) {
                 getLog().info("Importing sigantures from " + artifact.getFile());

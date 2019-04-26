@@ -72,7 +72,7 @@ public class SignatureChecker
      */
     public static final String PREVIOUS_ANNOTATION_FQN = "org.jvnet.animal_sniffer.IgnoreJRERequirement";
 
-    private final Map<String, Clazz> classes = new HashMap<String, Clazz>();
+    private final Map<String, Clazz> classes = new HashMap<>();
 
     private final Logger logger;
 
@@ -84,7 +84,7 @@ public class SignatureChecker
 
     private final Set<String> ignoredPackages;
 
-    private final Set<String> ignoredOuterClassesOrMethods = new HashSet<String>();
+    private final Set<String> ignoredOuterClassesOrMethods = new HashSet<>();
 
     private boolean hadError = false;
 
@@ -95,7 +95,7 @@ public class SignatureChecker
     public static void main( String[] args )
         throws Exception
     {
-        Set<String> ignoredPackages = new HashSet<String>();
+        Set<String> ignoredPackages = new HashSet<>();
         ignoredPackages.add( "org.jvnet.animal_sniffer.*" );
         ignoredPackages.add( "org.codehaus.mojo.animal_sniffer.*" );
         ignoredPackages.add( "org.objectweb.*" );
@@ -106,8 +106,8 @@ public class SignatureChecker
     public SignatureChecker( InputStream in, Set<String> ignoredPackages, Logger logger )
         throws IOException
     {
-        this.ignoredPackages = new HashSet<String>();
-        this.ignoredPackageRules = new LinkedList<MatchRule>();
+        this.ignoredPackages = new HashSet<>();
+        this.ignoredPackageRules = new LinkedList<>();
         for(String wildcard : ignoredPackages )
         {
             if ( wildcard.indexOf( '*' ) == -1 && wildcard.indexOf( '?' ) == -1 )
@@ -119,7 +119,7 @@ public class SignatureChecker
                 this.ignoredPackageRules.add( newMatchRule( wildcard.replace( '.', '/' ) ) );
             }
         }
-        this.annotationDescriptors = new HashSet<String>();
+        this.annotationDescriptors = new HashSet<>();
         this.annotationDescriptors.add( toAnnotationDescriptor( ANNOTATION_FQN ) );
         this.annotationDescriptors.add( toAnnotationDescriptor( PREVIOUS_ANNOTATION_FQN ) );
 
@@ -294,7 +294,7 @@ public class SignatureChecker
         public CheckingVisitor( String name )
         {
             super(Opcodes.ASM5);
-            this.ignoredPackageCache = new HashSet<String>( 50 * ignoredPackageRules.size() );
+            this.ignoredPackageCache = new HashSet<>(50 * ignoredPackageRules.size());
             this.name = name;
         }
 
@@ -362,7 +362,7 @@ public class SignatureChecker
                  */
                 boolean ignoreError = ignoreClass;
                 Label label = null;
-                Map<Label, Set<String>> exceptions = new HashMap<Label, Set<String>>();
+                Map<Label, Set<String>> exceptions = new HashMap<>();
 
                 @Override
                 public AnnotationVisitor visitAnnotation( String annoDesc, boolean visible )
@@ -421,7 +421,7 @@ public class SignatureChecker
                         Set<String> exceptionTypes = exceptions.get( handler );
                         if ( exceptionTypes == null )
                         {
-                            exceptionTypes = new HashSet<String>();
+                            exceptionTypes = new HashSet<>();
                             exceptions.put( handler, exceptionTypes );
                         }
                         // we collect the types for the handler

@@ -58,7 +58,7 @@ public class ClassListBuilder
 
     public ClassListBuilder( Logger logger )
     {
-        this( new HashSet<String>(), logger );
+        this(new HashSet<>(), logger );
     }
 
     protected void process( String name, InputStream image )

@@ -47,13 +47,13 @@ public class BuildSignaturesTask
 
     private File destfile;
 
-    private Vector<Path> paths = new Vector<Path>();
+    private Vector<Path> paths = new Vector<>();
 
-    private Vector<Signature> signatures = new Vector<Signature>();
+    private Vector<Signature> signatures = new Vector<>();
 
-    private Vector<Ignore> includeClasses = new Vector<Ignore>();
+    private Vector<Ignore> includeClasses = new Vector<>();
 
-    private Vector<Ignore> excludeClasses = new Vector<Ignore>();
+    private Vector<Ignore> excludeClasses = new Vector<>();
 
     public void setDestfile( File dest )
     {
@@ -130,7 +130,7 @@ public class BuildSignaturesTask
         validate();
         try
         {
-            Vector<InputStream> inStreams = new Vector<InputStream>();
+            Vector<InputStream> inStreams = new Vector<>();
             for ( Signature signature : signatures )
             {
                 log( "Importing signatures from " + signature.getSrc() );
