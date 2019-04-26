@@ -118,9 +118,7 @@ public class SignatureBuilder
                         classes.put(c.getName(), c);
                     }
                 } catch (ClassNotFoundException e) {
-                    final IOException ioException = new IOException("Could not read base signatures");
-                    ioException.initCause(e);
-                    throw ioException;
+                    throw new IOException("Could not read base signatures", e);
                 }
             }
         }

@@ -162,9 +162,7 @@ public abstract class ClassFileVisitor
         }
         catch ( IOException cause )
         {
-            IOException e = new IOException( " failed to process jar " + file.getPath() + " : " + cause.getMessage() );
-            e.initCause( cause );
-            throw e;
+            throw new IOException( " failed to process jar " + file.getPath() + " : " + cause.getMessage(), cause);
         }
 
     }

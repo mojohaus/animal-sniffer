@@ -181,9 +181,7 @@ public class SignatureChecker
             logger.error( "Bad class file " + name );
             // MANIMALSNIFFER-9 it is a pity that ASM does not throw a nicer error on encountering a malformed
             // class file.
-            IOException ioException = new IOException( "Bad class file " + name );
-            ioException.initCause( e );
-            throw ioException;
+            throw new IOException( "Bad class file " + name, e);
         }
     }
 
