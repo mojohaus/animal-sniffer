@@ -83,9 +83,8 @@ public class Main
             files.add(new File(args[i]));
         }
 
-        for (int i = 0; i < files.size(); i++)
-        {
-            m.process((File) files.get(i));
+        for (File file : files) {
+            m.process((File) file);
         }
 
         if (threshold!=null && m.maximumVersion.compareTo(threshold)>0)

@@ -32,7 +32,6 @@ import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Enumeration;
-import java.util.Iterator;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.jar.JarEntry;
@@ -91,9 +90,8 @@ public abstract class ClassFileVisitor
             }
 
         } );
-        for ( int i = 0; i < files.length; i++ )
-        {
-            process( files[i] );
+        for (File file : files) {
+            process(file);
         }
     }
 
@@ -164,17 +162,12 @@ public abstract class ClassFileVisitor
                 }
                 entries.add( x );
             }
-            Iterator<JarEntry> it = entries.iterator();
-            while ( it.hasNext() ) {
-                JarEntry x = it.next();
+            for (JarEntry x : entries) {
                 // Even debug level seems too verbose for: logger.debug( "Processing " + x.getName() + " in " + file );
-                InputStream is = jar.getInputStream( x );
-                try
-                {
-                    process( file.getPath() + ':' + x.getName(), is );
-                }
-                finally
-                {
+                InputStream is = jar.getInputStream(x);
+                try {
+                    process(file.getPath() + ':' + x.getName(), is);
+                } finally {
                     is.close();
                 }
             }

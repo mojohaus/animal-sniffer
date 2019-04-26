@@ -52,7 +52,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -234,14 +233,11 @@ public class CheckSignatureMojo
 
             if ( ignores != null )
             {
-                for ( int i = 0; i < ignores.length; i++ )
-                {
-                    String ignore = ignores[i];
-                    if ( ignore == null )
-                    {
+                for (String ignore : ignores) {
+                    if (ignore == null) {
                         continue;
                     }
-                    ignoredPackages.add( ignore.replace( '.', '/' ) );
+                    ignoredPackages.add(ignore.replace('.', '/'));
                 }
             }
 
@@ -251,11 +247,8 @@ public class CheckSignatureMojo
             signatureChecker.setCheckJars( false ); // don't want to decend into jar files that have been copied to
                                                     // the output directory as resources.
             List<File> sourcePaths = new ArrayList<>();
-            Iterator<String> iterator = project.getCompileSourceRoots().iterator();
-            while ( iterator.hasNext() )
-            {
-                String path = iterator.next();
-                sourcePaths.add( new File( path ) );
+            for (String path : (Iterable<String>) project.getCompileSourceRoots()) {
+                sourcePaths.add(new File(path));
             }
             signatureChecker.setSourcePath( sourcePaths );
 
@@ -295,33 +288,24 @@ public class CheckSignatureMojo
     private static Dependency findMatchingDependency( Signature signature, List<Dependency> dependencies )
     {
         Dependency match = null;
-        for ( Iterator<Dependency> iterator = dependencies.iterator(); iterator.hasNext(); )
-        {
-            Dependency d = iterator.next();
-            if ( StringUtils.isBlank( d.getVersion() ) )
-            {
+        for (Dependency d : dependencies) {
+            if (StringUtils.isBlank(d.getVersion())) {
                 continue;
             }
-            if ( StringUtils.equals( d.getGroupId(), signature.getGroupId() ) && StringUtils.equals( d.getArtifactId(),
-                                                                                                     signature.getArtifactId() ) )
-            {
-                if ( "signature".equals( d.getType() ) )
-                {
+            if (StringUtils.equals(d.getGroupId(), signature.getGroupId()) && StringUtils.equals(d.getArtifactId(),
+                    signature.getArtifactId())) {
+                if ("signature".equals(d.getType())) {
                     // this is a perfect match
                     match = d;
                     break;
                 }
-                if ( "pom".equals( d.getType() ) )
-                {
-                    if ( match == null || "jar".equals( match.getType() ) )
-                    {
+                if ("pom".equals(d.getType())) {
+                    if (match == null || "jar".equals(match.getType())) {
                         match = d;
                     }
                 }
-                if ( "jar".equals( d.getType() ) )
-                {
-                    if ( match == null )
-                    {
+                if ("jar".equals(d.getType())) {
+                    if (match == null) {
                         match = d;
                     }
                 }
@@ -355,42 +339,36 @@ public class CheckSignatureMojo
                 : new PatternExcludesArtifactFilter( Arrays.asList( excludeDependencies ) );
 
             getLog().debug( "Building list of classes from dependencies" );
-            for ( Iterator<Artifact> i = project.getArtifacts().iterator(); i.hasNext(); )
-            {
+            for (Artifact artifact : (Iterable<Artifact>) project.getArtifacts()) {
 
-                Artifact artifact = i.next();
-
-                if ( !artifact.getArtifactHandler().isAddedToClasspath() ) {
-                    getLog().debug( "Skipping artifact " + BuildSignaturesMojo.artifactId( artifact )
-                                        + " as it is not added to the classpath." );
+                if (!artifact.getArtifactHandler().isAddedToClasspath()) {
+                    getLog().debug("Skipping artifact " + BuildSignaturesMojo.artifactId(artifact)
+                            + " as it is not added to the classpath.");
                     continue;
                 }
 
-                if ( !( Artifact.SCOPE_COMPILE.equals( artifact.getScope() ) || Artifact.SCOPE_PROVIDED.equals(
-                    artifact.getScope() ) || Artifact.SCOPE_SYSTEM.equals( artifact.getScope() ) ) )
-                {
-                    getLog().debug( "Skipping artifact " + BuildSignaturesMojo.artifactId( artifact )
-                                        + " as it is not on the compile classpath." );
+                if (!(Artifact.SCOPE_COMPILE.equals(artifact.getScope()) || Artifact.SCOPE_PROVIDED.equals(
+                        artifact.getScope()) || Artifact.SCOPE_SYSTEM.equals(artifact.getScope()))) {
+                    getLog().debug("Skipping artifact " + BuildSignaturesMojo.artifactId(artifact)
+                            + " as it is not on the compile classpath.");
                     continue;
                 }
 
-                if ( includesFilter != null && !includesFilter.include( artifact ) )
-                {
-                    getLog().debug( "Skipping classes in artifact " + BuildSignaturesMojo.artifactId( artifact )
-                                        + " as it does not match include rules." );
+                if (includesFilter != null && !includesFilter.include(artifact)) {
+                    getLog().debug("Skipping classes in artifact " + BuildSignaturesMojo.artifactId(artifact)
+                            + " as it does not match include rules.");
                     continue;
                 }
 
-                if ( excludesFilter != null && !excludesFilter.include( artifact ) )
-                {
-                    getLog().debug( "Skipping classes in artifact " + BuildSignaturesMojo.artifactId( artifact )
-                                        + " as it does matches exclude rules." );
+                if (excludesFilter != null && !excludesFilter.include(artifact)) {
+                    getLog().debug("Skipping classes in artifact " + BuildSignaturesMojo.artifactId(artifact)
+                            + " as it does matches exclude rules.");
                     continue;
                 }
 
-                getLog().debug( "Adding classes in artifact " + BuildSignaturesMojo.artifactId( artifact ) +
-                                    " to the ignores" );
-                v.process( artifact.getFile() );
+                getLog().debug("Adding classes in artifact " + BuildSignaturesMojo.artifactId(artifact) +
+                        " to the ignores");
+                v.process(artifact.getFile());
             }
         }
     }

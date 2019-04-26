@@ -108,29 +108,21 @@ public class SignatureBuilder
         this.logger = logger;
         if ( in != null )
         {
-            for ( int i = 0; i < in.length; i++ )
-            {
-                ObjectInputStream ois = new ObjectInputStream( new GZIPInputStream( in[i] ) );
-                try
-                {
-                    while ( true )
-                    {
+            for (InputStream inputStream : in) {
+                ObjectInputStream ois = new ObjectInputStream(new GZIPInputStream(inputStream));
+                try {
+                    while (true) {
                         Clazz c = (Clazz) ois.readObject();
-                        if ( c == null )
-                        {
+                        if (c == null) {
                             break; // finished
                         }
-                        classes.put( c.getName(), c );
+                        classes.put(c.getName(), c);
                     }
-                }
-                catch ( ClassNotFoundException e )
-                {
-                    final IOException ioException = new IOException( "Could not read base signatures" );
-                    ioException.initCause( e );
+                } catch (ClassNotFoundException e) {
+                    final IOException ioException = new IOException("Could not read base signatures");
+                    ioException.initCause(e);
                     throw ioException;
-                }
-                finally
-                {
+                } finally {
                     ois.close();
                 }
             }

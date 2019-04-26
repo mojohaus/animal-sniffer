@@ -72,11 +72,10 @@ public class JdkToolchainConverter
     {
         PlexusConfiguration[] params = configuration.getChildren();
         Map<String, String> parameters = new HashMap<String, String>();
-        for ( int j = 0; j < params.length; j++ )
-        {
-            String name = params[j].getName();
-            String val = params[j].getValue();
-            parameters.put( name, val );
+        for (PlexusConfiguration param : params) {
+            String name = param.getName();
+            String val = param.getValue();
+            parameters.put(name, val);
         }
         final JdkToolchain result = new JdkToolchain();
         result.setParameters( Collections.unmodifiableMap( parameters ) );

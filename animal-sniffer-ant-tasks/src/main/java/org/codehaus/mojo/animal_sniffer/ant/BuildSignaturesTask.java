@@ -151,10 +151,9 @@ public class BuildSignaturesTask
             for ( Path path : paths )
             {
                 final String[] files = path.list();
-                for ( int j = 0; j < files.length; j++ )
-                {
-                    log( "Capturing signatures from " + files[j], Project.MSG_INFO );
-                    process( builder, new File( files[j] ) );
+                for (String file : files) {
+                    log("Capturing signatures from " + file, Project.MSG_INFO);
+                    process(builder, new File(file));
                 }
             }
             builder.close();
