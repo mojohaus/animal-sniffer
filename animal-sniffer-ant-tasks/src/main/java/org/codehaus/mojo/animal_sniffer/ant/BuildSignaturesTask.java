@@ -138,7 +138,7 @@ public class BuildSignaturesTask
             }
 
             SignatureBuilder builder =
-                new SignatureBuilder( inStreams.toArray( new InputStream[inStreams.size()] ),
+                new SignatureBuilder( inStreams.toArray(new InputStream[0]),
                                       new FileOutputStream( destfile ), new AntLogger( this ) );
             for ( Ignore tmp: includeClasses )
             {

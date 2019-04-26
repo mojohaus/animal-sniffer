@@ -109,7 +109,7 @@ public final class Clazz
         this.name = defA.getName();
         this.signatures = signatures;
         this.superClass = defA.superClass;
-        this.superInterfaces = (String[]) superInterfaces.toArray( new String[superInterfaces.size()] );
+        this.superInterfaces = (String[]) superInterfaces.toArray(new String[0]);
     }
 
     public String getName()

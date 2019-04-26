@@ -584,7 +584,7 @@ public class BuildSignaturesMojo
             }
         }
         final InputStream[] baseSignatureInputStreams =
-            (InputStream[]) baseSignatures.toArray( new InputStream[baseSignatures.size()] );
+            (InputStream[]) baseSignatures.toArray(new InputStream[0]);
         return baseSignatureInputStreams;
     }
 
