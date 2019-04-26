@@ -199,9 +199,7 @@ public class SignatureBuilder
             this.clazz = new Clazz( name, new HashSet<>(), superName, interfaces );
         }
 
-        public void end()
-            throws IOException
-        {
+        public void end() {
             Clazz cur = classes.get( clazz.getName() );
             if ( cur == null )
             {

@@ -25,14 +25,12 @@ package org.codehaus.mojo.animal_sniffer.maven;
  *
  */
 
-import org.codehaus.plexus.component.configurator.ComponentConfigurationException;
 import org.codehaus.plexus.component.configurator.ConfigurationListener;
 import org.codehaus.plexus.component.configurator.converters.AbstractConfigurationConverter;
 import org.codehaus.plexus.component.configurator.converters.ConfigurationConverter;
 import org.codehaus.plexus.component.configurator.converters.lookup.ConverterLookup;
 import org.codehaus.plexus.component.configurator.expression.ExpressionEvaluator;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
-import org.codehaus.plexus.configuration.PlexusConfigurationException;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -61,15 +59,11 @@ public class JdkToolchainConverter
      */
     public Object fromConfiguration( ConverterLookup converterLookup, PlexusConfiguration configuration, Class type,
                                      Class baseType, ClassLoader classLoader, ExpressionEvaluator expressionEvaluator,
-                                     ConfigurationListener listener )
-        throws ComponentConfigurationException
-    {
+                                     ConfigurationListener listener ) {
         return fromConfiguration( configuration, expressionEvaluator );
     }
 
-    private JdkToolchain fromConfiguration( PlexusConfiguration configuration, ExpressionEvaluator expressionEvaluator )
-        throws ComponentConfigurationException
-    {
+    private JdkToolchain fromConfiguration( PlexusConfiguration configuration, ExpressionEvaluator expressionEvaluator ) {
         PlexusConfiguration[] params = configuration.getChildren();
         Map<String, String> parameters = new HashMap<>();
         for (PlexusConfiguration param : params) {
