@@ -622,7 +622,7 @@ public class SignatureChecker
                 b.append( sourceType );
                 b.append( '.' );
                 // XXX consider prettifying <init>
-                b.append( sig.substring( 0, lparen ) );
+                b.append(sig, 0, lparen);
                 b.append( '(' );
                 boolean first = true;
                 CharBuffer args = CharBuffer.wrap( sig, lparen + 1, rparen );

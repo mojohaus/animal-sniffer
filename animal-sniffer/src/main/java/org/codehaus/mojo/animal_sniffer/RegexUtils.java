@@ -80,7 +80,7 @@ public final class RegexUtils
         do
         {
             // we are safe from pos to i
-            sb.append( s.substring( pos, i ) );
+            sb.append(s, pos, i);
             // now escape-escape
             sb.append( REGEX_QUOTE_END_ESCAPED );
             // move the working start
@@ -89,7 +89,7 @@ public final class RegexUtils
         }
         while ( i != -1 );
 
-        sb.append( s.substring( pos, s.length() ) );
+        sb.append( s.substring( pos) );
         sb.append( REGEX_QUOTE_END );
 
         return sb.toString();
