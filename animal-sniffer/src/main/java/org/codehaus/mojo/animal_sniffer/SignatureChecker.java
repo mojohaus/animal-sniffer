@@ -124,38 +124,18 @@ public class SignatureChecker
         this.annotationDescriptors.add( toAnnotationDescriptor( PREVIOUS_ANNOTATION_FQN ) );
 
         this.logger = logger;
-        ObjectInputStream ois = null;
-        try
-        {
-            ois = new ObjectInputStream( new GZIPInputStream( in ) );
-            while ( true )
-            {
+        try (ObjectInputStream ois = new ObjectInputStream(new GZIPInputStream(in))) {
+            while (true) {
                 Clazz c = (Clazz) ois.readObject();
-                if ( c == null )
-                {
+                if (c == null) {
                     return; // finished
                 }
-                classes.put( c.getName(), c );
+                classes.put(c.getName(), c);
             }
+        } catch (ClassNotFoundException e) {
+            throw new NoClassDefFoundError(e.getMessage());
         }
-        catch ( ClassNotFoundException e )
-        {
-            throw new NoClassDefFoundError( e.getMessage() );
-        }
-        finally
-        {
-            if ( ois != null )
-            {
-                try
-                {
-                    ois.close();
-                }
-                catch ( IOException e )
-                {
-                    // ignore
-                }
-            }
-        }
+        // ignore
     }
 
     /** @since 1.9 */

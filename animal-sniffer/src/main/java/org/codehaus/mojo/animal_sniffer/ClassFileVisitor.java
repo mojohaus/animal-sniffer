@@ -163,11 +163,8 @@ public abstract class ClassFileVisitor
             }
             for (JarEntry x : entries) {
                 // Even debug level seems too verbose for: logger.debug( "Processing " + x.getName() + " in " + file );
-                InputStream is = jar.getInputStream(x);
-                try {
+                try (InputStream is = jar.getInputStream(x)) {
                     process(file.getPath() + ':' + x.getName(), is);
-                } finally {
-                    is.close();
                 }
             }
         }
@@ -183,14 +180,8 @@ public abstract class ClassFileVisitor
     protected void processClassFile( File file )
         throws IOException
     {
-        InputStream in = new FileInputStream( file );
-        try
-        {
-            process( file.getPath(), in );
-        }
-        finally
-        {
-            in.close();
+        try (InputStream in = new FileInputStream(file)) {
+            process(file.getPath(), in);
         }
     }
 

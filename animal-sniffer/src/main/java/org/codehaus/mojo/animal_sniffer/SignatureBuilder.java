@@ -109,8 +109,7 @@ public class SignatureBuilder
         if ( in != null )
         {
             for (InputStream inputStream : in) {
-                ObjectInputStream ois = new ObjectInputStream(new GZIPInputStream(inputStream));
-                try {
+                try (ObjectInputStream ois = new ObjectInputStream(new GZIPInputStream(inputStream))) {
                     while (true) {
                         Clazz c = (Clazz) ois.readObject();
                         if (c == null) {
@@ -122,8 +121,6 @@ public class SignatureBuilder
                     final IOException ioException = new IOException("Could not read base signatures");
                     ioException.initCause(e);
                     throw ioException;
-                } finally {
-                    ois.close();
                 }
             }
         }
