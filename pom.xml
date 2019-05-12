@@ -32,7 +32,7 @@
   </parent>
 
   <artifactId>animal-sniffer-parent</artifactId>
-  <version>1.18</version>
+  <version>1.18-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <name>Animal Sniffer</name>
