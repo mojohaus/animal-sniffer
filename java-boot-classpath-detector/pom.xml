@@ -28,7 +28,7 @@
   <parent>
     <groupId>org.codehaus.mojo</groupId>
     <artifactId>animal-sniffer-parent</artifactId>
-    <version>1.19-SNAPSHOT</version>
+    <version>1.18-SNAPSHOT</version>
   </parent>
 
   <groupId>org.codehaus.mojo</groupId>
