@@ -338,37 +338,44 @@
 <a class="jxr_linenumber" name="L330" href="#L330">330</a>                     <strong class="jxr_keyword">continue</strong>;
 <a class="jxr_linenumber" name="L331" href="#L331">331</a>                 }
 <a class="jxr_linenumber" name="L332" href="#L332">332</a> 
-<a class="jxr_linenumber" name="L333" href="#L333">333</a>                 logger.debug( <span class="jxr_string">"Adding classes in artifact "</span> + artifactId( artifact ) +
-<a class="jxr_linenumber" name="L334" href="#L334">334</a>                                     <span class="jxr_string">" to the ignores"</span> );
-<a class="jxr_linenumber" name="L335" href="#L335">335</a>                 v.process( artifact.getFile() );
-<a class="jxr_linenumber" name="L336" href="#L336">336</a>             }
-<a class="jxr_linenumber" name="L337" href="#L337">337</a>         }
-<a class="jxr_linenumber" name="L338" href="#L338">338</a>     }
+<a class="jxr_linenumber" name="L333" href="#L333">333</a>                 <strong class="jxr_keyword">if</strong> ( artifact.getFile() == <strong class="jxr_keyword">null</strong> )
+<a class="jxr_linenumber" name="L334" href="#L334">334</a>                 {
+<a class="jxr_linenumber" name="L335" href="#L335">335</a>                     logger.warn( <span class="jxr_string">"Skipping classes in artifact "</span> + artifactId( artifact )
+<a class="jxr_linenumber" name="L336" href="#L336">336</a>                                         + <span class="jxr_string">" as there are unresolved dependencies."</span> );
+<a class="jxr_linenumber" name="L337" href="#L337">337</a>                     <strong class="jxr_keyword">continue</strong>;
+<a class="jxr_linenumber" name="L338" href="#L338">338</a>                 }
 <a class="jxr_linenumber" name="L339" href="#L339">339</a> 
-<a class="jxr_linenumber" name="L340" href="#L340">340</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">boolean</strong> isCacheable()
-<a class="jxr_linenumber" name="L341" href="#L341">341</a>     {
-<a class="jxr_linenumber" name="L342" href="#L342">342</a>         <strong class="jxr_keyword">return</strong> false;
-<a class="jxr_linenumber" name="L343" href="#L343">343</a>     }
-<a class="jxr_linenumber" name="L344" href="#L344">344</a> 
-<a class="jxr_linenumber" name="L345" href="#L345">345</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">boolean</strong> isResultValid( EnforcerRule enforcerRule )
-<a class="jxr_linenumber" name="L346" href="#L346">346</a>     {
-<a class="jxr_linenumber" name="L347" href="#L347">347</a>         <strong class="jxr_keyword">return</strong> false;
-<a class="jxr_linenumber" name="L348" href="#L348">348</a>     }
-<a class="jxr_linenumber" name="L349" href="#L349">349</a> 
-<a class="jxr_linenumber" name="L350" href="#L350">350</a>     <strong class="jxr_keyword">public</strong> String getCacheId()
-<a class="jxr_linenumber" name="L351" href="#L351">351</a>     {
-<a class="jxr_linenumber" name="L352" href="#L352">352</a>         <strong class="jxr_keyword">return</strong> getClass().getName() + <strong class="jxr_keyword">new</strong> Random().nextLong();
-<a class="jxr_linenumber" name="L353" href="#L353">353</a>     }
-<a class="jxr_linenumber" name="L354" href="#L354">354</a> 
-<a class="jxr_linenumber" name="L355" href="#L355">355</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> String artifactId( Artifact artifact )
-<a class="jxr_linenumber" name="L356" href="#L356">356</a>     {
-<a class="jxr_linenumber" name="L357" href="#L357">357</a>         <strong class="jxr_keyword">return</strong> artifact.getGroupId() + <span class="jxr_string">":"</span> + artifact.getArtifactId() + <span class="jxr_string">":"</span> + artifact.getType() + (
-<a class="jxr_linenumber" name="L358" href="#L358">358</a>             artifact.getClassifier() != <strong class="jxr_keyword">null</strong> ? <span class="jxr_string">":"</span> + artifact.getClassifier() : <span class="jxr_string">""</span> ) + <span class="jxr_string">":"</span> + artifact.getBaseVersion();
-<a class="jxr_linenumber" name="L359" href="#L359">359</a> 
+<a class="jxr_linenumber" name="L340" href="#L340">340</a>                 logger.debug( <span class="jxr_string">"Adding classes in artifact "</span> + artifactId( artifact ) +
+<a class="jxr_linenumber" name="L341" href="#L341">341</a>                                     <span class="jxr_string">" to the ignores"</span> );
+<a class="jxr_linenumber" name="L342" href="#L342">342</a>                 v.process( artifact.getFile() );
+<a class="jxr_linenumber" name="L343" href="#L343">343</a>             }
+<a class="jxr_linenumber" name="L344" href="#L344">344</a>         }
+<a class="jxr_linenumber" name="L345" href="#L345">345</a>     }
+<a class="jxr_linenumber" name="L346" href="#L346">346</a> 
+<a class="jxr_linenumber" name="L347" href="#L347">347</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">boolean</strong> isCacheable()
+<a class="jxr_linenumber" name="L348" href="#L348">348</a>     {
+<a class="jxr_linenumber" name="L349" href="#L349">349</a>         <strong class="jxr_keyword">return</strong> false;
+<a class="jxr_linenumber" name="L350" href="#L350">350</a>     }
+<a class="jxr_linenumber" name="L351" href="#L351">351</a> 
+<a class="jxr_linenumber" name="L352" href="#L352">352</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">boolean</strong> isResultValid( EnforcerRule enforcerRule )
+<a class="jxr_linenumber" name="L353" href="#L353">353</a>     {
+<a class="jxr_linenumber" name="L354" href="#L354">354</a>         <strong class="jxr_keyword">return</strong> false;
+<a class="jxr_linenumber" name="L355" href="#L355">355</a>     }
+<a class="jxr_linenumber" name="L356" href="#L356">356</a> 
+<a class="jxr_linenumber" name="L357" href="#L357">357</a>     <strong class="jxr_keyword">public</strong> String getCacheId()
+<a class="jxr_linenumber" name="L358" href="#L358">358</a>     {
+<a class="jxr_linenumber" name="L359" href="#L359">359</a>         <strong class="jxr_keyword">return</strong> getClass().getName() + <strong class="jxr_keyword">new</strong> Random().nextLong();
 <a class="jxr_linenumber" name="L360" href="#L360">360</a>     }
-<a class="jxr_linenumber" name="L361" href="#L361">361</a> }
+<a class="jxr_linenumber" name="L361" href="#L361">361</a> 
+<a class="jxr_linenumber" name="L362" href="#L362">362</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> String artifactId( Artifact artifact )
+<a class="jxr_linenumber" name="L363" href="#L363">363</a>     {
+<a class="jxr_linenumber" name="L364" href="#L364">364</a>         <strong class="jxr_keyword">return</strong> artifact.getGroupId() + <span class="jxr_string">":"</span> + artifact.getArtifactId() + <span class="jxr_string">":"</span> + artifact.getType() + (
+<a class="jxr_linenumber" name="L365" href="#L365">365</a>             artifact.getClassifier() != <strong class="jxr_keyword">null</strong> ? <span class="jxr_string">":"</span> + artifact.getClassifier() : <span class="jxr_string">""</span> ) + <span class="jxr_string">":"</span> + artifact.getBaseVersion();
+<a class="jxr_linenumber" name="L366" href="#L366">366</a> 
+<a class="jxr_linenumber" name="L367" href="#L367">367</a>     }
+<a class="jxr_linenumber" name="L368" href="#L368">368</a> }
 </pre>
 <hr/>
-<div id="footer">Copyright &#169; 2008&#x2013;2017 <a href="http://www.mojohaus.org">MojoHaus</a>. All rights reserved.</div>
+<div id="footer">Copyright &#169; 2008&#x2013;2019 <a href="http://www.mojohaus.org">MojoHaus</a>. All rights reserved.</div>
 </body>
 </html>
