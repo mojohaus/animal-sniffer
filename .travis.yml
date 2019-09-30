@@ -6,7 +6,7 @@ env:
 jdk:
   - oraclejdk8
   - oraclejdk9
-  - openjdk10
+  - oraclejdk11
 dist: trusty
 install:
   - "mvn -N io.takari:maven:0.6.1:wrapper -Dmaven=${MAVEN_VERSION}"
