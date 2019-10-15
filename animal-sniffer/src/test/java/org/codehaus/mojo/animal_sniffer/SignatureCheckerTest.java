@@ -25,6 +25,14 @@
 package org.codehaus.mojo.animal_sniffer;
 
 import junit.framework.TestCase;
+import org.codehaus.mojo.animal_sniffer.logging.PrintWriterLogger;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.Collections;
+import java.util.HashSet;
 
 public class SignatureCheckerTest extends TestCase
 {
@@ -68,6 +76,35 @@ public class SignatureCheckerTest extends TestCase
     private static void assertAnnotationDescriptor( String expected, String fqn )
     {
         assertEquals( expected, SignatureChecker.toAnnotationDescriptor( fqn ) );
+    }
+
+    private void testInternal(String className, boolean expectValid) throws IOException {
+        SignatureChecker checker = new SignatureChecker(ClassLoader.getSystemResourceAsStream("java17-1.0.signature"),
+                Collections.singleton("org.codehaus.mojo.animal_sniffer.samples." + className), new PrintWriterLogger(System.out));
+        checker.setSourcePath(Collections.singletonList(new File("target/test-classes")));
+        checker
+                .process(new File("target/test-classes/org/codehaus/mojo/animal_sniffer/samples/" + className + ".class"));
+        assertEquals(checker.isSignatureBroken(), !expectValid);
+    }
+
+    public void testFields() throws Exception {
+        testInternal("IllegalFieldSample", false);
+    }
+
+    public void testFieldsWithAccessors() throws IOException {
+        testInternal("IllegalFieldWithAccessorsSample", false);
+    }
+
+    public void testFieldsWithManipulation() throws IOException {
+        testInternal("IllegalFieldWithManipulationSample", false);
+    }
+
+    public void testFieldsOK() throws IOException {
+        testInternal("FieldsOK", true);
+    }
+
+    public void testIllegalTypeReturn() throws IOException {
+        testInternal("IllegalTypeReturn", false);
     }
 
 }
