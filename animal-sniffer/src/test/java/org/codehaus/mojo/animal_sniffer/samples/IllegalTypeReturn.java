@@ -1,13 +1,13 @@
 package org.codehaus.mojo.animal_sniffer.samples;
 
-import java.time.LocalDateTime;
+import java.nio.file.Path;
 
 /**
  * @author Lukas Zaruba, lukas.zaruba@lundegaard.eu, 2019
  */
 public class IllegalTypeReturn {
 
-    public LocalDateTime localDateTime() {
+    public Path localDateTime() {
         return null;
     }
 

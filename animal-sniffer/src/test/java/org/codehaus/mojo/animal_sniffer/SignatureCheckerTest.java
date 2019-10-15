@@ -79,7 +79,7 @@ public class SignatureCheckerTest extends TestCase
     }
 
     private void testInternal(String className, boolean expectValid) throws IOException {
-        SignatureChecker checker = new SignatureChecker(ClassLoader.getSystemResourceAsStream("java17-1.0.signature"),
+        SignatureChecker checker = new SignatureChecker(ClassLoader.getSystemResourceAsStream("java16-1.1.signature"),
                 Collections.singleton("org.codehaus.mojo.animal_sniffer.samples." + className), new PrintWriterLogger(System.out));
         checker.setSourcePath(Collections.singletonList(new File("target/test-classes")));
         checker

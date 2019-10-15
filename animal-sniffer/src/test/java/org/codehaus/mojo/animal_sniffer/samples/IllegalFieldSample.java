@@ -1,6 +1,6 @@
 package org.codehaus.mojo.animal_sniffer.samples;
 
-import java.time.LocalDateTime;
+import java.nio.file.Paths;
 
 /**
  * @author Lukas Zaruba, lukas.zaruba@lundegaard.eu, 2019
@@ -8,6 +8,6 @@ import java.time.LocalDateTime;
 public class IllegalFieldSample {
 
     private String stringField;
-    private LocalDateTime localDateTimeField;
+    private Paths pathsField;
 
 }
