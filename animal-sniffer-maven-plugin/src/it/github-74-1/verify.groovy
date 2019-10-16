@@ -1,0 +1,10 @@
+File log = new File(basedir, 'build.log')
+
+assert log.text.contains( 'IllegalTypeReturn.java:11: Undefined reference: java.nio.file.Path' )
+assert log.text.contains( 'IllegalFieldWithManipulationSample.java: Undefined reference: java.nio.file.Path' )
+assert log.text.contains( 'IllegalFieldWithManipulationSample.java:14: Undefined reference: java.nio.file.Path' )
+assert log.text.contains( 'IllegalFieldWithManipulationSample.java:18: Undefined reference: java.nio.file.Path' )
+assert log.text.contains( 'IllegalFieldWithManipulationSample.java:18: Undefined reference: java.nio.file.Path java.nio.file.Path.resolve(String)' )
+assert log.text.contains( 'IllegalFieldWithAccessorsSample.java: Undefined reference: java.nio.file.Path' )
+assert log.text.contains( 'IllegalFieldWithAccessorsSample.java:22: Undefined reference: java.nio.file.Path' )
+assert log.text.contains( 'IllegalFieldSample.java: Undefined reference: java.nio.file.Paths' )

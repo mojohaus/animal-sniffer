@@ -1,4 +1,4 @@
-package org.codehaus.mojo.animal_sniffer.samples;
+package localhost;
 
 import java.nio.file.Paths;
 
