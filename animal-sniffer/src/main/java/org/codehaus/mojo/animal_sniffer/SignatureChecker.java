@@ -45,8 +45,10 @@ import java.util.zip.GZIPInputStream;
 import org.codehaus.mojo.animal_sniffer.logging.Logger;
 import org.codehaus.mojo.animal_sniffer.logging.PrintWriterLogger;
 import org.objectweb.asm.AnnotationVisitor;
+import org.objectweb.asm.Attribute;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassVisitor;
+import org.objectweb.asm.FieldVisitor;
 import org.objectweb.asm.Handle;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
@@ -352,6 +354,18 @@ public class SignatureChecker
         }
 
         @Override
+        public FieldVisitor visitField(int access, String name, final String descriptor, String signature, Object value) {
+            return new FieldVisitor(Opcodes.ASM5) {
+
+                @Override
+                public void visitEnd() {
+                    checkType(Type.getType(descriptor), false);
+                }
+
+            };
+        }
+
+        @Override
         public MethodVisitor visitMethod( int access, final String name, final String desc, String signature, String[] exceptions )
         {
             line = 0;
@@ -363,6 +377,11 @@ public class SignatureChecker
                 boolean ignoreError = ignoreClass;
                 Label label = null;
                 Map<Label, Set<String>> exceptions = new HashMap<Label, Set<String>>();
+
+                @Override
+                public void visitEnd() {
+                    checkType(Type.getReturnType(desc), ignoreError);
+                }
 
                 @Override
                 public AnnotationVisitor visitAnnotation( String annoDesc, boolean visible )
@@ -387,9 +406,9 @@ public class SignatureChecker
                         {
                             // check the method reference
                             Handle methodHandle = (Handle) bsmArgs[1];
-                            check( methodHandle.getOwner(), methodHandle.getName() + methodHandle.getDesc() );
+                            check( methodHandle.getOwner(), methodHandle.getName() + methodHandle.getDesc(), ignoreError );
                             // check the functional interface type
-                            checkType( Type.getReturnType( desc ) );
+                            checkType( Type.getReturnType( desc ), ignoreError );
                         }
                     }
                 }
@@ -397,20 +416,20 @@ public class SignatureChecker
                 @Override
                 public void visitMethodInsn( int opcode, String owner, String name, String desc, boolean itf )
                 {
-                    checkType( Type.getReturnType( desc ) );
-                    check( owner, name + desc );
+                    checkType( Type.getReturnType( desc ), ignoreError );
+                    check( owner, name + desc, ignoreError );
                 }
 
                 @Override
                 public void visitTypeInsn( int opcode, String type )
                 {
-                    checkType( type );
+                    checkType( type, ignoreError );
                 }
 
                 @Override
                 public void visitFieldInsn( int opcode, String owner, String name, String desc )
                 {
-                    check( owner, name + '#' + desc );
+                    check( owner, name + '#' + desc, ignoreError );
                 }
 
                 @Override
@@ -439,7 +458,7 @@ public class SignatureChecker
                     {
                         for (String exceptionType: exceptionTypes)
                         {
-                            checkType( exceptionType );
+                            checkType( exceptionType, ignoreError );
                         }
                         for ( int i = 0; i < nStack; i++ )
                         {
@@ -448,7 +467,7 @@ public class SignatureChecker
                             // present in the catch/multi catch statement
                             if ( obj instanceof String && !exceptionTypes.contains( obj ) )
                             {
-                                checkType( obj.toString() );
+                                checkType( obj.toString(), ignoreError);
                             }
                         }
                     }
@@ -465,79 +484,80 @@ public class SignatureChecker
                     this.label = label;
                 }
 
-                private void checkType(Type asmType )
-                {
-                    if ( asmType == null )
-                    {
-                        return;
-                    }
-                    if ( asmType.getSort() == Type.OBJECT )
-                    {
-                        checkType( asmType.getInternalName() );
-                    }
-                    if ( asmType.getSort() == Type.ARRAY )
-                    {
-                        // recursive call
-                        checkType( asmType.getElementType() );
-                    }
-                }
-
-                private void checkType( String type )
-                {
-                    if ( shouldBeIgnored( type ) )
-                    {
-                        return;
-                    }
-                    if ( type.charAt( 0 ) == '[' )
-                    {
-                        return; // array
-                    }
-                    Clazz sigs = classes.get( type );
-                    if ( sigs == null )
-                    {
-                        error( type, null );
-                    }
-                }
-
-                private void check( String owner, String sig )
-                {
-                    if ( shouldBeIgnored( owner ) )
-                    {
-                        return;
-                    }
-                    if ( find( classes.get( owner ), sig, true ) )
-                    {
-                        return; // found it
-                    }
-                    error( owner, sig );
-                }
-
-                private boolean shouldBeIgnored( String type )
-                {
-                    if ( ignoreError )
-                    {
-                        return true;    // warning suppressed in this context
-                    }
-                    if ( type.charAt( 0 ) == '[' )
-                    {
-                        return true; // array
-                    }
-
-                    if ( ignoredPackages.contains( type ) || ignoredPackageCache.contains( type ) )
-                    {
-                        return true;
-                    }
-                    for ( MatchRule rule : ignoredPackageRules )
-                    {
-                        if ( rule.matches( type ) )
-                        {
-                            ignoredPackageCache.add( type );
-                            return true;
-                        }
-                    }
-                    return false;
-                }
             };
+        }
+
+        private void checkType(Type asmType, boolean ignoreError )
+        {
+            if ( asmType == null )
+            {
+                return;
+            }
+            if ( asmType.getSort() == Type.OBJECT )
+            {
+                checkType( asmType.getInternalName(), ignoreError );
+            }
+            if ( asmType.getSort() == Type.ARRAY )
+            {
+                // recursive call
+                checkType( asmType.getElementType(), ignoreError );
+            }
+        }
+
+        private void checkType( String type, boolean ignoreError )
+        {
+            if ( shouldBeIgnored( type, ignoreError ) )
+            {
+                return;
+            }
+            if ( type.charAt( 0 ) == '[' )
+            {
+                return; // array
+            }
+            Clazz sigs = classes.get( type );
+            if ( sigs == null )
+            {
+                error( type, null );
+            }
+        }
+
+        private void check( String owner, String sig, boolean ignoreError )
+        {
+            if ( shouldBeIgnored( owner, ignoreError ) )
+            {
+                return;
+            }
+            if ( find( classes.get( owner ), sig, true ) )
+            {
+                return; // found it
+            }
+            error( owner, sig );
+        }
+
+        private boolean shouldBeIgnored( String type, boolean ignoreError )
+        {
+            if ( ignoreError )
+            {
+                return true;    // warning suppressed in this context
+            }
+            if ( type.charAt( 0 ) == '[' )
+            {
+                return true; // array
+            }
+
+            if ( ignoredPackages.contains( type ) || ignoredPackageCache.contains( type ) )
+            {
+                return true;
+            }
+            for ( MatchRule rule : ignoredPackageRules )
+            {
+                if ( rule.matches( type ) )
+                {
+                    ignoredPackageCache.add( type );
+                    return true;
+                }
+            }
+            return false;
         }
 
         /**
