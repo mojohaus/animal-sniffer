@@ -125,7 +125,7 @@
                         <ignore>java.*</ignore>
                         <ignore>javax.*</ignore> 
                       </ignores>
-                      <ignoreDependencies>false</ignoreDependencies>
+                      <ignoreDependencies>true</ignoreDependencies>
                     </checkSignatureRule>
                   </rules>
                 </configuration>
@@ -160,7 +160,7 @@
                         <ignore>java.*</ignore>
                         <ignore>javax.*</ignore> 
                       </ignores>
-                      <ignoreDependencies>false</ignoreDependencies>
+                      <ignoreDependencies>true</ignoreDependencies>
                     </checkSignatureRule>
                   </rules>
                 </configuration>

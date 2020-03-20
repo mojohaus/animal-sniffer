@@ -287,7 +287,7 @@ public class CheckSignatureRule
         throws IOException
     {
         v.process( outputDirectory );
-        if ( ignoreDependencies )
+        if ( !ignoreDependencies )
         {
             PatternIncludesArtifactFilter includesFilter = includeDependencies == null
                 ? null
