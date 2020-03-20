@@ -19,6 +19,7 @@ package org.codehaus.mojo.animal_sniffer.ant;
 */
 
 import java.io.File;
+import java.util.Objects;
 
 /**
  * Created by IntelliJ IDEA.
@@ -53,12 +54,8 @@ public class Signature
 
         Signature signature = (Signature) o;
 
-        if ( src != null ? !src.equals( signature.src ) : signature.src != null )
-        {
-            return false;
-        }
+        return Objects.equals(src, signature.src);
 
-        return true;
     }
 
     public int hashCode()

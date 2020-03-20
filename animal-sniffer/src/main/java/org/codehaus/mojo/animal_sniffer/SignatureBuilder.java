@@ -65,7 +65,7 @@ public class SignatureBuilder
 
     private List<Pattern> excludeClasses;
 
-    private final Map<String,Clazz> classes = new TreeMap<String,Clazz>();
+    private final Map<String,Clazz> classes = new TreeMap<>();
 
     public static void main( String[] args )
         throws IOException
@@ -88,7 +88,7 @@ public class SignatureBuilder
     {
         if ( includeClasses == null )
         {
-            includeClasses = new ArrayList<Pattern>();
+            includeClasses = new ArrayList<>();
         }
         includeClasses.add( RegexUtils.compileWildcard( className ) );
     }
@@ -97,7 +97,7 @@ public class SignatureBuilder
     {
         if ( excludeClasses == null )
         {
-            excludeClasses = new ArrayList<Pattern>();
+            excludeClasses = new ArrayList<>();
         }
         excludeClasses.add( RegexUtils.compileWildcard( className ) );
     }
@@ -108,30 +108,17 @@ public class SignatureBuilder
         this.logger = logger;
         if ( in != null )
         {
-            for ( int i = 0; i < in.length; i++ )
-            {
-                ObjectInputStream ois = new ObjectInputStream( new GZIPInputStream( in[i] ) );
-                try
-                {
-                    while ( true )
-                    {
+            for (InputStream inputStream : in) {
+                try (ObjectInputStream ois = new ObjectInputStream(new GZIPInputStream(inputStream))) {
+                    while (true) {
                         Clazz c = (Clazz) ois.readObject();
-                        if ( c == null )
-                        {
+                        if (c == null) {
                             break; // finished
                         }
-                        classes.put( c.getName(), c );
+                        classes.put(c.getName(), c);
                     }
-                }
-                catch ( ClassNotFoundException e )
-                {
-                    final IOException ioException = new IOException( "Could not read base signatures" );
-                    ioException.initCause( e );
-                    throw ioException;
-                }
-                finally
-                {
-                    ois.close();
+                } catch (ClassNotFoundException e) {
+                    throw new IOException("Could not read base signatures", e);
                 }
             }
         }
@@ -207,12 +194,10 @@ public class SignatureBuilder
         public void visit( int version, int access, String name, String signature, String superName,
                            String[] interfaces )
         {
-            this.clazz = new Clazz( name, new HashSet<String>(), superName, interfaces );
+            this.clazz = new Clazz( name, new HashSet<>(), superName, interfaces );
         }
 
-        public void end()
-            throws IOException
-        {
+        public void end() {
             Clazz cur = classes.get( clazz.getName() );
             if ( cur == null )
             {

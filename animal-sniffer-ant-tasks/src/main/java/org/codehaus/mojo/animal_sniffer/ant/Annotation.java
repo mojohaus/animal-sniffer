@@ -1,5 +1,7 @@
 package org.codehaus.mojo.animal_sniffer.ant;
 
+import java.util.Objects;
+
 /**
  * @author Stephane Nicoll
  */
@@ -30,12 +32,8 @@ public class Annotation
 
         Annotation annotation = (Annotation) o;
 
-        if ( className != null ? !className.equals( annotation.className ) : annotation.className != null )
-        {
-            return false;
-        }
+        return Objects.equals(className, annotation.className);
 
-        return true;
     }
 
     public int hashCode()

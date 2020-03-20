@@ -26,6 +26,7 @@ package org.codehaus.mojo.animal_sniffer.maven;
  */
 
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * Represents the details of the jdk toolchain required.
@@ -64,12 +65,8 @@ public class JdkToolchain
 
         JdkToolchain that = (JdkToolchain) o;
 
-        if ( parameters != null ? !parameters.equals( that.parameters ) : that.parameters != null )
-        {
-            return false;
-        }
+        return Objects.equals(parameters, that.parameters);
 
-        return true;
     }
 
     public int hashCode()

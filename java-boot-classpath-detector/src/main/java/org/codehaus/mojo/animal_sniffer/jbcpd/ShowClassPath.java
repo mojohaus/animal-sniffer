@@ -45,7 +45,7 @@ public final class ShowClassPath {
         String name = null;
         while (i.hasMoreElements()) {
             String temp = (String) i.nextElement();
-            if (temp.indexOf(".boot.class.path") != -1) {
+            if (temp.contains(".boot.class.path")) {
                 if (name == null) {
                     name = temp;
                 } else {

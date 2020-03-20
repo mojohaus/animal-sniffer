@@ -30,9 +30,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.Enumeration;
-import java.util.Iterator;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.jar.JarEntry;
@@ -79,21 +77,15 @@ public abstract class ClassFileVisitor
     public void process( File[] files )
         throws IOException
     {
-        Arrays.sort( files, new Comparator<File>()
-        {
-            public int compare( File f1, File f2 )
-            {
-                String n1 = f1.getName();
-                String n2 = f2.getName();
-                // Ensure that outer classes are visited before inner classes:
-                int diff = n1.length() - n2.length();
-                return diff != 0 ? diff : n1.compareTo( n2 );
-            }
-
-        } );
-        for ( int i = 0; i < files.length; i++ )
-        {
-            process( files[i] );
+        Arrays.sort( files, (f1, f2) -> {
+            String n1 = f1.getName();
+            String n2 = f2.getName();
+            // Ensure that outer classes are visited before inner classes:
+            int diff = n1.length() - n2.length();
+            return diff != 0 ? diff : n1.compareTo( n2 );
+        });
+        for (File file : files) {
+            process(file);
         }
     }
 
@@ -139,15 +131,12 @@ public abstract class ClassFileVisitor
     {
         try ( JarFile jar = new JarFile( file ) )
         {
-            SortedSet<JarEntry> entries = new TreeSet<JarEntry>( new Comparator<JarEntry>() {
-                public int compare( JarEntry e1, JarEntry e2 )
-                {
-                    String n1 = e1.getName();
-                    String n2 = e2.getName();
-                    int diff = n1.length() - n2.length();
-                    return diff != 0 ? diff : n1.compareTo( n2 );
-                }
-            } );
+            SortedSet<JarEntry> entries = new TreeSet<>((e1, e2) -> {
+                String n1 = e1.getName();
+                String n2 = e2.getName();
+                int diff = n1.length() - n2.length();
+                return diff != 0 ? diff : n1.compareTo(n2);
+            });
             Enumeration<JarEntry> e = jar.entries();
             while ( e.hasMoreElements() )
             {
@@ -164,26 +153,16 @@ public abstract class ClassFileVisitor
                 }
                 entries.add( x );
             }
-            Iterator<JarEntry> it = entries.iterator();
-            while ( it.hasNext() ) {
-                JarEntry x = it.next();
+            for (JarEntry x : entries) {
                 // Even debug level seems too verbose for: logger.debug( "Processing " + x.getName() + " in " + file );
-                InputStream is = jar.getInputStream( x );
-                try
-                {
-                    process( file.getPath() + ':' + x.getName(), is );
-                }
-                finally
-                {
-                    is.close();
+                try (InputStream is = jar.getInputStream(x)) {
+                    process(file.getPath() + ':' + x.getName(), is);
                 }
             }
         }
         catch ( IOException cause )
         {
-            IOException e = new IOException( " failed to process jar " + file.getPath() + " : " + cause.getMessage() );
-            e.initCause( cause );
-            throw e;
+            throw new IOException( " failed to process jar " + file.getPath() + " : " + cause.getMessage(), cause);
         }
 
     }
@@ -191,14 +170,8 @@ public abstract class ClassFileVisitor
     protected void processClassFile( File file )
         throws IOException
     {
-        InputStream in = new FileInputStream( file );
-        try
-        {
-            process( file.getPath(), in );
-        }
-        finally
-        {
-            in.close();
+        try (InputStream in = new FileInputStream(file)) {
+            process(file.getPath(), in);
         }
     }
 

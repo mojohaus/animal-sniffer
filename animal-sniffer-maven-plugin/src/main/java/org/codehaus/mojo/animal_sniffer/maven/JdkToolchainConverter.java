@@ -25,14 +25,12 @@ package org.codehaus.mojo.animal_sniffer.maven;
  *
  */
 
-import org.codehaus.plexus.component.configurator.ComponentConfigurationException;
 import org.codehaus.plexus.component.configurator.ConfigurationListener;
 import org.codehaus.plexus.component.configurator.converters.AbstractConfigurationConverter;
 import org.codehaus.plexus.component.configurator.converters.ConfigurationConverter;
 import org.codehaus.plexus.component.configurator.converters.lookup.ConverterLookup;
 import org.codehaus.plexus.component.configurator.expression.ExpressionEvaluator;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
-import org.codehaus.plexus.configuration.PlexusConfigurationException;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -61,22 +59,17 @@ public class JdkToolchainConverter
      */
     public Object fromConfiguration( ConverterLookup converterLookup, PlexusConfiguration configuration, Class type,
                                      Class baseType, ClassLoader classLoader, ExpressionEvaluator expressionEvaluator,
-                                     ConfigurationListener listener )
-        throws ComponentConfigurationException
-    {
+                                     ConfigurationListener listener ) {
         return fromConfiguration( configuration, expressionEvaluator );
     }
 
-    private JdkToolchain fromConfiguration( PlexusConfiguration configuration, ExpressionEvaluator expressionEvaluator )
-        throws ComponentConfigurationException
-    {
+    private JdkToolchain fromConfiguration( PlexusConfiguration configuration, ExpressionEvaluator expressionEvaluator ) {
         PlexusConfiguration[] params = configuration.getChildren();
-        Map<String, String> parameters = new HashMap<String, String>();
-        for ( int j = 0; j < params.length; j++ )
-        {
-            String name = params[j].getName();
-            String val = params[j].getValue();
-            parameters.put( name, val );
+        Map<String, String> parameters = new HashMap<>();
+        for (PlexusConfiguration param : params) {
+            String name = param.getName();
+            String val = param.getValue();
+            parameters.put(name, val);
         }
         final JdkToolchain result = new JdkToolchain();
         result.setParameters( Collections.unmodifiableMap( parameters ) );

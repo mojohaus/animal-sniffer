@@ -44,13 +44,11 @@ import org.codehaus.mojo.animal_sniffer.logging.Logger;
  */
 public class SignatureMerger
 {
-    private final Map<String, Clazz> classes = new HashMap<String, Clazz>();
+    private final Map<String, Clazz> classes = new HashMap<>();
 
     private final Logger logger;
 
-    public static void main( String[] args )
-        throws Exception
-    {
+    public static void main( String[] args ) {
         // TODO add command arg parsing
 //        new SignatureMerger( new FileInputStream( "signature" ), ignoredPackages,
 //                             new PrintWriterLogger( System.out ) ).process( new File( "target/classes" ) );
