@@ -61,7 +61,7 @@ import java.util.Set;
  *
  * @author Kohsuke Kawaguchi
  */
-@Mojo( name = "check", defaultPhase = LifecyclePhase.PROCESS_CLASSES, requiresDependencyResolution = ResolutionScope.COMPILE, threadSafe = true )
+@Mojo( name = "check", defaultPhase = LifecyclePhase.PROCESS_TEST_CLASSES, requiresDependencyResolution = ResolutionScope.TEST, threadSafe = true )
 public class CheckSignatureMojo
     extends AbstractMojo
 {
