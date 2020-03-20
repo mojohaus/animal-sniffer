@@ -73,9 +73,25 @@ public class CheckSignatureMojo
     protected File outputDirectory;
 
     /**
+     * The directory for compiled test classes.
+     *
+     * @since 1.19
+     */
+    @Parameter( defaultValue = "${project.build.testOutputDirectory}", required = true, readonly = true )
+    protected File testOutputDirectory;
+
+    /**
+     * Should test classes be checked.
+     *
+     * @since 1.19
+     */
+    @Parameter( property = "animal.sniffer.checkTestClasses", defaultValue = "true" )
+    protected boolean checkTestClasses;
+
+    /**
      * Signature module to use.
      */
-    @Parameter( required = true, property="animal.sniffer.signature" )
+    @Parameter( required = true, property = "animal.sniffer.signature" )
     protected Signature signature;
 
 	/**
@@ -187,6 +203,7 @@ public class CheckSignatureMojo
     @Component
     protected ArtifactFactory artifactFactory;
 
+    @Override
     public void execute()
         throws MojoExecutionException, MojoFailureException
     {
@@ -250,21 +267,22 @@ public class CheckSignatureMojo
                                       new MavenLogger( getLog() ) );
             signatureChecker.setCheckJars( false ); // don't want to decend into jar files that have been copied to
                                                     // the output directory as resources.
-            List<File> sourcePaths = new ArrayList<>();
-            Iterator<String> iterator = project.getCompileSourceRoots().iterator();
-            while ( iterator.hasNext() )
-            {
-                String path = iterator.next();
-                sourcePaths.add( new File( path ) );
-            }
-            signatureChecker.setSourcePath( sourcePaths );
+
+            signatureChecker.setSourcePath( buildSourcePathList() );
 
             if ( annotations != null )
             {
                 signatureChecker.setAnnotationTypes( Arrays.asList( annotations ) );
             }
 
-            signatureChecker.process( outputDirectory );
+            if ( checkTestClasses )
+            {
+                signatureChecker.process( new File[] { outputDirectory, testOutputDirectory } );
+            }
+            else
+            {
+                signatureChecker.process( outputDirectory );
+            }
 
             if ( signatureChecker.isSignatureBroken() )
             {
@@ -393,5 +411,21 @@ public class CheckSignatureMojo
                 v.process( artifact.getFile() );
             }
         }
+    }
+
+    @SuppressWarnings("unchecked")
+    private List<File> buildSourcePathList( )
+    {
+        List<String> compileSourceRoots = new ArrayList<>( project.getCompileSourceRoots() );
+        if ( checkTestClasses )
+        {
+            compileSourceRoots.addAll( project.getTestCompileSourceRoots() );
+        }
+        List<File> sourcePathList = new ArrayList<>( compileSourceRoots.size() );
+        for ( String compileSourceRoot : compileSourceRoots)
+        {
+            sourcePathList.add( new File( compileSourceRoot ) );
+        }
+        return sourcePathList;
     }
 }
