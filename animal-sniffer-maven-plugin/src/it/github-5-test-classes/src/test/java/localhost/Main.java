@@ -29,6 +29,8 @@ public class Main
 {
     public static void main( String[] args )
     {
+        org.junit.Assert.assertTrue( true );
+
         if ( new java.util.concurrent.ConcurrentHashMap().isEmpty() ) 
         {
             System.out.println( "All is good" );

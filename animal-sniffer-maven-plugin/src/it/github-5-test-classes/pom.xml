@@ -82,4 +82,12 @@
     <pluginVersion>@project.version@</pluginVersion>
   </properties>
 
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.13</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
 </project>
