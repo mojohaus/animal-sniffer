@@ -65,7 +65,7 @@ Usage
            ....
           <execution>
             <id>check-signatures</id>
-            <phase>test</phase>
+            <phase>process-test-classes</phase>
             <goals>
               <goal>enforce</goal>
             </goals>

@@ -130,12 +130,22 @@ public class CheckSignatureRule
      */
     private String[] excludeDependencies = null;
 
+    /**
+     * Should test classes be checked.
+     *
+     * @parameter default-value="true"
+     * @since 1.19
+     */
+    private boolean checkTestClasses = true;
+
     public void execute( EnforcerRuleHelper helper )
         throws EnforcerRuleException
     {
         try
         {
             File outputDirectory = new File( (String) helper.evaluate( "${project.build.outputDirectory}" ) );
+
+            File testOutputDirectory = new File( (String) helper.evaluate( "${project.build.testOutputDirectory}" ) );
 
             ArtifactResolver resolver = (ArtifactResolver) helper.getComponent( ArtifactResolver.class );
 
@@ -194,19 +204,22 @@ public class CheckSignatureRule
                 new SignatureChecker( new FileInputStream( a.getFile() ), ignoredPackages, logger );
             signatureChecker.setCheckJars( false ); // don't want to descend into jar files that have been copied to
             // the output directory as resources.
-            List<File> sourcePaths = new ArrayList<File>();
-            Iterator iterator = project.getCompileSourceRoots().iterator();
-            while ( iterator.hasNext() )
-            {
-                String path = (String) iterator.next();
-                sourcePaths.add( new File( path ) );
-            }
-            signatureChecker.setSourcePath( sourcePaths );
+
+            signatureChecker.setSourcePath( buildSourcePathList( project ) );
+
             if ( annotations != null )
             {
                 signatureChecker.setAnnotationTypes( Arrays.asList( annotations ) );
             }
-            signatureChecker.process( outputDirectory );
+
+            if ( checkTestClasses )
+            {
+                signatureChecker.process( new File[] { outputDirectory, testOutputDirectory } );
+            }
+            else
+            {
+                signatureChecker.process( outputDirectory );
+            }
 
             if ( signatureChecker.isSignatureBroken() )
             {
@@ -364,5 +377,21 @@ public class CheckSignatureRule
         return artifact.getGroupId() + ":" + artifact.getArtifactId() + ":" + artifact.getType() + (
             artifact.getClassifier() != null ? ":" + artifact.getClassifier() : "" ) + ":" + artifact.getBaseVersion();
 
+    }
+
+    @SuppressWarnings("unchecked")
+    private List<File> buildSourcePathList( MavenProject project )
+    {
+        List<String> compileSourceRoots = new ArrayList<>( project.getCompileSourceRoots() );
+        if ( checkTestClasses )
+        {
+            compileSourceRoots.addAll( project.getTestCompileSourceRoots() );
+        }
+        List<File> sourcePathList = new ArrayList<>( compileSourceRoots.size() );
+        for ( String compileSourceRoot : compileSourceRoots)
+        {
+            sourcePathList.add( new File( compileSourceRoot ) );
+        }
+        return sourcePathList;
     }
 }

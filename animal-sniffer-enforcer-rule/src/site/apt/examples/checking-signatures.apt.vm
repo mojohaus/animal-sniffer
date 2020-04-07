@@ -61,7 +61,7 @@ Checking a project against API signatures
            ....
           <execution>
             <id>check-signatures</id>
-            <phase>test</phase>
+            <phase>process-test-classes</phase>
             <goals>
               <goal>enforce</goal>
             </goals>
@@ -158,7 +158,7 @@ public final class MapFactory {
            ....
           <execution>
             <id>check-signatures</id>
-            <phase>test</phase>
+            <phase>process-test-classes</phase>
             <goals>
               <goal>enforce</goal>
             </goals>
@@ -217,7 +217,7 @@ public final class MapFactory {
            ....
           <execution>
             <id>check-signatures</id>
-            <phase>test</phase>
+            <phase>process-test-classes</phase>
             <goals>
               <goal>enforce</goal>
             </goals>
@@ -359,7 +359,7 @@ public final class Someclass {
            ....
           <execution>
             <id>check-signatures</id>
-            <phase>test</phase>
+            <phase>process-test-classes</phase>
             <goals>
               <goal>enforce</goal>
             </goals>
