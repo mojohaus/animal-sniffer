@@ -52,6 +52,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -363,6 +364,10 @@ public class CheckSignatureMojo
         throws IOException
     {
         v.process( outputDirectory );
+        if ( checkTestClasses )
+        {
+            v.process( testOutputDirectory );
+        }
         if ( ignoreDependencies )
         {
             PatternIncludesArtifactFilter includesFilter = includeDependencies == null
@@ -373,6 +378,14 @@ public class CheckSignatureMojo
                 : new PatternExcludesArtifactFilter( Arrays.asList( excludeDependencies ) );
 
             getLog().debug( "Building list of classes from dependencies" );
+
+            Set<String> classpathScopes = new HashSet<>(
+                Arrays.asList( Artifact.SCOPE_COMPILE, Artifact.SCOPE_PROVIDED, Artifact.SCOPE_SYSTEM ) );
+            if ( checkTestClasses )
+            {
+                classpathScopes.addAll( Arrays.asList( Artifact.SCOPE_TEST, Artifact.SCOPE_RUNTIME ) );
+            }
+
             for ( Iterator<Artifact> i = project.getArtifacts().iterator(); i.hasNext(); )
             {
 
@@ -384,11 +397,11 @@ public class CheckSignatureMojo
                     continue;
                 }
 
-                if ( !( Artifact.SCOPE_COMPILE.equals( artifact.getScope() ) || Artifact.SCOPE_PROVIDED.equals(
-                    artifact.getScope() ) || Artifact.SCOPE_SYSTEM.equals( artifact.getScope() ) ) )
+                if ( !classpathScopes.contains( artifact.getScope() ) )
                 {
                     getLog().debug( "Skipping artifact " + BuildSignaturesMojo.artifactId( artifact )
-                                        + " as it is not on the compile classpath." );
+                                        + " as it is not on the "
+                                        + ( checkTestClasses ? "test" : "compile" ) + " classpath." );
                     continue;
                 }
 

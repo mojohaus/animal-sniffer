@@ -50,6 +50,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
@@ -185,7 +186,7 @@ public class CheckSignatureRule
 
             MavenLogger logger = new MavenLogger( helper.getLog() );
 
-            final Set<String> ignoredPackages = buildPackageList( outputDirectory, project, logger );
+            final Set<String> ignoredPackages = buildPackageList( outputDirectory, testOutputDirectory, project, logger );
 
             if ( ignores != null )
             {
@@ -288,18 +289,22 @@ public class CheckSignatureRule
      * @param outputDirectory
      * @param logger
      */
-    private Set<String> buildPackageList( File outputDirectory, MavenProject project, Logger logger )
+    private Set<String> buildPackageList( File outputDirectory, File testOutputDirectory, MavenProject project, Logger logger )
         throws IOException
     {
         ClassListBuilder plb = new ClassListBuilder( logger );
-        apply( plb, outputDirectory, project, logger );
+        apply( plb, outputDirectory, testOutputDirectory, project, logger );
         return plb.getPackages();
     }
 
-    private void apply( ClassFileVisitor v, File outputDirectory, MavenProject project, Logger logger )
+    private void apply( ClassFileVisitor v, File outputDirectory, File testOutputDirectory, MavenProject project, Logger logger )
         throws IOException
     {
         v.process( outputDirectory );
+        if ( checkTestClasses )
+        {
+            v.process( testOutputDirectory );
+        }
         if ( ignoreDependencies )
         {
             PatternIncludesArtifactFilter includesFilter = includeDependencies == null
@@ -308,6 +313,13 @@ public class CheckSignatureRule
             PatternExcludesArtifactFilter excludesFilter = excludeDependencies == null
                 ? null
                 : new PatternExcludesArtifactFilter( Arrays.asList( excludeDependencies ) );
+
+            Set<String> classpathScopes = new HashSet<>(
+                Arrays.asList( Artifact.SCOPE_COMPILE, Artifact.SCOPE_PROVIDED, Artifact.SCOPE_SYSTEM ) );
+            if ( checkTestClasses )
+            {
+                classpathScopes.addAll( Arrays.asList( Artifact.SCOPE_TEST, Artifact.SCOPE_RUNTIME ) );
+            }
 
             logger.debug( "Building list of classes from dependencies" );
             for ( Iterator i = project.getArtifacts().iterator(); i.hasNext(); )
@@ -321,11 +333,11 @@ public class CheckSignatureRule
                     continue;
                 }
 
-                if ( !( Artifact.SCOPE_COMPILE.equals( artifact.getScope() ) || Artifact.SCOPE_PROVIDED.equals(
-                    artifact.getScope() ) || Artifact.SCOPE_SYSTEM.equals( artifact.getScope() ) ) )
+                if ( !classpathScopes.contains( artifact.getScope() ) )
                 {
                     logger.debug( "Skipping artifact " + artifactId( artifact )
-                                        + " as it is not on the compile classpath." );
+                                        + " as it is not on the "
+                                        + ( checkTestClasses ? "test" : "compile" ) + " classpath." );
                     continue;
                 }
 
