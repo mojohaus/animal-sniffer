@@ -68,15 +68,15 @@ public class CheckSignatureRule
     /**
      * Signature module to use.
      *
-     * @required
-     * @parameter
+     * //required
+     * //parameter
      */
     protected Signature signature;
 
     /**
      * Class names to ignore signatures for (wildcards accepted).
      *
-     * @parameter
+     * //parameter
      */
     protected String[] ignores;
 
@@ -86,7 +86,7 @@ public class CheckSignatureRule
      * By default {@value SignatureChecker#ANNOTATION_FQN} and
      * {@value SignatureChecker#PREVIOUS_ANNOTATION_FQN} are used.
      *
-     * @parameter
+     * //parameter
      * @see SignatureChecker#ANNOTATION_FQN
      * @see SignatureChecker#PREVIOUS_ANNOTATION_FQN
      */
@@ -95,7 +95,7 @@ public class CheckSignatureRule
     /**
      * Should dependencies be ignored.
      *
-     * @parameter default-value="true"
+     * //parameter default-value="true"
      */
     protected boolean ignoreDependencies = true;
 
@@ -110,7 +110,7 @@ public class CheckSignatureRule
      * <li><code>groupId:artifactId:type:classifier:version</code></li>
      * </ul>
      *
-     * @parameter
+     * //parameter
      * @since 1.12
      */
     private String[] includeDependencies = null;
@@ -126,7 +126,7 @@ public class CheckSignatureRule
      * <li><code>groupId:artifactId:type:classifier:version</code></li>
      * </ul>
      *
-     * @parameter
+     * //parameter
      * @since 1.12
      */
     private String[] excludeDependencies = null;
@@ -134,7 +134,7 @@ public class CheckSignatureRule
     /**
      * Should test classes be checked.
      *
-     * @parameter default-value="true"
+     * //parameter default-value="true"
      * @since 1.19
      */
     private boolean checkTestClasses = true;
