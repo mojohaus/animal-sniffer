@@ -620,10 +620,11 @@ public class SignatureChecker
                                 + ": Covariant return type change detected: "
                                 + toSourceForm( c.getName(), oldSignature ) + " has been changed to "
                                 + toSourceForm( c.getName(), sig ) );
-                            return true;
+                            return false;
                         }
                     }
                 }
+                return true;
             }
             return false;
         }
