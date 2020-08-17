@@ -29,7 +29,14 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.FileVisitOption;
+import java.nio.file.FileVisitResult;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.Iterator;
@@ -121,6 +128,39 @@ public abstract class ClassFileVisitor
         }
 
         // ignore other files
+    }
+
+    /**
+     * Recursively finds class files and invokes {@link #process(String, InputStream)}
+     *
+     * @param path Directory (or other Path like {@code Paths.get(URI.create("jrt:/modules"))}) full of class files,
+     *             or a class file (in which case that single class is processed).
+     */
+    public void process( Path path )
+            throws IOException {
+        Files.walkFileTree(path, Collections.<FileVisitOption>emptySet(), 10000, new SimpleFileVisitor<Path>() {
+
+            @Override
+            public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
+                return FileVisitResult.CONTINUE;
+            }
+
+            @Override
+            public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+                if (file.getFileName().toString().endsWith(".class")) {
+                    process(file.toString(), Files.newInputStream(file));
+                }
+                // XXX we could add processing of jars here as well
+                // but it's not necessary for processing: Paths.get(URI.create("jrt:/modules"))
+                return FileVisitResult.CONTINUE;
+            }
+
+            @Override
+            public FileVisitResult visitFileFailed(Path file, IOException exc) throws IOException {
+                return FileVisitResult.CONTINUE;
+            }
+
+        });
     }
 
     protected void processDirectory( File dir )

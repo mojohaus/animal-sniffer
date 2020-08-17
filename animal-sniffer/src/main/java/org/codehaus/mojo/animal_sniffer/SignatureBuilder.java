@@ -32,6 +32,8 @@ import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
+import java.net.URI;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -71,8 +73,12 @@ public class SignatureBuilder
         throws IOException
     {
         SignatureBuilder builder =
-            new SignatureBuilder( new FileOutputStream( "signature" ), new PrintWriterLogger( System.out ) );
-        builder.process( new File( System.getProperty( "java.home" ), "lib/rt.jar" ) );
+                new SignatureBuilder( new FileOutputStream( "signature" ), new PrintWriterLogger( System.out ) );
+        if ( getJavaVersion() > 8 ) {
+            builder.process( Paths.get(URI.create("jrt:/modules")) );
+        } else {
+            builder.process( new File( System.getProperty( "java.home" ), "lib/rt.jar" ) );
+        }
         builder.close();
     }
 
@@ -236,4 +242,22 @@ public class SignatureBuilder
             return null;
         }
     }
+
+    public static int getJavaVersion()
+    {
+        String version = System.getProperty("java.version");
+        if ( version.startsWith("1.") )
+        {
+            version = version.substring(2);
+        }
+        // Allow these formats:
+        // 1.8.0_72-ea
+        // 9-ea
+        // 9
+        // 9.0.1
+        int dotPos = version.indexOf( '.' );
+        int dashPos = version.indexOf( '-' );
+        return Integer.parseInt( version.substring( 0, dotPos > -1 ? dotPos : dashPos > -1 ? dashPos : 1 ) );
+    }
+
 }
