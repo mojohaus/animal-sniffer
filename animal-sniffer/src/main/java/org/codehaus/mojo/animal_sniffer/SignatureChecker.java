@@ -295,7 +295,7 @@ public class SignatureChecker
 
         public CheckingVisitor( String name )
         {
-            super(Opcodes.ASM5);
+            super(Opcodes.ASM7);
             this.ignoredPackageCache = new HashSet<String>( 50 * ignoredPackageRules.size() );
             this.name = name;
         }
@@ -355,7 +355,7 @@ public class SignatureChecker
 
         @Override
         public FieldVisitor visitField(int access, String name, final String descriptor, String signature, Object value) {
-            return new FieldVisitor(Opcodes.ASM5) {
+            return new FieldVisitor(Opcodes.ASM7) {
 
                 @Override
                 public void visitEnd() {
@@ -369,7 +369,7 @@ public class SignatureChecker
         public MethodVisitor visitMethod( int access, final String name, final String desc, String signature, String[] exceptions )
         {
             line = 0;
-            return new MethodVisitor(Opcodes.ASM5)
+            return new MethodVisitor(Opcodes.ASM7)
             {
                 /**
                  * True if @IgnoreJRERequirement is set.
