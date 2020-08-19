@@ -1,0 +1,2 @@
+_extends: .github
+tag-template: animal-sniffer-parent-$NEXT_MINOR_VERSION
