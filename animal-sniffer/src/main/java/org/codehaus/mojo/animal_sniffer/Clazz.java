@@ -92,7 +92,7 @@ public final class Clazz
         if ( !Objects.equals(defA.superClass, defB.superClass ) )
         {
             // nothing we can do... this is a breaking change
-            throw new ClassCastException( "Cannot merger class " + defB.name + " as it has changed superclass:" );
+            throw new ClassCastException( "Cannot merge class " + defB.name + " as it has changed superclass:" );
         }
         Set<String> superInterfaces = new HashSet<String>();
         if ( defA.superInterfaces != null )
