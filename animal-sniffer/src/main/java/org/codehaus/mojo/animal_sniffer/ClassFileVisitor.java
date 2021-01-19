@@ -29,14 +29,12 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.FileVisitOption;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.Iterator;
@@ -137,18 +135,20 @@ public abstract class ClassFileVisitor
      *             or a class file (in which case that single class is processed).
      */
     public void process( Path path )
-            throws IOException {
-        Files.walkFileTree(path, Collections.<FileVisitOption>emptySet(), 10000, new SimpleFileVisitor<Path>() {
+        throws IOException
+    {
+        final SortedSet<Path> files = new TreeSet<>();
+        Files.walkFileTree(path, new SimpleFileVisitor<Path>() {
 
             @Override
-            public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
+            public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) {
                 return FileVisitResult.CONTINUE;
             }
 
             @Override
-            public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+            public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) {
                 if (file.getFileName().toString().endsWith(".class")) {
-                    process(file.toString(), Files.newInputStream(file));
+                    files.add(file);
                 }
                 // XXX we could add processing of jars here as well
                 // but it's not necessary for processing: Paths.get(URI.create("jrt:/modules"))
@@ -161,6 +161,9 @@ public abstract class ClassFileVisitor
             }
 
         });
+        for (final Path file : files) {
+            process(file.toString(), Files.newInputStream(file));
+        }
     }
 
     protected void processDirectory( File dir )
