@@ -162,7 +162,9 @@ public abstract class ClassFileVisitor
 
         });
         for (final Path file : files) {
-            process(file.toString(), Files.newInputStream(file));
+            try (final InputStream inputStream = Files.newInputStream(file)) {
+                process(file.toString(), inputStream);
+            }
         }
     }
 
