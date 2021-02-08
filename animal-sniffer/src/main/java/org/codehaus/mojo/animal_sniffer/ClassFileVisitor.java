@@ -137,8 +137,9 @@ public abstract class ClassFileVisitor
     public void process( Path path )
         throws IOException
     {
-        final SortedSet<Path> files = new TreeSet<>();
         Files.walkFileTree(path, new SimpleFileVisitor<Path>() {
+
+            final SortedSet<Path> files = new TreeSet<>();
 
             @Override
             public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) {
@@ -151,16 +152,22 @@ public abstract class ClassFileVisitor
             }
 
             @Override
+            public FileVisitResult postVisitDirectory(final Path dir, final IOException exc) throws IOException {
+                for (final Path file : files) {
+                    try (final InputStream inputStream = Files.newInputStream(file)) {
+                        process(file.toString(), inputStream);
+                    }
+                }
+                files.clear();
+                return super.postVisitDirectory(dir, exc);
+            }
+
+            @Override
             public FileVisitResult visitFileFailed(Path file, IOException exc) throws IOException {
                 return FileVisitResult.CONTINUE;
             }
 
         });
-        for (final Path file : files) {
-            try (final InputStream inputStream = Files.newInputStream(file)) {
-                process(file.toString(), inputStream);
-            }
-        }
     }
 
     protected void processDirectory( File dir )
