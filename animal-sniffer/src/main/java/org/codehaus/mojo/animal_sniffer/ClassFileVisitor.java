@@ -141,11 +141,6 @@ public abstract class ClassFileVisitor
         Files.walkFileTree(path, new SimpleFileVisitor<Path>() {
 
             @Override
-            public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) {
-                return FileVisitResult.CONTINUE;
-            }
-
-            @Override
             public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) {
                 if (file.getFileName().toString().endsWith(".class")) {
                     files.add(file);
