@@ -29,8 +29,6 @@ import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
-import java.net.URISyntaxException;
-import java.nio.file.FileSystemNotFoundException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -86,7 +84,7 @@ public class Main
 
             try {
                 files.add(Paths.get(new URI(args[i]))); // attempt to treat it as an URI
-            } catch (URISyntaxException | FileSystemNotFoundException e) {
+            } catch (Exception e) {
                 files.add(Paths.get(args[i])); // if that fails: treat is as a normal file/path
             }
         }
