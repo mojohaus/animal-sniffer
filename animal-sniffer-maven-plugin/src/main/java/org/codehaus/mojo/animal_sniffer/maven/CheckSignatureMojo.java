@@ -86,7 +86,7 @@ public class CheckSignatureMojo
      *
      * @since 1.19
      */
-    @Parameter( property = "animal.sniffer.checkTestClasses", defaultValue = "true" )
+    @Parameter( property = "animal.sniffer.checkTestClasses", defaultValue = "false" )
     protected boolean checkTestClasses;
 
     /**

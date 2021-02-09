@@ -134,10 +134,10 @@ public class CheckSignatureRule
     /**
      * Should test classes be checked.
      *
-     * //parameter default-value="true"
+     * //parameter default-value="false"
      * @since 1.19
      */
-    private boolean checkTestClasses = true;
+    private boolean checkTestClasses = false;
 
     public void execute( EnforcerRuleHelper helper )
         throws EnforcerRuleException
