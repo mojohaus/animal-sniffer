@@ -53,7 +53,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -252,9 +251,8 @@ public class CheckSignatureMojo
 
             if ( ignores != null )
             {
-                for ( int i = 0; i < ignores.length; i++ )
+                for ( String ignore : ignores )
                 {
-                    String ignore = ignores[i];
                     if ( ignore == null )
                     {
                         continue;
@@ -314,9 +312,8 @@ public class CheckSignatureMojo
     private static Dependency findMatchingDependency( Signature signature, List<Dependency> dependencies )
     {
         Dependency match = null;
-        for ( Iterator<Dependency> iterator = dependencies.iterator(); iterator.hasNext(); )
+        for ( Dependency d : dependencies )
         {
-            Dependency d = iterator.next();
             if ( StringUtils.isBlank( d.getVersion() ) )
             {
                 continue;
@@ -386,12 +383,11 @@ public class CheckSignatureMojo
                 classpathScopes.addAll( Arrays.asList( Artifact.SCOPE_TEST, Artifact.SCOPE_RUNTIME ) );
             }
 
-            for ( Iterator<Artifact> i = project.getArtifacts().iterator(); i.hasNext(); )
+            for ( Artifact artifact : (Iterable<Artifact>) project.getArtifacts() )
             {
 
-                Artifact artifact = i.next();
-
-                if ( !artifact.getArtifactHandler().isAddedToClasspath() ) {
+                if ( !artifact.getArtifactHandler().isAddedToClasspath() )
+                {
                     getLog().debug( "Skipping artifact " + BuildSignaturesMojo.artifactId( artifact )
                                         + " as it is not added to the classpath." );
                     continue;
@@ -399,9 +395,11 @@ public class CheckSignatureMojo
 
                 if ( !classpathScopes.contains( artifact.getScope() ) )
                 {
-                    getLog().debug( "Skipping artifact " + BuildSignaturesMojo.artifactId( artifact )
-                                        + " as it is not on the "
-                                        + ( checkTestClasses ? "test" : "compile" ) + " classpath." );
+                    getLog().debug(
+                        "Skipping artifact " + BuildSignaturesMojo.artifactId( artifact ) + " as it is not on the " + (
+                            checkTestClasses
+                                ? "test"
+                                : "compile" ) + " classpath." );
                     continue;
                 }
 
@@ -419,8 +417,8 @@ public class CheckSignatureMojo
                     continue;
                 }
 
-                getLog().debug( "Adding classes in artifact " + BuildSignaturesMojo.artifactId( artifact ) +
-                                    " to the ignores" );
+                getLog().debug(
+                    "Adding classes in artifact " + BuildSignaturesMojo.artifactId( artifact ) + " to the ignores" );
                 v.process( artifact.getFile() );
             }
         }

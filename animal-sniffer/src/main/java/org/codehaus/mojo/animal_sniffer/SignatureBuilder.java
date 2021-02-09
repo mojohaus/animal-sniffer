@@ -67,7 +67,7 @@ public class SignatureBuilder
 
     private List<Pattern> excludeClasses;
 
-    private final Map<String,Clazz> classes = new TreeMap<String,Clazz>();
+    private final Map<String,Clazz> classes = new TreeMap<>();
 
     public static void main( String[] args )
         throws IOException
@@ -94,7 +94,7 @@ public class SignatureBuilder
     {
         if ( includeClasses == null )
         {
-            includeClasses = new ArrayList<Pattern>();
+            includeClasses = new ArrayList<>();
         }
         includeClasses.add( RegexUtils.compileWildcard( className ) );
     }
@@ -103,21 +103,20 @@ public class SignatureBuilder
     {
         if ( excludeClasses == null )
         {
-            excludeClasses = new ArrayList<Pattern>();
+            excludeClasses = new ArrayList<>();
         }
         excludeClasses.add( RegexUtils.compileWildcard( className ) );
     }
 
-    public SignatureBuilder( InputStream[] in, OutputStream out, Logger logger )
+    public SignatureBuilder( InputStream[] ins, OutputStream out, Logger logger )
         throws IOException
     {
         this.logger = logger;
-        if ( in != null )
+        if ( ins != null )
         {
-            for ( int i = 0; i < in.length; i++ )
+            for ( InputStream in : ins )
             {
-                ObjectInputStream ois = new ObjectInputStream( new GZIPInputStream( in[i] ) );
-                try
+                try (ObjectInputStream ois = new ObjectInputStream( new GZIPInputStream( in ) ))
                 {
                     while ( true )
                     {
@@ -131,13 +130,7 @@ public class SignatureBuilder
                 }
                 catch ( ClassNotFoundException e )
                 {
-                    final IOException ioException = new IOException( "Could not read base signatures" );
-                    ioException.initCause( e );
-                    throw ioException;
-                }
-                finally
-                {
-                    ois.close();
+                    throw new IOException( "Could not read base signatures", e );
                 }
             }
         }
@@ -213,7 +206,7 @@ public class SignatureBuilder
         public void visit( int version, int access, String name, String signature, String superName,
                            String[] interfaces )
         {
-            this.clazz = new Clazz( name, new HashSet<String>(), superName, interfaces );
+            this.clazz = new Clazz( name, new HashSet<>(), superName, interfaces );
         }
 
         public void end()

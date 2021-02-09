@@ -31,7 +31,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.Vector;
@@ -64,11 +63,11 @@ public class CheckSignatureTask
 
     private boolean failOnError = true;
 
-    private Vector<Path> paths = new Vector<Path>();
+    private Vector<Path> paths = new Vector<>();
 
-    private Vector<Ignore> ignores = new Vector<Ignore>();
+    private Vector<Ignore> ignores = new Vector<>();
 
-    private Vector<Annotation> annotations = new Vector<Annotation>();
+    private Vector<Annotation> annotations = new Vector<>();
 
     public void addPath( Path path )
     {
@@ -185,22 +184,20 @@ public class CheckSignatureTask
             final SignatureChecker signatureChecker =
                 new SignatureChecker( new FileInputStream( signature ), ignoredPackages, new AntLogger( this ) );
 
-            final List<File> tmp = new ArrayList<File>();
+            final List<File> tmp = new ArrayList<>();
             if (sourcepath != null) {
-                Iterator<?> i = sourcepath.iterator();
-                while ( i.hasNext() )
+                for ( Object next : sourcepath )
                 {
-                    Object next = i.next();
                     if ( next instanceof FileResource )
                     {
                         final File file = ( (FileResource) next ).getFile();
-                        tmp.add(file);
+                        tmp.add( file );
                     }
                 }
             }
             signatureChecker.setSourcePath(tmp);
 
-            final Collection<String> annotationTypes = new HashSet<String>();
+            final Collection<String> annotationTypes = new HashSet<>();
             for ( Annotation annotation : annotations )
             {
                 if ( annotation != null && annotation.getClassName() != null )
@@ -213,9 +210,9 @@ public class CheckSignatureTask
             for ( Path path : paths )
             {
                 final String[] files = path.list();
-                for ( int j = 0; j < files.length; j++ )
+                for ( String file : files )
                 {
-                    signatureChecker.process( new File( files[j] ) );
+                    signatureChecker.process( new File( file ) );
                 }
             }
 
@@ -269,18 +266,16 @@ public class CheckSignatureTask
         for ( Path path : paths )
         {
             final String[] files = path.list();
-            for ( int j = 0; j < files.length; j++ )
+            for ( String file : files )
             {
-                log( "Ignoring the signatures from file to be checked: " + files[j], Project.MSG_INFO );
-                v.process( new File( files[j] ) );
+                log( "Ignoring the signatures from file to be checked: " + file, Project.MSG_INFO );
+                v.process( new File( file ) );
             }
         }
         if ( classpath != null )
         {
-            Iterator<?> i = classpath.iterator();
-            while ( i.hasNext() )
+            for ( Object next : classpath )
             {
-                Object next = i.next();
                 if ( next instanceof FileResource )
                 {
                     final File file = ( (FileResource) next ).getFile();

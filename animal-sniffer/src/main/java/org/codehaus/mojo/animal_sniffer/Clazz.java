@@ -72,7 +72,7 @@ public final class Clazz
         this.name = name;
         this.signatures = signatures;
         this.superClass = superClass;
-        this.superInterfaces = (String[]) superInterfaces.clone();
+        this.superInterfaces = superInterfaces.clone();
     }
 
     /**
@@ -94,7 +94,7 @@ public final class Clazz
             // nothing we can do... this is a breaking change
             throw new ClassCastException( "Cannot merge class " + defB.name + " as it has changed superclass:" );
         }
-        Set<String> superInterfaces = new HashSet<String>();
+        Set<String> superInterfaces = new HashSet<>();
         if ( defA.superInterfaces != null )
         {
             superInterfaces.addAll( Arrays.asList( defA.superInterfaces ) );
@@ -103,13 +103,13 @@ public final class Clazz
         {
             superInterfaces.addAll( Arrays.asList( defB.superInterfaces ) );
         }
-        Set<String> signatures = new HashSet<String>();
+        Set<String> signatures = new HashSet<>();
         signatures.addAll( defA.signatures );
         signatures.addAll( defB.signatures );
         this.name = defA.getName();
         this.signatures = signatures;
         this.superClass = defA.superClass;
-        this.superInterfaces = (String[]) superInterfaces.toArray( new String[superInterfaces.size()] );
+        this.superInterfaces = superInterfaces.toArray( new String[0] );
     }
 
     public String getName()

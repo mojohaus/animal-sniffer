@@ -190,9 +190,8 @@ public class CheckSignatureRule
 
             if ( ignores != null )
             {
-                for ( int i = 0; i < ignores.length; i++ )
+                for ( String ignore : ignores )
                 {
-                    String ignore = ignores[i];
                     if ( ignore == null )
                     {
                         continue;
@@ -322,48 +321,49 @@ public class CheckSignatureRule
             }
 
             logger.debug( "Building list of classes from dependencies" );
-            for ( Iterator i = project.getArtifacts().iterator(); i.hasNext(); )
+            for ( Object o : project.getArtifacts() )
             {
 
-                Artifact artifact = (Artifact) i.next();
+                Artifact artifact = (Artifact) o;
 
-                if ( !artifact.getArtifactHandler().isAddedToClasspath() ) {
-                    logger.debug( "Skipping artifact " + artifactId( artifact )
-                                        + " as it is not added to the classpath." );
+                if ( !artifact.getArtifactHandler().isAddedToClasspath() )
+                {
+                    logger.debug(
+                        "Skipping artifact " + artifactId( artifact ) + " as it is not added to the classpath." );
                     continue;
                 }
 
                 if ( !classpathScopes.contains( artifact.getScope() ) )
                 {
-                    logger.debug( "Skipping artifact " + artifactId( artifact )
-                                        + " as it is not on the "
-                                        + ( checkTestClasses ? "test" : "compile" ) + " classpath." );
+                    logger.debug( "Skipping artifact " + artifactId( artifact ) + " as it is not on the " + (
+                        checkTestClasses
+                            ? "test"
+                            : "compile" ) + " classpath." );
                     continue;
                 }
 
                 if ( includesFilter != null && !includesFilter.include( artifact ) )
                 {
                     logger.debug( "Skipping classes in artifact " + artifactId( artifact )
-                                        + " as it does not match include rules." );
+                                      + " as it does not match include rules." );
                     continue;
                 }
 
                 if ( excludesFilter != null && !excludesFilter.include( artifact ) )
                 {
                     logger.debug( "Skipping classes in artifact " + artifactId( artifact )
-                                        + " as it does matches exclude rules." );
+                                      + " as it does matches exclude rules." );
                     continue;
                 }
 
                 if ( artifact.getFile() == null )
                 {
                     logger.warn( "Skipping classes in artifact " + artifactId( artifact )
-                                        + " as there are unresolved dependencies." );
+                                     + " as there are unresolved dependencies." );
                     continue;
                 }
 
-                logger.debug( "Adding classes in artifact " + artifactId( artifact ) +
-                                    " to the ignores" );
+                logger.debug( "Adding classes in artifact " + artifactId( artifact ) + " to the ignores" );
                 v.process( artifact.getFile() );
             }
         }

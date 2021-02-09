@@ -380,20 +380,20 @@ public class BuildSignaturesMojo
             if ( includeClasses != null )
             {
                 getLog().info( "Restricting signatures to include only the following classes:" );
-                for ( int i = 0; i < includeClasses.length; i++ )
+                for ( String includeClass : includeClasses )
                 {
-                    getLog().info( "  " + includeClasses[i] );
-                    builder.addInclude( includeClasses[i] );
+                    getLog().info( "  " + includeClass );
+                    builder.addInclude( includeClass );
                 }
             }
 
             if ( excludeClasses != null )
             {
                 getLog().info( "Restricting signatures to exclude the following classes:" );
-                for ( int i = 0; i < excludeClasses.length; i++ )
+                for ( String excludeClass : excludeClasses )
                 {
-                    getLog().info( "  " + excludeClasses[i] );
-                    builder.addExclude( excludeClasses[i] );
+                    getLog().info( "  " + excludeClass );
+                    builder.addExclude( excludeClass );
                 }
             }
 
@@ -422,7 +422,7 @@ public class BuildSignaturesMojo
         Artifact javaBootClasspathDetector = null;
         while ( i.hasNext() && javaBootClasspathDetector == null )
         {
-            Artifact candidate = (Artifact) i.next();
+            Artifact candidate = i.next();
 
             if ( StringUtils.equals( jbcpdGroupId, candidate.getGroupId() )
                 && StringUtils.equals( jbcpdArtifactId, candidate.getArtifactId() ) && candidate.getFile() != null
@@ -528,10 +528,8 @@ public class BuildSignaturesMojo
             ? null
             : new PatternExcludesArtifactFilter( Arrays.asList( excludeDependencies ) );
 
-        for ( Iterator<Artifact> i = project.getArtifacts().iterator(); i.hasNext(); )
+        for ( Artifact artifact : (Iterable<Artifact>) project.getArtifacts() )
         {
-            Artifact artifact = i.next();
-
             if ( includesFilter != null && !includesFilter.include( artifact ) )
             {
                 getLog().debug( "Artifact " + artifactId( artifact ) + " ignored as it does not match include rules." );
@@ -569,17 +567,17 @@ public class BuildSignaturesMojo
         if ( includeJavaHome && javaHomeClassPath != null && javaHomeClassPath.length > 0 )
         {
             getLog().debug( "Parsing signatures java classpath:" );
-            for ( int i = 0; i < javaHomeClassPath.length; i++ )
+            for ( File file : javaHomeClassPath )
             {
-                if ( javaHomeClassPath[i].isFile() || javaHomeClassPath[i].isDirectory() )
+                if ( file.isFile() || file.isDirectory() )
                 {
-                    getLog().debug( "Processing " + javaHomeClassPath[i] );
-                    builder.process( javaHomeClassPath[i] );
+                    getLog().debug( "Processing " + file );
+                    builder.process( file );
                 }
                 else
                 {
-                    getLog().warn( "Could not add signatures from boot classpath element: " + javaHomeClassPath[i]
-                                       + " as it does not exist." );
+                    getLog().warn(
+                        "Could not add signatures from boot classpath element: " + file + " as it does not exist." );
                 }
             }
         }
@@ -588,19 +586,16 @@ public class BuildSignaturesMojo
     private InputStream[] getBaseSignatures()
         throws FileNotFoundException
     {
-        List<InputStream> baseSignatures = new ArrayList<InputStream>();
-        for ( Iterator<Artifact> i = project.getArtifacts().iterator(); i.hasNext(); )
+        List<InputStream> baseSignatures = new ArrayList<>();
+        for ( Artifact artifact : (Iterable<Artifact>) project.getArtifacts() )
         {
-            Artifact artifact = i.next();
             if ( StringUtils.equals( "signature", artifact.getType() ) )
             {
                 getLog().info( "Importing sigantures from " + artifact.getFile() );
                 baseSignatures.add( new FileInputStream( artifact.getFile() ) );
             }
         }
-        final InputStream[] baseSignatureInputStreams =
-            (InputStream[]) baseSignatures.toArray( new InputStream[baseSignatures.size()] );
-        return baseSignatureInputStreams;
+        return baseSignatures.toArray( new InputStream[0] );
     }
 
     /**
@@ -650,12 +645,12 @@ public class BuildSignaturesMojo
             try
             {
                 final ToolchainPrivate[] tcp = getToolchains( "jdk" );
-                for ( int i = 0; i < tcp.length; i++ )
+                for ( ToolchainPrivate toolchainPrivate : tcp )
                 {
-                    if ( tcp[i].getType().equals( "jdk" ) /* MNG-5716 */
-                                    && tcp[i].matchesRequirements( jdk.getParameters() ) )
+                    if ( toolchainPrivate.getType().equals( "jdk" ) /* MNG-5716 */
+                        && toolchainPrivate.matchesRequirements( jdk.getParameters() ) )
                     {
-                        return tcp[i];
+                        return toolchainPrivate;
                     }
                 }
             }
@@ -715,9 +710,9 @@ public class BuildSignaturesMojo
             buf.append( "\n\nCannot find a suitable 'getToolchainsForType' method. Available methods are:\n" );
 
             Method[] methods = managerClass.getMethods();
-            for ( int i = 0; i < methods.length; i++ )
+            for ( Method method : methods )
             {
-                buf.append( "  " ).append( methods[i] ).append( '\n' );
+                buf.append( "  " ).append( method ).append( '\n' );
             }
             throw new MojoExecutionException( buf.toString(), e );
         }
