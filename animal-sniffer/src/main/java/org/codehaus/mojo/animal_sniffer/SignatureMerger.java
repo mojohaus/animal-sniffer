@@ -44,7 +44,7 @@ import org.codehaus.mojo.animal_sniffer.logging.Logger;
  */
 public class SignatureMerger
 {
-    private final Map<String, Clazz> classes = new HashMap<String, Clazz>();
+    private final Map<String, Clazz> classes = new HashMap<>();
 
     private final Logger logger;
 

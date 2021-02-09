@@ -58,7 +58,7 @@ public class Main
         Main m = new Main();
         String threshold = null;
 
-        List<File> files = new ArrayList<File>();
+        List<File> files = new ArrayList<>();
         for ( int i = 0; i < args.length; i++ )
         {
             if (args[i].equals("-h"))
@@ -83,9 +83,9 @@ public class Main
             files.add(new File(args[i]));
         }
 
-        for (int i = 0; i < files.size(); i++)
+        for ( File f : files )
         {
-            m.process((File) files.get(i));
+            m.process( f );
         }
 
         if (threshold!=null && m.maximumVersion.compareTo(threshold)>0)
@@ -107,8 +107,11 @@ public class Main
 
         if (humanReadableName)
         {
-            String hn = (String)HUMAN_READABLE_NAME.get(v);
-            if (hn!=null)   v = hn;
+            String hn = HUMAN_READABLE_NAME.get(v);
+            if (hn!=null)
+            {
+                v = hn;
+            }
         }
 
         System.out.println( v + " " + name );
@@ -119,7 +122,7 @@ public class Main
         return ( (int) u ) * 256 + d;
     }
 
-    private static final Map<String, String> HUMAN_READABLE_NAME = new HashMap<String, String>();
+    private static final Map<String, String> HUMAN_READABLE_NAME = new HashMap<>();
 
     static
     {
