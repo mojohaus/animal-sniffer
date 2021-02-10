@@ -16,7 +16,7 @@
 <a class="jxr_linenumber" name="L8" href="#L8">8</a>   <em class="jxr_comment">* "License"); you may not use this file except in compliance</em>
 <a class="jxr_linenumber" name="L9" href="#L9">9</a>   <em class="jxr_comment">* with the License.  You may obtain a copy of the License at</em>
 <a class="jxr_linenumber" name="L10" href="#L10">10</a>  <em class="jxr_comment">*</em>
-<a class="jxr_linenumber" name="L11" href="#L11">11</a>  <em class="jxr_comment">*  <a href="http://www.apache.org/licenses/LICENSE-2." target="alexandria_uri">http://www.apache.org/licenses/LICENSE-2.</a>0</em>
+<a class="jxr_linenumber" name="L11" href="#L11">11</a>  <em class="jxr_comment">*  <a href="http://www.apache.org/licenses/LICENSE-2.0" target="alexandria_uri">http://www.apache.org/licenses/LICENSE-2.0</a></em>
 <a class="jxr_linenumber" name="L12" href="#L12">12</a>  <em class="jxr_comment">*</em>
 <a class="jxr_linenumber" name="L13" href="#L13">13</a>  <em class="jxr_comment">* Unless required by applicable law or agreed to in writing,</em>
 <a class="jxr_linenumber" name="L14" href="#L14">14</a>  <em class="jxr_comment">* software distributed under the License is distributed on an</em>
@@ -34,7 +34,7 @@
 <a class="jxr_linenumber" name="L26" href="#L26">26</a>  <em class="jxr_javadoccomment"> * @author Stephen Connolly</em>
 <a class="jxr_linenumber" name="L27" href="#L27">27</a>  <em class="jxr_javadoccomment"> * @since 1.3</em>
 <a class="jxr_linenumber" name="L28" href="#L28">28</a>  <em class="jxr_javadoccomment"> */</em>
-<a class="jxr_linenumber" name="L29" href="#L29">29</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">class</strong> <a href="../../../../org/codehaus/mojo/animal_sniffer/RegexUtils.html">RegexUtils</a>
+<a class="jxr_linenumber" name="L29" href="#L29">29</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">class</strong> <a name="RegexUtils" href="../../../../org/codehaus/mojo/animal_sniffer/RegexUtils.html#RegexUtils">RegexUtils</a>
 <a class="jxr_linenumber" name="L30" href="#L30">30</a>  {
 <a class="jxr_linenumber" name="L31" href="#L31">31</a>      <em class="jxr_javadoccomment">/**</em>
 <a class="jxr_linenumber" name="L32" href="#L32">32</a>  <em class="jxr_javadoccomment">     * The end of a regex literal sequence.</em>
@@ -57,7 +57,7 @@
 <a class="jxr_linenumber" name="L49" href="#L49">49</a>  <em class="jxr_javadoccomment">     */</em>
 <a class="jxr_linenumber" name="L50" href="#L50">50</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> String REGEX_QUOTE_END_ESCAPED = REGEX_QUOTE_END + '&#92;&#92;' + REGEX_QUOTE_END + REGEX_QUOTE_START;
 <a class="jxr_linenumber" name="L51" href="#L51">51</a>  
-<a class="jxr_linenumber" name="L52" href="#L52">52</a>      <strong class="jxr_keyword">private</strong> <a href="../../../../org/codehaus/mojo/animal_sniffer/RegexUtils.html">RegexUtils</a>()
+<a class="jxr_linenumber" name="L52" href="#L52">52</a>      <strong class="jxr_keyword">private</strong> <a name="RegexUtils" href="../../../../org/codehaus/mojo/animal_sniffer/RegexUtils.html#RegexUtils">RegexUtils</a>()
 <a class="jxr_linenumber" name="L53" href="#L53">53</a>      {
 <a class="jxr_linenumber" name="L54" href="#L54">54</a>          <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> IllegalAccessError( <span class="jxr_string">"Utility classes should never be instantiated"</span> );
 <a class="jxr_linenumber" name="L55" href="#L55">55</a>      }
@@ -79,7 +79,7 @@
 <a class="jxr_linenumber" name="L71" href="#L71">71</a>          }
 <a class="jxr_linenumber" name="L72" href="#L72">72</a>  
 <a class="jxr_linenumber" name="L73" href="#L73">73</a>          <em class="jxr_comment">// damn there's at least one \E in the string</em>
-<a class="jxr_linenumber" name="L74" href="#L74">74</a>          StringBuffer sb = <strong class="jxr_keyword">new</strong> StringBuffer( s.length() + 32 );
+<a class="jxr_linenumber" name="L74" href="#L74">74</a>          StringBuilder sb = <strong class="jxr_keyword">new</strong> StringBuilder( s.length() + 32 );
 <a class="jxr_linenumber" name="L75" href="#L75">75</a>          <em class="jxr_comment">// each escape-escape takes 10 chars...</em>
 <a class="jxr_linenumber" name="L76" href="#L76">76</a>          <em class="jxr_comment">// hope there's less than 4 of them</em>
 <a class="jxr_linenumber" name="L77" href="#L77">77</a>  
@@ -113,7 +113,7 @@
 <a class="jxr_linenumber" name="L105" href="#L105">105</a> <em class="jxr_javadoccomment">     */</em>
 <a class="jxr_linenumber" name="L106" href="#L106">106</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> String convertWildcardsToRegex( String wildcardRule, <strong class="jxr_keyword">boolean</strong> exactMatch )
 <a class="jxr_linenumber" name="L107" href="#L107">107</a>     {
-<a class="jxr_linenumber" name="L108" href="#L108">108</a>         StringBuffer regex = <strong class="jxr_keyword">new</strong> StringBuffer();
+<a class="jxr_linenumber" name="L108" href="#L108">108</a>         StringBuilder regex = <strong class="jxr_keyword">new</strong> StringBuilder();
 <a class="jxr_linenumber" name="L109" href="#L109">109</a>         <strong class="jxr_keyword">int</strong> index = 0;
 <a class="jxr_linenumber" name="L110" href="#L110">110</a>         <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">int</strong> len = wildcardRule.length();
 <a class="jxr_linenumber" name="L111" href="#L111">111</a>         <strong class="jxr_keyword">while</strong> ( index &lt; len )
@@ -173,6 +173,6 @@
 <a class="jxr_linenumber" name="L165" href="#L165">165</a> }
 </pre>
 <hr/>
-<div id="footer">Copyright &#169; 2008&#x2013;2020 <a href="http://www.mojohaus.org">MojoHaus</a>. All rights reserved.</div>
+<div id="footer">Copyright &#169; 2008&#x2013;2021 <a href="https://www.mojohaus.org">MojoHaus</a>. All rights reserved.</div>
 </body>
 </html>

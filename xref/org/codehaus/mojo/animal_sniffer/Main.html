@@ -45,8 +45,8 @@
 <a class="jxr_linenumber" name="L37" href="#L37">37</a>  <em class="jxr_javadoccomment">/**</em>
 <a class="jxr_linenumber" name="L38" href="#L38">38</a>  <em class="jxr_javadoccomment"> * @author Kohsuke Kawaguchi</em>
 <a class="jxr_linenumber" name="L39" href="#L39">39</a>  <em class="jxr_javadoccomment"> */</em>
-<a class="jxr_linenumber" name="L40" href="#L40">40</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a href="../../../../org/codehaus/mojo/animal_sniffer/Main.html">Main</a>
-<a class="jxr_linenumber" name="L41" href="#L41">41</a>      <strong class="jxr_keyword">extends</strong> <a href="../../../../org/codehaus/mojo/animal_sniffer/ClassFileVisitor.html">ClassFileVisitor</a>
+<a class="jxr_linenumber" name="L40" href="#L40">40</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a name="Main" href="../../../../org/codehaus/mojo/animal_sniffer/Main.html#Main">Main</a>
+<a class="jxr_linenumber" name="L41" href="#L41">41</a>      <strong class="jxr_keyword">extends</strong> <a name="ClassFileVisitor" href="../../../../org/codehaus/mojo/animal_sniffer/ClassFileVisitor.html#ClassFileVisitor">ClassFileVisitor</a>
 <a class="jxr_linenumber" name="L42" href="#L42">42</a>  {
 <a class="jxr_linenumber" name="L43" href="#L43">43</a>      <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">boolean</strong> humanReadableName = false;
 <a class="jxr_linenumber" name="L44" href="#L44">44</a>  
@@ -63,10 +63,10 @@
 <a class="jxr_linenumber" name="L55" href="#L55">55</a>              System.exit( -1 );
 <a class="jxr_linenumber" name="L56" href="#L56">56</a>          }
 <a class="jxr_linenumber" name="L57" href="#L57">57</a>  
-<a class="jxr_linenumber" name="L58" href="#L58">58</a>          <a href="../../../../org/codehaus/mojo/animal_sniffer/Main.html">Main</a> m = <strong class="jxr_keyword">new</strong> <a href="../../../../org/codehaus/mojo/animal_sniffer/Main.html">Main</a>();
+<a class="jxr_linenumber" name="L58" href="#L58">58</a>          <a name="Main" href="../../../../org/codehaus/mojo<a name="Main" href="../../../../org/codehaus/mojo/animal_sniffer/Main.html#Main">Main</a>mal_sniffer/Main.html#Main">Main</a> m = <strong class="jxr_keyword">new</strong> <a name="Main" href="../../../../org/codehaus/mojo/animal_sniffer/Main.html#Main">Main</a>();
 <a class="jxr_linenumber" name="L59" href="#L59">59</a>          String threshold = <strong class="jxr_keyword">null</strong>;
 <a class="jxr_linenumber" name="L60" href="#L60">60</a>  
-<a class="jxr_linenumber" name="L61" href="#L61">61</a>          List&lt;File&gt; files = <strong class="jxr_keyword">new</strong> ArrayList&lt;File&gt;();
+<a class="jxr_linenumber" name="L61" href="#L61">61</a>          List&lt;File&gt; files = <strong class="jxr_keyword">new</strong> ArrayList&lt;&gt;();
 <a class="jxr_linenumber" name="L62" href="#L62">62</a>          <strong class="jxr_keyword">for</strong> ( <strong class="jxr_keyword">int</strong> i = 0; i &lt; args.length; i++ )
 <a class="jxr_linenumber" name="L63" href="#L63">63</a>          {
 <a class="jxr_linenumber" name="L64" href="#L64">64</a>              <strong class="jxr_keyword">if</strong> (args[i].equals(<span class="jxr_string">"-h"</span>))
@@ -91,9 +91,9 @@
 <a class="jxr_linenumber" name="L83" href="#L83">83</a>              files.add(<strong class="jxr_keyword">new</strong> File(args[i]));
 <a class="jxr_linenumber" name="L84" href="#L84">84</a>          }
 <a class="jxr_linenumber" name="L85" href="#L85">85</a>  
-<a class="jxr_linenumber" name="L86" href="#L86">86</a>          <strong class="jxr_keyword">for</strong> (<strong class="jxr_keyword">int</strong> i = 0; i &lt; files.size(); i++)
+<a class="jxr_linenumber" name="L86" href="#L86">86</a>          <strong class="jxr_keyword">for</strong> ( File f : files )
 <a class="jxr_linenumber" name="L87" href="#L87">87</a>          {
-<a class="jxr_linenumber" name="L88" href="#L88">88</a>              m.process((File) files.get(i));
+<a class="jxr_linenumber" name="L88" href="#L88">88</a>              m.process( f );
 <a class="jxr_linenumber" name="L89" href="#L89">89</a>          }
 <a class="jxr_linenumber" name="L90" href="#L90">90</a>  
 <a class="jxr_linenumber" name="L91" href="#L91">91</a>          <strong class="jxr_keyword">if</strong> (threshold!=<strong class="jxr_keyword">null</strong> &amp;&amp; m.maximumVersion.compareTo(threshold)&gt;0)
@@ -115,32 +115,35 @@
 <a class="jxr_linenumber" name="L107" href="#L107">107</a> 
 <a class="jxr_linenumber" name="L108" href="#L108">108</a>         <strong class="jxr_keyword">if</strong> (humanReadableName)
 <a class="jxr_linenumber" name="L109" href="#L109">109</a>         {
-<a class="jxr_linenumber" name="L110" href="#L110">110</a>             String hn = (String)HUMAN_READABLE_NAME.get(v);
-<a class="jxr_linenumber" name="L111" href="#L111">111</a>             <strong class="jxr_keyword">if</strong> (hn!=<strong class="jxr_keyword">null</strong>)   v = hn;
-<a class="jxr_linenumber" name="L112" href="#L112">112</a>         }
-<a class="jxr_linenumber" name="L113" href="#L113">113</a> 
-<a class="jxr_linenumber" name="L114" href="#L114">114</a>         System.out.println( v + <span class="jxr_string">" "</span> + name );
-<a class="jxr_linenumber" name="L115" href="#L115">115</a>     }
+<a class="jxr_linenumber" name="L110" href="#L110">110</a>             String hn = HUMAN_READABLE_NAME.get(v);
+<a class="jxr_linenumber" name="L111" href="#L111">111</a>             <strong class="jxr_keyword">if</strong> (hn!=<strong class="jxr_keyword">null</strong>)
+<a class="jxr_linenumber" name="L112" href="#L112">112</a>             {
+<a class="jxr_linenumber" name="L113" href="#L113">113</a>                 v = hn;
+<a class="jxr_linenumber" name="L114" href="#L114">114</a>             }
+<a class="jxr_linenumber" name="L115" href="#L115">115</a>         }
 <a class="jxr_linenumber" name="L116" href="#L116">116</a> 
-<a class="jxr_linenumber" name="L117" href="#L117">117</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">int</strong> u2( byte u, byte d )
-<a class="jxr_linenumber" name="L118" href="#L118">118</a>     {
-<a class="jxr_linenumber" name="L119" href="#L119">119</a>         <strong class="jxr_keyword">return</strong> ( (<strong class="jxr_keyword">int</strong>) u ) * 256 + d;
-<a class="jxr_linenumber" name="L120" href="#L120">120</a>     }
-<a class="jxr_linenumber" name="L121" href="#L121">121</a> 
-<a class="jxr_linenumber" name="L122" href="#L122">122</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> Map&lt;String, String&gt; HUMAN_READABLE_NAME = <strong class="jxr_keyword">new</strong> HashMap&lt;String, String&gt;();
-<a class="jxr_linenumber" name="L123" href="#L123">123</a> 
-<a class="jxr_linenumber" name="L124" href="#L124">124</a>     <strong class="jxr_keyword">static</strong>
-<a class="jxr_linenumber" name="L125" href="#L125">125</a>     {
-<a class="jxr_linenumber" name="L126" href="#L126">126</a>         HUMAN_READABLE_NAME.put(<span class="jxr_string">"45.0"</span>,<span class="jxr_string">"Java1"</span>);
-<a class="jxr_linenumber" name="L127" href="#L127">127</a>         HUMAN_READABLE_NAME.put(<span class="jxr_string">"46.0"</span>,<span class="jxr_string">"Java2"</span>);
-<a class="jxr_linenumber" name="L128" href="#L128">128</a>         HUMAN_READABLE_NAME.put(<span class="jxr_string">"47.0"</span>,<span class="jxr_string">"Java3"</span>);
-<a class="jxr_linenumber" name="L129" href="#L129">129</a>         HUMAN_READABLE_NAME.put(<span class="jxr_string">"48.0"</span>,<span class="jxr_string">"Java4"</span>);
-<a class="jxr_linenumber" name="L130" href="#L130">130</a>         HUMAN_READABLE_NAME.put(<span class="jxr_string">"49.0"</span>,<span class="jxr_string">"Java5"</span>);
-<a class="jxr_linenumber" name="L131" href="#L131">131</a>         HUMAN_READABLE_NAME.put(<span class="jxr_string">"50.0"</span>,<span class="jxr_string">"Java6"</span>);
-<a class="jxr_linenumber" name="L132" href="#L132">132</a>     }
-<a class="jxr_linenumber" name="L133" href="#L133">133</a> }
+<a class="jxr_linenumber" name="L117" href="#L117">117</a>         System.out.println( v + <span class="jxr_string">" "</span> + name );
+<a class="jxr_linenumber" name="L118" href="#L118">118</a>     }
+<a class="jxr_linenumber" name="L119" href="#L119">119</a> 
+<a class="jxr_linenumber" name="L120" href="#L120">120</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">int</strong> u2( byte u, byte d )
+<a class="jxr_linenumber" name="L121" href="#L121">121</a>     {
+<a class="jxr_linenumber" name="L122" href="#L122">122</a>         <strong class="jxr_keyword">return</strong> ( (<strong class="jxr_keyword">int</strong>) u ) * 256 + d;
+<a class="jxr_linenumber" name="L123" href="#L123">123</a>     }
+<a class="jxr_linenumber" name="L124" href="#L124">124</a> 
+<a class="jxr_linenumber" name="L125" href="#L125">125</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> Map&lt;String, String&gt; HUMAN_READABLE_NAME = <strong class="jxr_keyword">new</strong> HashMap&lt;&gt;();
+<a class="jxr_linenumber" name="L126" href="#L126">126</a> 
+<a class="jxr_linenumber" name="L127" href="#L127">127</a>     <strong class="jxr_keyword">static</strong>
+<a class="jxr_linenumber" name="L128" href="#L128">128</a>     {
+<a class="jxr_linenumber" name="L129" href="#L129">129</a>         HUMAN_READABLE_NAME.put(<span class="jxr_string">"45.0"</span>,<span class="jxr_string">"Java1"</span>);
+<a class="jxr_linenumber" name="L130" href="#L130">130</a>         HUMAN_READABLE_NAME.put(<span class="jxr_string">"46.0"</span>,<span class="jxr_string">"Java2"</span>);
+<a class="jxr_linenumber" name="L131" href="#L131">131</a>         HUMAN_READABLE_NAME.put(<span class="jxr_string">"47.0"</span>,<span class="jxr_string">"Java3"</span>);
+<a class="jxr_linenumber" name="L132" href="#L132">132</a>         HUMAN_READABLE_NAME.put(<span class="jxr_string">"48.0"</span>,<span class="jxr_string">"Java4"</span>);
+<a class="jxr_linenumber" name="L133" href="#L133">133</a>         HUMAN_READABLE_NAME.put(<span class="jxr_string">"49.0"</span>,<span class="jxr_string">"Java5"</span>);
+<a class="jxr_linenumber" name="L134" href="#L134">134</a>         HUMAN_READABLE_NAME.put(<span class="jxr_string">"50.0"</span>,<span class="jxr_string">"Java6"</span>);
+<a class="jxr_linenumber" name="L135" href="#L135">135</a>     }
+<a class="jxr_linenumber" name="L136" href="#L136">136</a> }
 </pre>
 <hr/>
-<div id="footer">Copyright &#169; 2008&#x2013;2020 <a href="http://www.mojohaus.org">MojoHaus</a>. All rights reserved.</div>
+<div id="footer">Copyright &#169; 2008&#x2013;2021 <a href="https://www.mojohaus.org">MojoHaus</a>. All rights reserved.</div>
 </body>
 </html>
