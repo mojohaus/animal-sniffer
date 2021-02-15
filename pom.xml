@@ -98,6 +98,7 @@
     <mojo.java.target>1.8</mojo.java.target>
     <build-helper.version>3.2.0</build-helper.version>
     <invoker.streamLogs>false</invoker.streamLogs>
+    <project.build.outputTimestamp>2021-02-15T11:49:33Z</project.build.outputTimestamp>
   </properties>
 
   <build>
