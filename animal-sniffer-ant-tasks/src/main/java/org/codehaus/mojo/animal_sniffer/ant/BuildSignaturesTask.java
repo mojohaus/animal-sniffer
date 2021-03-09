@@ -47,13 +47,13 @@ public class BuildSignaturesTask
 
     private File destfile;
 
-    private Vector<Path> paths = new Vector<Path>();
+    private Vector<Path> paths = new Vector<>();
 
-    private Vector<Signature> signatures = new Vector<Signature>();
+    private Vector<Signature> signatures = new Vector<>();
 
-    private Vector<Ignore> includeClasses = new Vector<Ignore>();
+    private Vector<Ignore> includeClasses = new Vector<>();
 
-    private Vector<Ignore> excludeClasses = new Vector<Ignore>();
+    private Vector<Ignore> excludeClasses = new Vector<>();
 
     public void setDestfile( File dest )
     {
@@ -130,7 +130,7 @@ public class BuildSignaturesTask
         validate();
         try
         {
-            Vector<InputStream> inStreams = new Vector<InputStream>();
+            Vector<InputStream> inStreams = new Vector<>();
             for ( Signature signature : signatures )
             {
                 log( "Importing signatures from " + signature.getSrc() );
@@ -138,7 +138,7 @@ public class BuildSignaturesTask
             }
 
             SignatureBuilder builder =
-                new SignatureBuilder( inStreams.toArray( new InputStream[inStreams.size()] ),
+                new SignatureBuilder( inStreams.toArray( new InputStream[0] ),
                                       new FileOutputStream( destfile ), new AntLogger( this ) );
             for ( Ignore tmp: includeClasses )
             {
@@ -151,10 +151,10 @@ public class BuildSignaturesTask
             for ( Path path : paths )
             {
                 final String[] files = path.list();
-                for ( int j = 0; j < files.length; j++ )
+                for ( String file : files )
                 {
-                    log( "Capturing signatures from " + files[j], Project.MSG_INFO );
-                    process( builder, new File( files[j] ) );
+                    log( "Capturing signatures from " + file, Project.MSG_INFO );
+                    process( builder, new File( file ) );
                 }
             }
             builder.close();

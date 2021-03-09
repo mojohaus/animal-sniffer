@@ -32,7 +32,6 @@ import org.codehaus.plexus.component.configurator.converters.ConfigurationConver
 import org.codehaus.plexus.component.configurator.converters.lookup.ConverterLookup;
 import org.codehaus.plexus.component.configurator.expression.ExpressionEvaluator;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
-import org.codehaus.plexus.configuration.PlexusConfigurationException;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -71,11 +70,11 @@ public class JdkToolchainConverter
         throws ComponentConfigurationException
     {
         PlexusConfiguration[] params = configuration.getChildren();
-        Map<String, String> parameters = new HashMap<String, String>();
-        for ( int j = 0; j < params.length; j++ )
+        Map<String, String> parameters = new HashMap<>();
+        for ( PlexusConfiguration param : params )
         {
-            String name = params[j].getName();
-            String val = params[j].getValue();
+            String name = param.getName();
+            String val = param.getValue();
             parameters.put( name, val );
         }
         final JdkToolchain result = new JdkToolchain();

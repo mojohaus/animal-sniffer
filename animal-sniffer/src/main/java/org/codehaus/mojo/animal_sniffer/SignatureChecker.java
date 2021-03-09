@@ -74,7 +74,7 @@ public class SignatureChecker
      */
     public static final String PREVIOUS_ANNOTATION_FQN = "org.jvnet.animal_sniffer.IgnoreJRERequirement";
 
-    private final Map<String, Clazz> classes = new HashMap<String, Clazz>();
+    private final Map<String, Clazz> classes = new HashMap<>();
 
     private final Logger logger;
 
@@ -86,7 +86,7 @@ public class SignatureChecker
 
     private final Set<String> ignoredPackages;
 
-    private final Set<String> ignoredOuterClassesOrMethods = new HashSet<String>();
+    private final Set<String> ignoredOuterClassesOrMethods = new HashSet<>();
 
     private boolean hadError = false;
 
@@ -97,7 +97,7 @@ public class SignatureChecker
     public static void main( String[] args )
         throws Exception
     {
-        Set<String> ignoredPackages = new HashSet<String>();
+        Set<String> ignoredPackages = new HashSet<>();
         ignoredPackages.add( "org.jvnet.animal_sniffer.*" );
         ignoredPackages.add( "org.codehaus.mojo.animal_sniffer.*" );
         ignoredPackages.add( "org.objectweb.*" );
@@ -108,8 +108,8 @@ public class SignatureChecker
     public SignatureChecker( InputStream in, Set<String> ignoredPackages, Logger logger )
         throws IOException
     {
-        this.ignoredPackages = new HashSet<String>();
-        this.ignoredPackageRules = new LinkedList<MatchRule>();
+        this.ignoredPackages = new HashSet<>();
+        this.ignoredPackageRules = new LinkedList<>();
         for(String wildcard : ignoredPackages )
         {
             if ( wildcard.indexOf( '*' ) == -1 && wildcard.indexOf( '?' ) == -1 )
@@ -121,15 +121,13 @@ public class SignatureChecker
                 this.ignoredPackageRules.add( newMatchRule( wildcard.replace( '.', '/' ) ) );
             }
         }
-        this.annotationDescriptors = new HashSet<String>();
+        this.annotationDescriptors = new HashSet<>();
         this.annotationDescriptors.add( toAnnotationDescriptor( ANNOTATION_FQN ) );
         this.annotationDescriptors.add( toAnnotationDescriptor( PREVIOUS_ANNOTATION_FQN ) );
 
         this.logger = logger;
-        ObjectInputStream ois = null;
-        try
+        try (ObjectInputStream ois = new ObjectInputStream( new GZIPInputStream( in ) ))
         {
-            ois = new ObjectInputStream( new GZIPInputStream( in ) );
             while ( true )
             {
                 Clazz c = (Clazz) ois.readObject();
@@ -143,20 +141,6 @@ public class SignatureChecker
         catch ( ClassNotFoundException e )
         {
             throw new NoClassDefFoundError( e.getMessage() );
-        }
-        finally
-        {
-            if ( ois != null )
-            {
-                try
-                {
-                    ois.close();
-                }
-                catch ( IOException e )
-                {
-                    // ignore
-                }
-            }
         }
     }
 
@@ -203,9 +187,7 @@ public class SignatureChecker
             logger.error( "Bad class file " + name );
             // MANIMALSNIFFER-9 it is a pity that ASM does not throw a nicer error on encountering a malformed
             // class file.
-            IOException ioException = new IOException( "Bad class file " + name );
-            ioException.initCause( e );
-            throw ioException;
+            throw new IOException( "Bad class file " + name, e );
         }
     }
 
@@ -296,7 +278,7 @@ public class SignatureChecker
         public CheckingVisitor( String name )
         {
             super(Opcodes.ASM7);
-            this.ignoredPackageCache = new HashSet<String>( 50 * ignoredPackageRules.size() );
+            this.ignoredPackageCache = new HashSet<>( 50 * ignoredPackageRules.size() );
             this.name = name;
         }
 
@@ -376,7 +358,7 @@ public class SignatureChecker
                  */
                 boolean ignoreError = ignoreClass;
                 Label label = null;
-                Map<Label, Set<String>> exceptions = new HashMap<Label, Set<String>>();
+                Map<Label, Set<String>> exceptions = new HashMap<>();
 
                 @Override
                 public void visitEnd() {
@@ -437,12 +419,7 @@ public class SignatureChecker
                 {
                     if ( type != null )
                     {
-                        Set<String> exceptionTypes = exceptions.get( handler );
-                        if ( exceptionTypes == null )
-                        {
-                            exceptionTypes = new HashSet<String>();
-                            exceptions.put( handler, exceptionTypes );
-                        }
+                        Set<String> exceptionTypes = exceptions.computeIfAbsent( handler, k -> new HashSet<>() );
                         // we collect the types for the handler
                         // because we do not have the line number here
                         // and we need a list for a multi catch block

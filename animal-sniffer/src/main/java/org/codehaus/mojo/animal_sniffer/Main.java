@@ -126,8 +126,11 @@ public class Main
 
         if (humanReadableName)
         {
-            String hn = (String)HUMAN_READABLE_NAME.get(v);
-            if (hn!=null)   v = hn;
+            String hn = HUMAN_READABLE_NAME.get(v);
+            if (hn!=null)
+            {
+                v = hn;
+            }
         }
 
         System.out.println( v + " " + name );
@@ -138,7 +141,7 @@ public class Main
         return ( (int) u ) * 256 + d;
     }
 
-    private static final Map<String, String> HUMAN_READABLE_NAME = new HashMap<String, String>();
+    private static final Map<String, String> HUMAN_READABLE_NAME = new HashMap<>();
 
     static
     {
