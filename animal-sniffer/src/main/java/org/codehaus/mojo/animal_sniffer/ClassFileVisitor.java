@@ -35,7 +35,6 @@ import java.nio.file.Path;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -147,13 +146,16 @@ public abstract class ClassFileVisitor
 
             @Override
             public FileVisitResult postVisitDirectory(final Path dir, final IOException exc) throws IOException {
+                if (exc != null) {
+                    throw exc;
+                }
                 for (final Path file : files) {
                     try (final InputStream inputStream = Files.newInputStream(file)) {
                         process(file.toString(), inputStream);
                     }
                 }
                 files.clear();
-                return super.postVisitDirectory(dir, exc);
+                return FileVisitResult.CONTINUE;
             }
 
             @Override
