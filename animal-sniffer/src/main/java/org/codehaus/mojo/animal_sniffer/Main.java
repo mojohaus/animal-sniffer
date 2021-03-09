@@ -29,6 +29,7 @@ import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -82,11 +83,7 @@ public class Main
                 continue;
             }
 
-            try {
-                files.add(Paths.get(new URI(args[i]))); // attempt to treat it as an URI
-            } catch (Exception e) {
-                files.add(Paths.get(args[i])); // if that fails: treat is as a normal file/path
-            }
+            files.add(getPath(args[i]));
         }
 
         for (Path file : files) {
@@ -97,6 +94,21 @@ public class Main
         {
             System.exit(1);
         }
+    }
+
+    private static Path getPath(String s) {
+        try {
+            URI uri = new URI(s);
+            String scheme = uri.getScheme();
+            // Only allow certain schemes to prevent treating (mistyped) file path unintentionally as URI
+            if (scheme.equalsIgnoreCase("file") || scheme.equalsIgnoreCase("jrt")) {
+                return Paths.get(uri);
+            }
+            // Fall through
+        } catch (URISyntaxException e) {
+            // Fall through; probably not a URI but a file path
+        }
+        return Paths.get(s);
     }
 
     protected void process( String name, InputStream image )
