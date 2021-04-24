@@ -20,19 +20,19 @@ under the License.
 <rss version="0.91">
   <channel>
     <title>Animal Sniffer Maven Enforcer Rule - Checkstyle report</title>
-    <link>http://www.mojohaus.org/animal-sniffer/animal-sniffer-enforcer-rule</link>
+    <link>https://www.mojohaus.org/animal-sniffer/animal-sniffer-enforcer-rule</link>
     <description>Animal Sniffer Maven Enforcer Rule - Checkstyle report</description>
     <language>en-us</language>
-    <copyright>&#169;2008 - 2017 MojoHaus</copyright>
+    <copyright>&#169;2008 - 2021 MojoHaus</copyright>
     <item>
       <title>File: 3,
-             Errors: 9,
-             Warnings: 21,
+             Errors: 14,
+             Warnings: 0,
              Infos: 0
       </title>
-            <link>http://www.mojohaus.org/animal-sniffer/animal-sniffer-enforcer-rule/checkstyle.html</link>
+            <link>https://www.mojohaus.org/animal-sniffer/animal-sniffer-enforcer-rule/checkstyle.html</link>
       <description>
-        <p>Click <a href="http://www.mojohaus.org/animal-sniffer/animal-sniffer-enforcer-rule/checkstyle.html">here</a> for the full Checkstyle report.</p>
+        <p>Click <a href="https://www.mojohaus.org/animal-sniffer/animal-sniffer-enforcer-rule/checkstyle.html">here</a> for the full Checkstyle report.</p>
 
         <table summary="Files" boder="1">
           <thead>
@@ -46,13 +46,13 @@ under the License.
           <tbody>
                           <tr>
                 <td>
-                  <a href="http://www.mojohaus.org/animal-sniffer/animal-sniffer-enforcer-rule/checkstyle.html#org.codehaus.mojo.animal_sniffer.enforcer.Signature.java">org/codehaus/mojo/animal_sniffer/enforcer/Signature.java</a>
+                  <a href="https://www.mojohaus.org/animal-sniffer/animal-sniffer-enforcer-rule/checkstyle.html#org.codehaus.mojo.animal_sniffer.enforcer.Signature.java">org/codehaus/mojo/animal_sniffer/enforcer/Signature.java</a>
                 </td>
                 <td>
                   0
                 </td>
                 <td>
-                  8
+                  0
                 </td>
                 <td>
                   1
@@ -60,13 +60,13 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="http://www.mojohaus.org/animal-sniffer/animal-sniffer-enforcer-rule/checkstyle.html#org.codehaus.mojo.animal_sniffer.enforcer.MavenLogger.java">org/codehaus/mojo/animal_sniffer/enforcer/MavenLogger.java</a>
+                  <a href="https://www.mojohaus.org/animal-sniffer/animal-sniffer-enforcer-rule/checkstyle.html#org.codehaus.mojo.animal_sniffer.enforcer.MavenLogger.java">org/codehaus/mojo/animal_sniffer/enforcer/MavenLogger.java</a>
                 </td>
                 <td>
                   0
                 </td>
                 <td>
-                  9
+                  0
                 </td>
                 <td>
                   1
@@ -74,16 +74,16 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="http://www.mojohaus.org/animal-sniffer/animal-sniffer-enforcer-rule/checkstyle.html#org.codehaus.mojo.animal_sniffer.enforcer.CheckSignatureRule.java">org/codehaus/mojo/animal_sniffer/enforcer/CheckSignatureRule.java</a>
+                  <a href="https://www.mojohaus.org/animal-sniffer/animal-sniffer-enforcer-rule/checkstyle.html#org.codehaus.mojo.animal_sniffer.enforcer.CheckSignatureRule.java">org/codehaus/mojo/animal_sniffer/enforcer/CheckSignatureRule.java</a>
                 </td>
                 <td>
                   0
                 </td>
                 <td>
-                  4
+                  0
                 </td>
                 <td>
-                  7
+                  12
                 </td>
               </tr>
                       </tbody>

@@ -20,19 +20,19 @@ under the License.
 <rss version="0.91">
   <channel>
     <title>Animal Sniffer Maven Plugin - Checkstyle report</title>
-    <link>http://www.mojohaus.org/animal-sniffer/animal-sniffer-maven-plugin</link>
+    <link>https://www.mojohaus.org/animal-sniffer/animal-sniffer-maven-plugin</link>
     <description>Animal Sniffer Maven Plugin - Checkstyle report</description>
     <language>en-us</language>
-    <copyright>&#169;2008 - 2017 MojoHaus</copyright>
+    <copyright>&#169;2008 - 2021 MojoHaus</copyright>
     <item>
-      <title>File: 7,
-             Errors: 59,
-             Warnings: 36,
+      <title>File: 6,
+             Errors: 64,
+             Warnings: 10,
              Infos: 1
       </title>
-            <link>http://www.mojohaus.org/animal-sniffer/animal-sniffer-maven-plugin/checkstyle.html</link>
+            <link>https://www.mojohaus.org/animal-sniffer/animal-sniffer-maven-plugin/checkstyle.html</link>
       <description>
-        <p>Click <a href="http://www.mojohaus.org/animal-sniffer/animal-sniffer-maven-plugin/checkstyle.html">here</a> for the full Checkstyle report.</p>
+        <p>Click <a href="https://www.mojohaus.org/animal-sniffer/animal-sniffer-maven-plugin/checkstyle.html">here</a> for the full Checkstyle report.</p>
 
         <table summary="Files" boder="1">
           <thead>
@@ -46,41 +46,27 @@ under the License.
           <tbody>
                           <tr>
                 <td>
-                  <a href="http://www.mojohaus.org/animal-sniffer/animal-sniffer-maven-plugin/checkstyle.html#org.codehaus.mojo.animal_sniffer.maven.BuildSignaturesMojo.java">org/codehaus/mojo/animal_sniffer/maven/BuildSignaturesMojo.java</a>
+                  <a href="https://www.mojohaus.org/animal-sniffer/animal-sniffer-maven-plugin/checkstyle.html#org.codehaus.mojo.animal_sniffer.maven.BuildSignaturesMojo.java">org/codehaus/mojo/animal_sniffer/maven/BuildSignaturesMojo.java</a>
                 </td>
                 <td>
                   0
                 </td>
                 <td>
-                  1
-                </td>
-                <td>
-                  9
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="http://www.mojohaus.org/animal-sniffer/animal-sniffer-maven-plugin/checkstyle.html#org.codehaus.mojo.animal_sniffer.maven.JdkToolchainConverter.java">org/codehaus/mojo/animal_sniffer/maven/JdkToolchainConverter.java</a>
-                </td>
-                <td>
-                  1
-                </td>
-                <td>
-                  11
-                </td>
-                <td>
-                  1
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="http://www.mojohaus.org/animal-sniffer/animal-sniffer-maven-plugin/checkstyle.html#org.codehaus.mojo.animal_sniffer.maven.MavenLogger.java">org/codehaus/mojo/animal_sniffer/maven/MavenLogger.java</a>
-                </td>
-                <td>
                   0
                 </td>
                 <td>
-                  9
+                  10
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://www.mojohaus.org/animal-sniffer/animal-sniffer-maven-plugin/checkstyle.html#org.codehaus.mojo.animal_sniffer.maven.JdkToolchainConverter.java">org/codehaus/mojo/animal_sniffer/maven/JdkToolchainConverter.java</a>
+                </td>
+                <td>
+                  1
+                </td>
+                <td>
+                  10
                 </td>
                 <td>
                   1
@@ -88,7 +74,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="http://www.mojohaus.org/animal-sniffer/animal-sniffer-maven-plugin/checkstyle.html#org.codehaus.mojo.animal_sniffer.maven.HelpMojo.java">org/codehaus/mojo/animal_sniffer/maven/HelpMojo.java</a>
+                  <a href="https://www.mojohaus.org/animal-sniffer/animal-sniffer-maven-plugin/checkstyle.html#org.codehaus.mojo.animal_sniffer.maven.MavenLogger.java">org/codehaus/mojo/animal_sniffer/maven/MavenLogger.java</a>
                 </td>
                 <td>
                   0
@@ -102,13 +88,13 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="http://www.mojohaus.org/animal-sniffer/animal-sniffer-maven-plugin/checkstyle.html#org.codehaus.mojo.animal_sniffer.maven.JdkToolchain.java">org/codehaus/mojo/animal_sniffer/maven/JdkToolchain.java</a>
+                  <a href="https://www.mojohaus.org/animal-sniffer/animal-sniffer-maven-plugin/checkstyle.html#org.codehaus.mojo.animal_sniffer.maven.JdkToolchain.java">org/codehaus/mojo/animal_sniffer/maven/JdkToolchain.java</a>
                 </td>
                 <td>
                   0
                 </td>
                 <td>
-                  6
+                  0
                 </td>
                 <td>
                   1
@@ -116,13 +102,13 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="http://www.mojohaus.org/animal-sniffer/animal-sniffer-maven-plugin/checkstyle.html#org.codehaus.mojo.animal_sniffer.maven.Signature.java">org/codehaus/mojo/animal_sniffer/maven/Signature.java</a>
+                  <a href="https://www.mojohaus.org/animal-sniffer/animal-sniffer-maven-plugin/checkstyle.html#org.codehaus.mojo.animal_sniffer.maven.Signature.java">org/codehaus/mojo/animal_sniffer/maven/Signature.java</a>
                 </td>
                 <td>
                   0
                 </td>
                 <td>
-                  8
+                  0
                 </td>
                 <td>
                   1
@@ -130,16 +116,16 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="http://www.mojohaus.org/animal-sniffer/animal-sniffer-maven-plugin/checkstyle.html#org.codehaus.mojo.animal_sniffer.maven.CheckSignatureMojo.java">org/codehaus/mojo/animal_sniffer/maven/CheckSignatureMojo.java</a>
+                  <a href="https://www.mojohaus.org/animal-sniffer/animal-sniffer-maven-plugin/checkstyle.html#org.codehaus.mojo.animal_sniffer.maven.CheckSignatureMojo.java">org/codehaus/mojo/animal_sniffer/maven/CheckSignatureMojo.java</a>
                 </td>
                 <td>
                   0
                 </td>
                 <td>
-                  1
+                  0
                 </td>
                 <td>
-                  45
+                  50
                 </td>
               </tr>
                       </tbody>

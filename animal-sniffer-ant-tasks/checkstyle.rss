@@ -20,19 +20,19 @@ under the License.
 <rss version="0.91">
   <channel>
     <title>Animal Sniffer Ant Tasks - Checkstyle report</title>
-    <link>http://www.mojohaus.org/animal-sniffer/animal-sniffer-ant-tasks</link>
+    <link>https://www.mojohaus.org/animal-sniffer/animal-sniffer-ant-tasks</link>
     <description>Animal Sniffer Ant Tasks - Checkstyle report</description>
     <language>en-us</language>
-    <copyright>&#169;2008 - 2017 MojoHaus</copyright>
+    <copyright>&#169;2008 - 2021 MojoHaus</copyright>
     <item>
       <title>File: 6,
-             Errors: 15,
-             Warnings: 43,
+             Errors: 11,
+             Warnings: 0,
              Infos: 0
       </title>
-            <link>http://www.mojohaus.org/animal-sniffer/animal-sniffer-ant-tasks/checkstyle.html</link>
+            <link>https://www.mojohaus.org/animal-sniffer/animal-sniffer-ant-tasks/checkstyle.html</link>
       <description>
-        <p>Click <a href="http://www.mojohaus.org/animal-sniffer/animal-sniffer-ant-tasks/checkstyle.html">here</a> for the full Checkstyle report.</p>
+        <p>Click <a href="https://www.mojohaus.org/animal-sniffer/animal-sniffer-ant-tasks/checkstyle.html">here</a> for the full Checkstyle report.</p>
 
         <table summary="Files" boder="1">
           <thead>
@@ -46,13 +46,13 @@ under the License.
           <tbody>
                           <tr>
                 <td>
-                  <a href="http://www.mojohaus.org/animal-sniffer/animal-sniffer-ant-tasks/checkstyle.html#org.codehaus.mojo.animal_sniffer.ant.AntLogger.java">org/codehaus/mojo/animal_sniffer/ant/AntLogger.java</a>
+                  <a href="https://www.mojohaus.org/animal-sniffer/animal-sniffer-ant-tasks/checkstyle.html#org.codehaus.mojo.animal_sniffer.ant.AntLogger.java">org/codehaus/mojo/animal_sniffer/ant/AntLogger.java</a>
                 </td>
                 <td>
                   0
                 </td>
                 <td>
-                  9
+                  0
                 </td>
                 <td>
                   1
@@ -60,27 +60,13 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="http://www.mojohaus.org/animal-sniffer/animal-sniffer-ant-tasks/checkstyle.html#org.codehaus.mojo.animal_sniffer.ant.CheckSignatureTask.java">org/codehaus/mojo/animal_sniffer/ant/CheckSignatureTask.java</a>
+                  <a href="https://www.mojohaus.org/animal-sniffer/animal-sniffer-ant-tasks/checkstyle.html#org.codehaus.mojo.animal_sniffer.ant.Signature.java">org/codehaus/mojo/animal_sniffer/ant/Signature.java</a>
                 </td>
                 <td>
                   0
                 </td>
                 <td>
-                  12
-                </td>
-                <td>
-                  9
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="http://www.mojohaus.org/animal-sniffer/animal-sniffer-ant-tasks/checkstyle.html#org.codehaus.mojo.animal_sniffer.ant.Signature.java">org/codehaus/mojo/animal_sniffer/ant/Signature.java</a>
-                </td>
-                <td>
                   0
-                </td>
-                <td>
-                  5
                 </td>
                 <td>
                   1
@@ -88,13 +74,27 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="http://www.mojohaus.org/animal-sniffer/animal-sniffer-ant-tasks/checkstyle.html#org.codehaus.mojo.animal_sniffer.ant.Annotation.java">org/codehaus/mojo/animal_sniffer/ant/Annotation.java</a>
+                  <a href="https://www.mojohaus.org/animal-sniffer/animal-sniffer-ant-tasks/checkstyle.html#org.codehaus.mojo.animal_sniffer.ant.CheckSignatureTask.java">org/codehaus/mojo/animal_sniffer/ant/CheckSignatureTask.java</a>
                 </td>
                 <td>
                   0
                 </td>
                 <td>
-                  5
+                  0
+                </td>
+                <td>
+                  6
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://www.mojohaus.org/animal-sniffer/animal-sniffer-ant-tasks/checkstyle.html#org.codehaus.mojo.animal_sniffer.ant.Annotation.java">org/codehaus/mojo/animal_sniffer/ant/Annotation.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
                 </td>
                 <td>
                   1
@@ -102,13 +102,13 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="http://www.mojohaus.org/animal-sniffer/animal-sniffer-ant-tasks/checkstyle.html#org.codehaus.mojo.animal_sniffer.ant.Ignore.java">org/codehaus/mojo/animal_sniffer/ant/Ignore.java</a>
+                  <a href="https://www.mojohaus.org/animal-sniffer/animal-sniffer-ant-tasks/checkstyle.html#org.codehaus.mojo.animal_sniffer.ant.Ignore.java">org/codehaus/mojo/animal_sniffer/ant/Ignore.java</a>
                 </td>
                 <td>
                   0
                 </td>
                 <td>
-                  5
+                  0
                 </td>
                 <td>
                   1
@@ -116,16 +116,16 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="http://www.mojohaus.org/animal-sniffer/animal-sniffer-ant-tasks/checkstyle.html#org.codehaus.mojo.animal_sniffer.ant.BuildSignaturesTask.java">org/codehaus/mojo/animal_sniffer/ant/BuildSignaturesTask.java</a>
+                  <a href="https://www.mojohaus.org/animal-sniffer/animal-sniffer-ant-tasks/checkstyle.html#org.codehaus.mojo.animal_sniffer.ant.BuildSignaturesTask.java">org/codehaus/mojo/animal_sniffer/ant/BuildSignaturesTask.java</a>
                 </td>
                 <td>
                   0
                 </td>
                 <td>
-                  7
+                  0
                 </td>
                 <td>
-                  2
+                  1
                 </td>
               </tr>
                       </tbody>

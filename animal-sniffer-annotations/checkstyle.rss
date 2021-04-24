@@ -20,19 +20,19 @@ under the License.
 <rss version="0.91">
   <channel>
     <title>Animal Sniffer Annotations - Checkstyle report</title>
-    <link>http://www.mojohaus.org/animal-sniffer/animal-sniffer-annotations</link>
+    <link>https://www.mojohaus.org/animal-sniffer/animal-sniffer-annotations</link>
     <description>Animal Sniffer Annotations - Checkstyle report</description>
     <language>en-us</language>
-    <copyright>&#169;2008 - 2017 MojoHaus</copyright>
+    <copyright>&#169;2008 - 2021 MojoHaus</copyright>
     <item>
       <title>File: 1,
-             Errors: 6,
+             Errors: 5,
              Warnings: 0,
              Infos: 0
       </title>
-            <link>http://www.mojohaus.org/animal-sniffer/animal-sniffer-annotations/checkstyle.html</link>
+            <link>https://www.mojohaus.org/animal-sniffer/animal-sniffer-annotations/checkstyle.html</link>
       <description>
-        <p>Click <a href="http://www.mojohaus.org/animal-sniffer/animal-sniffer-annotations/checkstyle.html">here</a> for the full Checkstyle report.</p>
+        <p>Click <a href="https://www.mojohaus.org/animal-sniffer/animal-sniffer-annotations/checkstyle.html">here</a> for the full Checkstyle report.</p>
 
         <table summary="Files" boder="1">
           <thead>
@@ -46,7 +46,7 @@ under the License.
           <tbody>
                           <tr>
                 <td>
-                  <a href="http://www.mojohaus.org/animal-sniffer/animal-sniffer-annotations/checkstyle.html#org.codehaus.mojo.animal_sniffer.IgnoreJRERequirement.java">org/codehaus/mojo/animal_sniffer/IgnoreJRERequirement.java</a>
+                  <a href="https://www.mojohaus.org/animal-sniffer/animal-sniffer-annotations/checkstyle.html#org.codehaus.mojo.animal_sniffer.IgnoreJRERequirement.java">org/codehaus/mojo/animal_sniffer/IgnoreJRERequirement.java</a>
                 </td>
                 <td>
                   0
@@ -55,7 +55,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  6
+                  5
                 </td>
               </tr>
                       </tbody>

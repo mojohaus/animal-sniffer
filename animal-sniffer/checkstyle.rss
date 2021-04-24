@@ -20,19 +20,19 @@ under the License.
 <rss version="0.91">
   <channel>
     <title>Animal Sniffer - Checkstyle report</title>
-    <link>http://www.mojohaus.org/animal-sniffer/animal-sniffer</link>
+    <link>https://www.mojohaus.org/animal-sniffer/animal-sniffer</link>
     <description>Animal Sniffer - Checkstyle report</description>
     <language>en-us</language>
-    <copyright>&#169;2008 - 2017 MojoHaus</copyright>
+    <copyright>&#169;2008 - 2021 MojoHaus</copyright>
     <item>
       <title>File: 10,
-             Errors: 117,
-             Warnings: 62,
+             Errors: 190,
+             Warnings: 12,
              Infos: 1
       </title>
-            <link>http://www.mojohaus.org/animal-sniffer/animal-sniffer/checkstyle.html</link>
+            <link>https://www.mojohaus.org/animal-sniffer/animal-sniffer/checkstyle.html</link>
       <description>
-        <p>Click <a href="http://www.mojohaus.org/animal-sniffer/animal-sniffer/checkstyle.html">here</a> for the full Checkstyle report.</p>
+        <p>Click <a href="https://www.mojohaus.org/animal-sniffer/animal-sniffer/checkstyle.html">here</a> for the full Checkstyle report.</p>
 
         <table summary="Files" boder="1">
           <thead>
@@ -46,69 +46,13 @@ under the License.
           <tbody>
                           <tr>
                 <td>
-                  <a href="http://www.mojohaus.org/animal-sniffer/animal-sniffer/checkstyle.html#org.codehaus.mojo.animal_sniffer.SignatureBuilder.java">org/codehaus/mojo/animal_sniffer/SignatureBuilder.java</a>
+                  <a href="https://www.mojohaus.org/animal-sniffer/animal-sniffer/checkstyle.html#org.codehaus.mojo.animal_sniffer.SignatureBuilder.java">org/codehaus/mojo/animal_sniffer/SignatureBuilder.java</a>
                 </td>
                 <td>
                   0
                 </td>
                 <td>
-                  7
-                </td>
-                <td>
-                  9
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="http://www.mojohaus.org/animal-sniffer/animal-sniffer/checkstyle.html#org.codehaus.mojo.animal_sniffer.ClassListBuilder.java">org/codehaus/mojo/animal_sniffer/ClassListBuilder.java</a>
-                </td>
-                <td>
                   0
-                </td>
-                <td>
-                  4
-                </td>
-                <td>
-                  3
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="http://www.mojohaus.org/animal-sniffer/animal-sniffer/checkstyle.html#org.codehaus.mojo.animal_sniffer.SignatureMerger.java">org/codehaus/mojo/animal_sniffer/SignatureMerger.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  2
-                </td>
-                <td>
-                  1
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="http://www.mojohaus.org/animal-sniffer/animal-sniffer/checkstyle.html#org.codehaus.mojo.animal_sniffer.Clazz.java">org/codehaus/mojo/animal_sniffer/Clazz.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  7
-                </td>
-                <td>
-                  1
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="http://www.mojohaus.org/animal-sniffer/animal-sniffer/checkstyle.html#org.codehaus.mojo.animal_sniffer.SignatureChecker.java">org/codehaus/mojo/animal_sniffer/SignatureChecker.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  12
                 </td>
                 <td>
                   26
@@ -116,7 +60,35 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="http://www.mojohaus.org/animal-sniffer/animal-sniffer/checkstyle.html#org.codehaus.mojo.animal_sniffer.logging.PrintWriterLogger.java">org/codehaus/mojo/animal_sniffer/logging/PrintWriterLogger.java</a>
+                  <a href="https://www.mojohaus.org/animal-sniffer/animal-sniffer/checkstyle.html#org.codehaus.mojo.animal_sniffer.ClassListBuilder.java">org/codehaus/mojo/animal_sniffer/ClassListBuilder.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  3
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://www.mojohaus.org/animal-sniffer/animal-sniffer/checkstyle.html#org.codehaus.mojo.animal_sniffer.SignatureMerger.java">org/codehaus/mojo/animal_sniffer/SignatureMerger.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  1
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://www.mojohaus.org/animal-sniffer/animal-sniffer/checkstyle.html#org.codehaus.mojo.animal_sniffer.SignatureChecker.java">org/codehaus/mojo/animal_sniffer/SignatureChecker.java</a>
                 </td>
                 <td>
                   0
@@ -125,54 +97,12 @@ under the License.
                   9
                 </td>
                 <td>
-                  1
+                  57
                 </td>
               </tr>
                           <tr>
                 <td>
-                  <a href="http://www.mojohaus.org/animal-sniffer/animal-sniffer/checkstyle.html#org.codehaus.mojo.animal_sniffer.RegexUtils.java">org/codehaus/mojo/animal_sniffer/RegexUtils.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  1
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="http://www.mojohaus.org/animal-sniffer/animal-sniffer/checkstyle.html#org.codehaus.mojo.animal_sniffer.logging.Logger.java">org/codehaus/mojo/animal_sniffer/logging/Logger.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  8
-                </td>
-                <td>
-                  1
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="http://www.mojohaus.org/animal-sniffer/animal-sniffer/checkstyle.html#org.codehaus.mojo.animal_sniffer.ClassFileVisitor.java">org/codehaus/mojo/animal_sniffer/ClassFileVisitor.java</a>
-                </td>
-                <td>
-                  1
-                </td>
-                <td>
-                  11
-                </td>
-                <td>
-                  2
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="http://www.mojohaus.org/animal-sniffer/animal-sniffer/checkstyle.html#org.codehaus.mojo.animal_sniffer.Main.java">org/codehaus/mojo/animal_sniffer/Main.java</a>
+                  <a href="https://www.mojohaus.org/animal-sniffer/animal-sniffer/checkstyle.html#org.codehaus.mojo.animal_sniffer.Clazz.java">org/codehaus/mojo/animal_sniffer/Clazz.java</a>
                 </td>
                 <td>
                   0
@@ -181,7 +111,77 @@ under the License.
                   2
                 </td>
                 <td>
-                  72
+                  3
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://www.mojohaus.org/animal-sniffer/animal-sniffer/checkstyle.html#org.codehaus.mojo.animal_sniffer.logging.PrintWriterLogger.java">org/codehaus/mojo/animal_sniffer/logging/PrintWriterLogger.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  1
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://www.mojohaus.org/animal-sniffer/animal-sniffer/checkstyle.html#org.codehaus.mojo.animal_sniffer.RegexUtils.java">org/codehaus/mojo/animal_sniffer/RegexUtils.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  1
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://www.mojohaus.org/animal-sniffer/animal-sniffer/checkstyle.html#org.codehaus.mojo.animal_sniffer.logging.Logger.java">org/codehaus/mojo/animal_sniffer/logging/Logger.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  1
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://www.mojohaus.org/animal-sniffer/animal-sniffer/checkstyle.html#org.codehaus.mojo.animal_sniffer.ClassFileVisitor.java">org/codehaus/mojo/animal_sniffer/ClassFileVisitor.java</a>
+                </td>
+                <td>
+                  1
+                </td>
+                <td>
+                  1
+                </td>
+                <td>
+                  33
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://www.mojohaus.org/animal-sniffer/animal-sniffer/checkstyle.html#org.codehaus.mojo.animal_sniffer.Main.java">org/codehaus/mojo/animal_sniffer/Main.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  64
                 </td>
               </tr>
                       </tbody>
