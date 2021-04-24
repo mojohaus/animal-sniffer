@@ -152,6 +152,13 @@
           <artifactId>build-helper-maven-plugin</artifactId>
           <version>${build-helper.version}</version>
         </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-scm-publish-plugin</artifactId>
+          <configuration>
+            <content>${project.build.directory}/staging</content>
+          </configuration>
+        </plugin>
       </plugins>
     </pluginManagement>
   </build>
