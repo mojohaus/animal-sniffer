@@ -44,17 +44,21 @@ import org.apache.maven.shared.artifact.filter.PatternExcludesArtifactFilter;
 import org.apache.maven.shared.artifact.filter.PatternIncludesArtifactFilter;
 import org.codehaus.mojo.animal_sniffer.ClassFileVisitor;
 import org.codehaus.mojo.animal_sniffer.ClassListBuilder;
+import org.codehaus.mojo.animal_sniffer.Clazz;
 import org.codehaus.mojo.animal_sniffer.SignatureChecker;
 import org.codehaus.plexus.util.StringUtils;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Checks the classes compiled by this module.
@@ -203,6 +207,8 @@ public class CheckSignatureMojo
     @Component
     protected ArtifactFactory artifactFactory;
 
+    static Map<File, Map<String, Clazz>> classes = new ConcurrentHashMap<>();
+
     @Override
     public void execute()
         throws MojoExecutionException, MojoFailureException
@@ -262,7 +268,7 @@ public class CheckSignatureMojo
             }
 
             final SignatureChecker signatureChecker =
-                new SignatureChecker( new FileInputStream( a.getFile() ), ignoredPackages,
+                new SignatureChecker( loadClasses( a.getFile() ), ignoredPackages,
                                       new MavenLogger( getLog() ) );
             signatureChecker.setCheckJars( false ); // don't want to decend into jar files that have been copied to
                                                     // the output directory as resources.
@@ -307,6 +313,17 @@ public class CheckSignatureMojo
         {
             throw new MojoExecutionException( "Failed to obtain signature: " + signature, e );
         }
+    }
+
+    private static Map<String, Clazz> loadClasses( File f ) throws IOException
+    {
+        Map<String, Clazz> classes = CheckSignatureMojo.classes.get( f );
+        if ( classes == null )
+        {
+            classes = SignatureChecker.loadClasses( new FileInputStream( f ) );
+            CheckSignatureMojo.classes.putIfAbsent( f, classes );
+        }
+        return classes;
     }
 
     private static Dependency findMatchingDependency( Signature signature, List<Dependency> dependencies )
