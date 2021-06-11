@@ -74,7 +74,7 @@ public class SignatureChecker
      */
     public static final String PREVIOUS_ANNOTATION_FQN = "org.jvnet.animal_sniffer.IgnoreJRERequirement";
 
-    private final Map<String, Clazz> classes = new HashMap<>();
+    private final Map<String, Clazz> classes;
 
     private final Logger logger;
 
@@ -108,6 +108,13 @@ public class SignatureChecker
     public SignatureChecker( InputStream in, Set<String> ignoredPackages, Logger logger )
         throws IOException
     {
+        this( loadClasses( in ), ignoredPackages, logger );
+    }
+
+    public SignatureChecker( Map<String, Clazz> classes, Set<String> ignoredPackages, Logger logger )
+        throws IOException
+    {
+        this.classes = classes;
         this.ignoredPackages = new HashSet<>();
         this.ignoredPackageRules = new LinkedList<>();
         for(String wildcard : ignoredPackages )
@@ -126,6 +133,11 @@ public class SignatureChecker
         this.annotationDescriptors.add( toAnnotationDescriptor( PREVIOUS_ANNOTATION_FQN ) );
 
         this.logger = logger;
+    }
+
+    public static Map<String, Clazz> loadClasses( InputStream in ) throws IOException
+    {
+        Map<String, Clazz> classes = new HashMap<>();
         try (ObjectInputStream ois = new ObjectInputStream( new GZIPInputStream( in ) ))
         {
             while ( true )
@@ -133,7 +145,7 @@ public class SignatureChecker
                 Clazz c = (Clazz) ois.readObject();
                 if ( c == null )
                 {
-                    return; // finished
+                    return classes; // finished
                 }
                 classes.put( c.getName(), c );
             }
