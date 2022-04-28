@@ -28,18 +28,18 @@
   <parent>
     <groupId>org.codehaus.mojo</groupId>
     <artifactId>mojo-parent</artifactId>
-    <version>61</version>
+    <version>67</version>
   </parent>
 
   <artifactId>animal-sniffer-parent</artifactId>
-  <version>1.21-SNAPSHOT</version>
+  <version>1.22-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <name>Animal Sniffer</name>
   <description>
     Animal Sniffer Parent POM.
   </description>
-  <url>http://www.mojohaus.org/animal-sniffer</url>
+  <url>https://www.mojohaus.org/animal-sniffer</url>
   <inceptionYear>2008</inceptionYear>
   <licenses>
     <license>
@@ -81,7 +81,7 @@
     <connection>scm:git:https://github.com/mojohaus/animal-sniffer.git</connection>
     <developerConnection>scm:git:ssh://git@github.com/mojohaus/animal-sniffer.git</developerConnection>
     <url>https://github.com/mojohaus/animal-sniffer</url>
-    <tag>animal-sniffer-parent-1.18</tag>
+    <tag>master</tag>
   </scm>
   <issueManagement>
     <system>GitHub</system>
@@ -91,14 +91,19 @@
     <system>Travis</system>
     <url>https://travis-ci.org/mojohaus/animal-sniffer</url>
   </ciManagement>
+  <distributionManagement>
+    <site>
+      <id>github</id>
+      <url>scm:git:ssh://git@github.com/mojohaus/animal-sniffer.git</url>
+    </site>
+  </distributionManagement>
   <properties>
-    <sitePluginVersion>3.3</sitePluginVersion>
-    <scmpublish.content>target/staging/animal-sniffer-parent</scmpublish.content>
+    <topSiteURL>scm:git:ssh://git@github.com/mojohaus/animal-sniffer.git</topSiteURL>
     <maven.version>2.2.1</maven.version>
     <mojo.java.target>1.8</mojo.java.target>
-    <build-helper.version>3.2.0</build-helper.version>
+    <build-helper.version>3.3.0</build-helper.version>
     <invoker.streamLogs>false</invoker.streamLogs>
-    <project.build.outputTimestamp>2021-02-15T11:49:33Z</project.build.outputTimestamp>
+    <project.build.outputTimestamp>2022-02-01T08:42:31Z</project.build.outputTimestamp>
   </properties>
 
   <build>
@@ -124,7 +129,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-enforcer-plugin</artifactId>
-          <version>3.0.0-M3</version>
+          <version>3.0.0</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
@@ -147,6 +152,13 @@
           <artifactId>build-helper-maven-plugin</artifactId>
           <version>${build-helper.version}</version>
         </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-scm-publish-plugin</artifactId>
+          <configuration>
+            <content>${project.build.directory}/staging</content>
+          </configuration>
+        </plugin>
       </plugins>
     </pluginManagement>
   </build>
@@ -155,7 +167,7 @@
       <dependency>
         <groupId>org.ow2.asm</groupId>
         <artifactId>asm</artifactId>
-        <version>9.1</version>
+        <version>9.3</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
