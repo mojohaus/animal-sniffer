@@ -35,8 +35,6 @@ import java.nio.file.Path;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -130,18 +128,16 @@ public abstract class ClassFileVisitor
      *             or a class file (in which case that single class is processed).
      */
     public void process( Path path )
-            throws IOException {
-        Files.walkFileTree(path, Collections.emptySet(), 10000, new SimpleFileVisitor<Path>() {
+        throws IOException
+    {
+        Files.walkFileTree(path, new SimpleFileVisitor<Path>() {
+
+            final SortedSet<Path> files = new TreeSet<>();
 
             @Override
-            public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
-                return FileVisitResult.CONTINUE;
-            }
-
-            @Override
-            public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+            public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) {
                 if (file.getFileName().toString().endsWith(".class")) {
-                    process(file.toString(), Files.newInputStream(file));
+                    files.add(file);
                 }
                 // XXX we could add processing of jars here as well
                 // but it's not necessary for processing: Paths.get(URI.create("jrt:/modules"))
@@ -149,7 +145,21 @@ public abstract class ClassFileVisitor
             }
 
             @Override
-            public FileVisitResult visitFileFailed(Path file, IOException exc) throws IOException {
+            public FileVisitResult postVisitDirectory(final Path dir, final IOException exc) throws IOException {
+                if (exc != null) {
+                    throw exc;
+                }
+                for (final Path file : files) {
+                    try (final InputStream inputStream = Files.newInputStream(file)) {
+                        process(file.toString(), inputStream);
+                    }
+                }
+                files.clear();
+                return FileVisitResult.CONTINUE;
+            }
+
+            @Override
+            public FileVisitResult visitFileFailed(Path file, IOException exc) {
                 return FileVisitResult.CONTINUE;
             }
 

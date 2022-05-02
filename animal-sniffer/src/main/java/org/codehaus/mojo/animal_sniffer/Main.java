@@ -26,9 +26,12 @@ package org.codehaus.mojo.animal_sniffer;
  */
 
 import java.io.DataInputStream;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -58,7 +61,7 @@ public class Main
         Main m = new Main();
         String threshold = null;
 
-        List<File> files = new ArrayList<>();
+        List<Path> files = new ArrayList<Path>();
         for ( int i = 0; i < args.length; i++ )
         {
             if (args[i].equals("-h"))
@@ -80,16 +83,32 @@ public class Main
                 continue;
             }
 
-            files.add(new File(args[i]));
+            files.add(getPath(args[i]));
         }
 
-        for ( File f : files )
+        for (Path file : files) {
+            m.process(file);
+        }
+
+        if ( threshold != null && m.maximumVersion.compareTo(threshold) > 0 )
         {
-            m.process( f );
-        }
-
-        if (threshold!=null && m.maximumVersion.compareTo(threshold)>0)
             System.exit(1);
+        }
+    }
+
+    private static Path getPath(String s) {
+        try {
+            URI uri = new URI(s);
+            String scheme = uri.getScheme();
+            // Only allow certain schemes to prevent treating (mistyped) file path unintentionally as URI
+            if (scheme.equalsIgnoreCase("file") || scheme.equalsIgnoreCase("jrt")) {
+                return Paths.get(uri);
+            }
+            // Fall through
+        } catch (URISyntaxException e) {
+            // Fall through; probably not a URI but a file path
+        }
+        return Paths.get(s);
     }
 
     protected void process( String name, InputStream image )
@@ -132,5 +151,14 @@ public class Main
         HUMAN_READABLE_NAME.put("48.0","Java4");
         HUMAN_READABLE_NAME.put("49.0","Java5");
         HUMAN_READABLE_NAME.put("50.0","Java6");
+        HUMAN_READABLE_NAME.put("51.0","Java7");
+        HUMAN_READABLE_NAME.put("52.0","Java8");
+        HUMAN_READABLE_NAME.put("53.0","Java9");
+        HUMAN_READABLE_NAME.put("54.0","Java10");
+        HUMAN_READABLE_NAME.put("55.0","Java11");
+        HUMAN_READABLE_NAME.put("56.0","Java12");
+        HUMAN_READABLE_NAME.put("57.0","Java13");
+        HUMAN_READABLE_NAME.put("58.0","Java14");
+        HUMAN_READABLE_NAME.put("59.0","Java15");
     }
 }
