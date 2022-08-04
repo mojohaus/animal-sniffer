@@ -1,3 +1,5 @@
+
+
 # Licensed to the Apache Software Foundation (ASF) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -22,4 +24,11 @@ on: [push, pull_request]
 jobs:
   build:
     name: Verify
-    uses: apache/maven-gh-actions-shared/.github/workflows/maven-verify.yml@v2
+    uses: apache/maven-gh-actions-shared/.github/workflows/maven-verify.yml@v3
+    with:
+      jdk-matrix: '["8", "11", "17"]'
+      jdk-distribution-matrix: '["temurin", "zulu"]'
+      ff-jdk: "8"
+      ff-maven: "3.8.6"                     # Maven version for fail-fast-build
+      maven-matrix: '[ "3.2.5", "3.8.6" ]'  # Maven versions matrix for verify builds
+
