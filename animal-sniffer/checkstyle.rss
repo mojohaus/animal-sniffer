@@ -23,10 +23,10 @@ under the License.
     <link>https://www.mojohaus.org/animal-sniffer/animal-sniffer</link>
     <description>Animal Sniffer - Checkstyle report</description>
     <language>en-us</language>
-    <copyright>&#169;2008 - 2021 MojoHaus</copyright>
+    <copyright>&#169;2008 - 2022 MojoHaus</copyright>
     <item>
-      <title>File: 10,
-             Errors: 190,
+      <title>File: 11,
+             Errors: 234,
              Warnings: 12,
              Infos: 1
       </title>
@@ -46,6 +46,20 @@ under the License.
           <tbody>
                           <tr>
                 <td>
+                  <a href="https://www.mojohaus.org/animal-sniffer/animal-sniffer/checkstyle.html#org.codehaus.mojo.animal_sniffer.SignatureCheckerTest.java">org/codehaus/mojo/animal_sniffer/SignatureCheckerTest.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
                   <a href="https://www.mojohaus.org/animal-sniffer/animal-sniffer/checkstyle.html#org.codehaus.mojo.animal_sniffer.SignatureBuilder.java">org/codehaus/mojo/animal_sniffer/SignatureBuilder.java</a>
                 </td>
                 <td>
@@ -55,7 +69,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  26
+                  25
                 </td>
               </tr>
                           <tr>
@@ -69,7 +83,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  3
+                  2
                 </td>
               </tr>
                           <tr>
@@ -83,21 +97,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  1
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="https://www.mojohaus.org/animal-sniffer/animal-sniffer/checkstyle.html#org.codehaus.mojo.animal_sniffer.SignatureChecker.java">org/codehaus/mojo/animal_sniffer/SignatureChecker.java</a>
-                </td>
-                <td>
                   0
-                </td>
-                <td>
-                  9
-                </td>
-                <td>
-                  57
                 </td>
               </tr>
                           <tr>
@@ -111,21 +111,21 @@ under the License.
                   2
                 </td>
                 <td>
-                  3
+                  2
                 </td>
               </tr>
                           <tr>
                 <td>
-                  <a href="https://www.mojohaus.org/animal-sniffer/animal-sniffer/checkstyle.html#org.codehaus.mojo.animal_sniffer.logging.PrintWriterLogger.java">org/codehaus/mojo/animal_sniffer/logging/PrintWriterLogger.java</a>
+                  <a href="https://www.mojohaus.org/animal-sniffer/animal-sniffer/checkstyle.html#org.codehaus.mojo.animal_sniffer.SignatureChecker.java">org/codehaus/mojo/animal_sniffer/SignatureChecker.java</a>
                 </td>
                 <td>
                   0
                 </td>
                 <td>
-                  0
+                  9
                 </td>
                 <td>
-                  1
+                  55
                 </td>
               </tr>
                           <tr>
@@ -139,7 +139,21 @@ under the License.
                   0
                 </td>
                 <td>
-                  1
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://www.mojohaus.org/animal-sniffer/animal-sniffer/checkstyle.html#org.codehaus.mojo.animal_sniffer.logging.PrintWriterLogger.java">org/codehaus/mojo/animal_sniffer/logging/PrintWriterLogger.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
                 </td>
               </tr>
                           <tr>
@@ -153,7 +167,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  1
+                  0
                 </td>
               </tr>
                           <tr>
@@ -167,7 +181,7 @@ under the License.
                   1
                 </td>
                 <td>
-                  33
+                  41
                 </td>
               </tr>
                           <tr>
@@ -181,7 +195,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  64
+                  109
                 </td>
               </tr>
                       </tbody>

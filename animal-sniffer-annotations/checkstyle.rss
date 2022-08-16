@@ -23,10 +23,10 @@ under the License.
     <link>https://www.mojohaus.org/animal-sniffer/animal-sniffer-annotations</link>
     <description>Animal Sniffer Annotations - Checkstyle report</description>
     <language>en-us</language>
-    <copyright>&#169;2008 - 2021 MojoHaus</copyright>
+    <copyright>&#169;2008 - 2022 MojoHaus</copyright>
     <item>
       <title>File: 1,
-             Errors: 5,
+             Errors: 4,
              Warnings: 0,
              Infos: 0
       </title>
@@ -55,7 +55,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  5
+                  4
                 </td>
               </tr>
                       </tbody>

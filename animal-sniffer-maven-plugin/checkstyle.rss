@@ -23,11 +23,11 @@ under the License.
     <link>https://www.mojohaus.org/animal-sniffer/animal-sniffer-maven-plugin</link>
     <description>Animal Sniffer Maven Plugin - Checkstyle report</description>
     <language>en-us</language>
-    <copyright>&#169;2008 - 2021 MojoHaus</copyright>
+    <copyright>&#169;2008 - 2022 MojoHaus</copyright>
     <item>
       <title>File: 6,
-             Errors: 64,
-             Warnings: 10,
+             Errors: 59,
+             Warnings: 11,
              Infos: 1
       </title>
             <link>https://www.mojohaus.org/animal-sniffer/animal-sniffer-maven-plugin/checkstyle.html</link>
@@ -55,7 +55,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  10
+                  9
                 </td>
               </tr>
                           <tr>
@@ -69,7 +69,7 @@ under the License.
                   10
                 </td>
                 <td>
-                  1
+                  0
                 </td>
               </tr>
                           <tr>
@@ -83,7 +83,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  1
+                  0
                 </td>
               </tr>
                           <tr>
@@ -97,7 +97,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  1
+                  0
                 </td>
               </tr>
                           <tr>
@@ -111,7 +111,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  1
+                  0
                 </td>
               </tr>
                           <tr>
@@ -122,7 +122,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  0
+                  1
                 </td>
                 <td>
                   50

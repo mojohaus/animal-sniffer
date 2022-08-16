@@ -23,10 +23,10 @@ under the License.
     <link>https://www.mojohaus.org/animal-sniffer/animal-sniffer-enforcer-rule</link>
     <description>Animal Sniffer Maven Enforcer Rule - Checkstyle report</description>
     <language>en-us</language>
-    <copyright>&#169;2008 - 2021 MojoHaus</copyright>
+    <copyright>&#169;2008 - 2022 MojoHaus</copyright>
     <item>
       <title>File: 3,
-             Errors: 14,
+             Errors: 11,
              Warnings: 0,
              Infos: 0
       </title>
@@ -55,7 +55,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  1
+                  0
                 </td>
               </tr>
                           <tr>
@@ -69,7 +69,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  1
+                  0
                 </td>
               </tr>
                           <tr>
@@ -83,7 +83,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  12
+                  11
                 </td>
               </tr>
                       </tbody>

@@ -23,10 +23,10 @@ under the License.
     <link>https://www.mojohaus.org/animal-sniffer/java-boot-classpath-detector</link>
     <description>Java boot classpath detector - Checkstyle report</description>
     <language>en-us</language>
-    <copyright>&#169;2008 - 2021 MojoHaus</copyright>
+    <copyright>&#169;2008 - 2022 MojoHaus</copyright>
     <item>
       <title>File: 1,
-             Errors: 166,
+             Errors: 165,
              Warnings: 0,
              Infos: 0
       </title>
@@ -55,7 +55,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  166
+                  165
                 </td>
               </tr>
                       </tbody>
