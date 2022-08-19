@@ -183,6 +183,7 @@ public class SignatureChecker
         }
     }
 
+    @Override
     protected void process( final String name, InputStream image )
         throws IOException
     {
@@ -216,6 +217,7 @@ public class SignatureChecker
             this.prefix = prefix;
         }
 
+        @Override
         public boolean matches( String text )
         {
             return text.startsWith( prefix );
@@ -232,6 +234,7 @@ public class SignatureChecker
             this.match = match;
         }
 
+        @Override
         public boolean matches( String text )
         {
             return match.equals( text );
@@ -248,6 +251,7 @@ public class SignatureChecker
             this.regex = regex;
         }
 
+        @Override
         public boolean matches( String text )
         {
             return regex.matcher( text ).matches();
@@ -280,6 +284,7 @@ public class SignatureChecker
 
         private String packagePrefix;
         private int line;
+        private String currentFieldName = null;
         private String name;
         private String internalName;
 
@@ -351,7 +356,12 @@ public class SignatureChecker
 
                 @Override
                 public void visitEnd() {
-                    checkType(Type.getType(descriptor), false);
+                    // When field is declared in nested class, include declaring class name (including enclosing
+                    // class name) to make error message more helpful
+                    String fieldNamePrefix = internalName.contains("$") ? internalName.substring(internalName.lastIndexOf('/') + 1) + '.' : "";
+                    currentFieldName = fieldNamePrefix + name;
+                    checkType(Type.getType(descriptor), ignoreClass);
+                    currentFieldName = null;
                 }
 
             };
@@ -590,7 +600,14 @@ public class SignatureChecker
         private void error( String type, String sig )
         {
             hadError = true;
-            logger.error(name + (line > 0 ? ":" + line : "") + ": Undefined reference: " + toSourceForm( type, sig ) );
+
+            String location = "";
+            if (currentFieldName != null) {
+                location = ": Field " + currentFieldName;
+            } else if (line > 0) {
+                location = ":" + line;
+            }
+            logger.error(name + location + ": Undefined reference: " + toSourceForm( type, sig ) );
         }
     }
 
