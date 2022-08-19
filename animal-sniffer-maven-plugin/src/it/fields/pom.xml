@@ -37,7 +37,11 @@
     <dependency>
       <groupId>org.codehaus.mojo</groupId>
       <artifactId>animal-sniffer-annotations</artifactId>
-      <version>1.22</version>
+      <version>${annotationsDependencyVersion}</version>
+      <!-- This is a temporary workaround until the first version with FIELD as target has been released;
+        then this can instead use any of the released versions -->
+      <scope>system</scope>
+      <systemPath>${project.basedir}/../../../../animal-sniffer-annotations/target/animal-sniffer-annotations-${annotationsDependencyVersion}.jar</systemPath>
     </dependency>
   </dependencies>
 
@@ -99,6 +103,7 @@
     <pluginGroupId>@project.groupId@</pluginGroupId>
     <pluginArtifactId>@project.artifactId@</pluginArtifactId>
     <pluginVersion>@project.version@</pluginVersion>
+    <annotationsDependencyVersion>@project.version@</annotationsDependencyVersion>
   </properties>
 
 </project>

@@ -65,7 +65,7 @@ public class SignatureChecker
      * The fully qualified name of the annotation to use to annotate methods/fields/classes that are
      * to be ignored by animal sniffer.
      */
-    public static final String ANNOTATION_FQN = "org.codehaus.mojo.animal_sniffer.IgnoreJRERequirement";
+    public static final String ANNOTATION_FQN = IgnoreJRERequirement.class.getName();
 
     /**
      * Similar to {@link #ANNOTATION_FQN}. Kept for backward compatibility reasons
@@ -354,13 +354,25 @@ public class SignatureChecker
         public FieldVisitor visitField(int access, String name, final String descriptor, String signature, Object value) {
             return new FieldVisitor(Opcodes.ASM7) {
 
+                boolean ignoreError = ignoreClass;
+
+                @Override
+                public AnnotationVisitor visitAnnotation( String annoDesc, boolean visible )
+                {
+                    if ( isIgnoreAnnotation(annoDesc) )
+                    {
+                        ignoreError = true;
+                    }
+                    return super.visitAnnotation( annoDesc, visible );
+                }
+
                 @Override
                 public void visitEnd() {
                     // When field is declared in nested class, include declaring class name (including enclosing
                     // class name) to make error message more helpful
                     String fieldNamePrefix = internalName.contains("$") ? internalName.substring(internalName.lastIndexOf('/') + 1) + '.' : "";
                     currentFieldName = fieldNamePrefix + name;
-                    checkType(Type.getType(descriptor), ignoreClass);
+                    checkType(Type.getType(descriptor), ignoreError);
                     currentFieldName = null;
                 }
 
