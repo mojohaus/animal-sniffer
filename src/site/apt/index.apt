@@ -35,7 +35,7 @@ Animal Sniffer
   older JDK/API.
 
   Please note this plugin is now in maintenance level as the exact same feature can be now easily achieved using the 
-  --release flag from Javac see {{http://openjdk.java.net/jeps/247}}
+  --release flag from Javac see {{https://openjdk.java.net/jeps/247}}
 
 * Introduction
 
