@@ -65,7 +65,9 @@ public class SignatureChecker
      * The fully qualified name of the annotation to use to annotate methods/fields/classes that are
      * to be ignored by animal sniffer.
      */
-    public static final String ANNOTATION_FQN = IgnoreJRERequirement.class.getName();
+    // Cannot use IgnoreJRERequirement.class.getName() because value needs to be constant to be
+    // included in Mojo documentation
+    public static final String ANNOTATION_FQN = "org.codehaus.mojo.animal_sniffer.IgnoreJRERequirement";
 
     /**
      * Similar to {@link #ANNOTATION_FQN}. Kept for backward compatibility reasons
