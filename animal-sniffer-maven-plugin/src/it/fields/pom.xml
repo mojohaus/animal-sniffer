@@ -32,16 +32,12 @@
   <packaging>jar</packaging>
 
   <name>fields</name>
-  
+
   <dependencies>
     <dependency>
       <groupId>org.codehaus.mojo</groupId>
       <artifactId>animal-sniffer-annotations</artifactId>
       <version>${annotationsDependencyVersion}</version>
-      <!-- This is a temporary workaround until the first version with FIELD as target has been released;
-        then this can instead use any of the released versions -->
-      <scope>system</scope>
-      <systemPath>${project.basedir}/../../../../animal-sniffer-annotations/target/animal-sniffer-annotations-${annotationsDependencyVersion}.jar</systemPath>
     </dependency>
   </dependencies>
 
