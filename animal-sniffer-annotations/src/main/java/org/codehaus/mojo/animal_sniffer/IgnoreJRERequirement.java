@@ -36,7 +36,7 @@ import java.lang.annotation.Target;
  */
 @Retention(CLASS)
 @Documented
-@Target({ElementType.METHOD, ElementType.CONSTRUCTOR, ElementType.TYPE})
+@Target({ElementType.METHOD, ElementType.CONSTRUCTOR, ElementType.TYPE, ElementType.FIELD})
 public @interface IgnoreJRERequirement
 {
 }

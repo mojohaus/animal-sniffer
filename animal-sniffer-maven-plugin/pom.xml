@@ -135,6 +135,9 @@
           <filterProperties>
             <java.home>${env.JAVA_HOME}</java.home>
           </filterProperties>
+          <extraArtifacts>
+            <extraArtifact>org.codehaus.mojo:animal-sniffer-annotations:${project.version}</extraArtifact>
+          </extraArtifacts>
         </configuration>
       </plugin>
     </plugins>

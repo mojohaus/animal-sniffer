@@ -65,6 +65,8 @@ public class SignatureChecker
      * The fully qualified name of the annotation to use to annotate methods/fields/classes that are
      * to be ignored by animal sniffer.
      */
+    // Cannot use IgnoreJRERequirement.class.getName() because value needs to be constant to be
+    // included in Mojo documentation
     public static final String ANNOTATION_FQN = "org.codehaus.mojo.animal_sniffer.IgnoreJRERequirement";
 
     /**
@@ -183,6 +185,7 @@ public class SignatureChecker
         }
     }
 
+    @Override
     protected void process( final String name, InputStream image )
         throws IOException
     {
@@ -216,6 +219,7 @@ public class SignatureChecker
             this.prefix = prefix;
         }
 
+        @Override
         public boolean matches( String text )
         {
             return text.startsWith( prefix );
@@ -232,6 +236,7 @@ public class SignatureChecker
             this.match = match;
         }
 
+        @Override
         public boolean matches( String text )
         {
             return match.equals( text );
@@ -248,6 +253,7 @@ public class SignatureChecker
             this.regex = regex;
         }
 
+        @Override
         public boolean matches( String text )
         {
             return regex.matcher( text ).matches();
@@ -280,6 +286,7 @@ public class SignatureChecker
 
         private String packagePrefix;
         private int line;
+        private String currentFieldName = null;
         private String name;
         private String internalName;
 
@@ -349,9 +356,26 @@ public class SignatureChecker
         public FieldVisitor visitField(int access, String name, final String descriptor, String signature, Object value) {
             return new FieldVisitor(Opcodes.ASM7) {
 
+                boolean ignoreError = ignoreClass;
+
+                @Override
+                public AnnotationVisitor visitAnnotation( String annoDesc, boolean visible )
+                {
+                    if ( isIgnoreAnnotation(annoDesc) )
+                    {
+                        ignoreError = true;
+                    }
+                    return super.visitAnnotation( annoDesc, visible );
+                }
+
                 @Override
                 public void visitEnd() {
-                    checkType(Type.getType(descriptor), false);
+                    // When field is declared in nested class, include declaring class name (including enclosing
+                    // class name) to make error message more helpful
+                    String fieldNamePrefix = internalName.contains("$") ? internalName.substring(internalName.lastIndexOf('/') + 1) + '.' : "";
+                    currentFieldName = fieldNamePrefix + name;
+                    checkType(Type.getType(descriptor), ignoreError);
+                    currentFieldName = null;
                 }
 
             };
@@ -590,7 +614,14 @@ public class SignatureChecker
         private void error( String type, String sig )
         {
             hadError = true;
-            logger.error(name + (line > 0 ? ":" + line : "") + ": Undefined reference: " + toSourceForm( type, sig ) );
+
+            String location = "";
+            if (currentFieldName != null) {
+                location = ": Field " + currentFieldName;
+            } else if (line > 0) {
+                location = ":" + line;
+            }
+            logger.error(name + location + ": Undefined reference: " + toSourceForm( type, sig ) );
         }
     }
 

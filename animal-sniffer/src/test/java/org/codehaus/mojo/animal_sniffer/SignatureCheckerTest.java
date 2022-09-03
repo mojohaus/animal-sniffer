@@ -34,6 +34,11 @@ public class SignatureCheckerTest extends TestCase
         super( testName );
     }
 
+    public void testAnnotationFqn()
+    {
+        assertEquals( IgnoreJRERequirement.class.getName(), SignatureChecker.ANNOTATION_FQN );
+    }
+
     public void testToSourceForm()
     {
         assertSourceForm( "java.util.HashMap", "java/util/HashMap", null );
