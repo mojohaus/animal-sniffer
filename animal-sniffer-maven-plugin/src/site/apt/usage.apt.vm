@@ -73,7 +73,7 @@ Usage
 ---
 
   The example above configures the signature for JRE 1.5. For a list of other ready-made signatures, please visit the
-  {{{http://mojo.codehaus.org/signatures/}Animal Scents subproject}}.
+  {{{https://mvnrepository.com/artifact/org.codehaus.mojo.signature}Animal Scents subproject}}.
 
   In order to check your project against the signature you have just configured, either
   invoke the <<<animal-sniffer:check>>> goal directly, e.g.
