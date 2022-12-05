@@ -99,7 +99,7 @@
   </distributionManagement>
   <properties>
     <topSiteURL>scm:git:ssh://git@github.com/mojohaus/animal-sniffer.git</topSiteURL>
-    <maven.version>3.2.5</maven.version>
+    <maven.version>3.8.6</maven.version>
     <mojo.java.target>1.8</mojo.java.target>
     <build-helper.version>3.3.0</build-helper.version>
     <invoker.streamLogs>false</invoker.streamLogs>
