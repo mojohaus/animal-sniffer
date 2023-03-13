@@ -198,9 +198,8 @@ public class SignatureBuilder
     {
         private Clazz clazz;
 
-        @SuppressWarnings("deprecation")
         public SignatureVisitor() {
-            super(Opcodes.ASM7);
+            super(Opcodes.ASM9);
         }
 
         public void visit( int version, int access, String name, String signature, String superName,
