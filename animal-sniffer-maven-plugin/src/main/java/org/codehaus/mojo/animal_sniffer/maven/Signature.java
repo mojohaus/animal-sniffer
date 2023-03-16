@@ -25,8 +25,8 @@ package org.codehaus.mojo.animal_sniffer.maven;
  *
  */
 
-import org.apache.maven.artifact.Artifact;
-import org.apache.maven.artifact.factory.ArtifactFactory;
+import org.eclipse.aether.artifact.Artifact;
+import org.eclipse.aether.artifact.DefaultArtifact;
 
 /**
  * Represents artifact in Maven POM.
@@ -72,9 +72,9 @@ public class Signature
         this.version = version;
     }
 
-    public Artifact createArtifact( ArtifactFactory factory )
+    public Artifact createArtifact()
     {
-        return factory.createArtifact( groupId, artifactId, version, null, "signature" );
+        return new DefaultArtifact( groupId, artifactId, "signature", version);
     }
 
     public String toString()
