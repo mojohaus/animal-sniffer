@@ -26,10 +26,6 @@ package org.codehaus.mojo.animal_sniffer.maven;
  */
 
 import org.apache.maven.artifact.Artifact;
-import org.apache.maven.artifact.factory.ArtifactFactory;
-import org.apache.maven.artifact.repository.ArtifactRepository;
-import org.apache.maven.artifact.resolver.AbstractArtifactResolutionException;
-import org.apache.maven.artifact.resolver.ArtifactResolver;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -47,11 +43,15 @@ import org.codehaus.mojo.animal_sniffer.ClassListBuilder;
 import org.codehaus.mojo.animal_sniffer.Clazz;
 import org.codehaus.mojo.animal_sniffer.SignatureChecker;
 import org.codehaus.plexus.util.StringUtils;
+import org.eclipse.aether.RepositorySystem;
+import org.eclipse.aether.RepositorySystemSession;
+import org.eclipse.aether.resolution.ArtifactRequest;
+import org.eclipse.aether.resolution.ArtifactResolutionException;
+import org.eclipse.aether.resolution.ArtifactResult;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -189,23 +189,14 @@ public class CheckSignatureMojo
 
     /**
      */
-    @Component
-    protected ArtifactResolver resolver;
-
-    /**
-     */
     @Parameter( defaultValue = "${project}", readonly = true )
     protected MavenProject project;
 
-    /**
-     */
-    @Parameter( defaultValue = "${localRepository}", readonly=true )
-    protected ArtifactRepository localRepository;
+    @Parameter( defaultValue = "${repositorySystemSession}", readonly = true )
+    private RepositorySystemSession repositorySystemSession;
 
-    /**
-     */
     @Component
-    protected ArtifactFactory artifactFactory;
+    private RepositorySystem repositorySystem;
 
     static Map<File, Map<String, Clazz>> classes = new ConcurrentHashMap<>();
 
@@ -249,9 +240,8 @@ public class CheckSignatureMojo
 
             getLog().info( "Checking unresolved references to " + signature );
 
-            Artifact a = signature.createArtifact( artifactFactory );
+            File signatureFile = resolveFileForArtifact( signature.createArtifact() );
 
-            resolver.resolve( a, project.getRemoteArtifactRepositories(), localRepository );
             // just check code from this module
             final Set<String> ignoredPackages = buildPackageList();
 
@@ -268,7 +258,7 @@ public class CheckSignatureMojo
             }
 
             final SignatureChecker signatureChecker =
-                new SignatureChecker( loadClasses( a.getFile() ), ignoredPackages,
+                new SignatureChecker( loadClasses( signatureFile ), ignoredPackages,
                                       new MavenLogger( getLog() ) );
             signatureChecker.setCheckJars( false ); // don't want to decend into jar files that have been copied to
                                                     // the output directory as resources.
@@ -309,10 +299,22 @@ public class CheckSignatureMojo
         {
             throw new MojoExecutionException( "Failed to check signatures", e );
         }
-        catch ( AbstractArtifactResolutionException e )
+        catch ( ArtifactResolutionException e )
         {
             throw new MojoExecutionException( "Failed to obtain signature: " + signature, e );
         }
+    }
+
+    private File resolveFileForArtifact(org.eclipse.aether.artifact.Artifact artifact )
+            throws ArtifactResolutionException, MojoExecutionException {
+
+        if ( StringUtils.isBlank( artifact.getVersion() ) ) {
+            throw new MojoExecutionException( "For artifact {" + artifact + "}: The version cannot be empty." );
+        }
+
+        ArtifactRequest request = new ArtifactRequest( artifact, project.getRemotePluginRepositories(), null );
+        ArtifactResult result = repositorySystem.resolveArtifact( repositorySystemSession, request );
+        return result.getArtifact().getFile();
     }
 
     private static Map<String, Clazz> loadClasses( File f ) throws IOException
