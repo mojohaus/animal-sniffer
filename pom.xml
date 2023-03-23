@@ -28,7 +28,7 @@
   <parent>
     <groupId>org.codehaus.mojo</groupId>
     <artifactId>mojo-parent</artifactId>
-    <version>70</version>
+    <version>74</version>
   </parent>
 
   <artifactId>animal-sniffer-parent</artifactId>
@@ -80,90 +80,36 @@
   <scm>
     <connection>scm:git:https://github.com/mojohaus/animal-sniffer.git</connection>
     <developerConnection>scm:git:ssh://git@github.com/mojohaus/animal-sniffer.git</developerConnection>
-    <url>https://github.com/mojohaus/animal-sniffer</url>
+    <url>https://github.com/mojohaus/animal-sniffer/tree/master</url>
     <tag>master</tag>
   </scm>
+
   <issueManagement>
     <system>GitHub</system>
     <url>https://github.com/mojohaus/animal-sniffer/issues</url>
   </issueManagement>
+
   <ciManagement>
-    <system>Travis</system>
-    <url>https://travis-ci.org/mojohaus/animal-sniffer</url>
+    <system>GitHub</system>
+    <url>https://github.com/mojohaus/animal-sniffer/actions</url>
   </ciManagement>
+
   <distributionManagement>
     <site>
       <id>github</id>
       <url>scm:git:ssh://git@github.com/mojohaus/animal-sniffer.git</url>
     </site>
   </distributionManagement>
+
   <properties>
     <topSiteURL>scm:git:ssh://git@github.com/mojohaus/animal-sniffer.git</topSiteURL>
+    <scmpublish.content>${project.build.directory}/staging</scmpublish.content>
     <maven.version>3.2.5</maven.version>
-    <mojo.java.target>1.8</mojo.java.target>
+    <mojo.java.target>8</mojo.java.target>
     <build-helper.version>3.3.0</build-helper.version>
-    <invoker.streamLogs>false</invoker.streamLogs>
     <project.build.outputTimestamp>2022-08-16T03:45:35Z</project.build.outputTimestamp>
   </properties>
 
-  <build>
-    <pluginManagement>
-      <plugins>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-checkstyle-plugin</artifactId>
-          <version>3.2.1</version>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-surefire-plugin</artifactId>
-          <version>3.0.0</version>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-javadoc-plugin</artifactId>
-          <configuration>
-            <detectJavaApiLink>false</detectJavaApiLink>
-          </configuration>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-enforcer-plugin</artifactId>
-          <version>3.2.1</version>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-invoker-plugin</artifactId>
-          <version>3.5.0</version>
-          <configuration>
-            <projectsDirectory>src/it</projectsDirectory>
-            <cloneProjectsTo>${project.build.directory}/it</cloneProjectsTo>
-            <localRepositoryPath>${project.build.directory}/local-repo</localRepositoryPath>
-            <settingsFile>src/it/settings.xml</settingsFile>
-            <showErrors>true</showErrors>
-            <streamLogs>false</streamLogs>
-            <streamLogsOnFailures>true</streamLogsOnFailures>
-            <postBuildHookScript>verify</postBuildHookScript>
-            <goals>
-              <goal>verify</goal>
-            </goals>
-          </configuration>
-        </plugin>
-        <plugin>
-          <groupId>org.codehaus.mojo</groupId>
-          <artifactId>build-helper-maven-plugin</artifactId>
-          <version>${build-helper.version}</version>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-scm-publish-plugin</artifactId>
-          <configuration>
-            <content>${project.build.directory}/staging</content>
-          </configuration>
-        </plugin>
-      </plugins>
-    </pluginManagement>
-  </build>
   <dependencyManagement>
     <dependencies>
       <dependency>
@@ -173,6 +119,44 @@
       </dependency>
     </dependencies>
   </dependencyManagement>
+
+  <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-invoker-plugin</artifactId>
+          <configuration>
+            <projectsDirectory>src/it</projectsDirectory>
+            <cloneProjectsTo>${project.build.directory}/it</cloneProjectsTo>
+            <localRepositoryPath>${project.build.directory}/local-repo</localRepositoryPath>
+            <settingsFile>src/it/settings.xml</settingsFile>
+            <showErrors>true</showErrors>
+            <debug>true</debug>
+            <postBuildHookScript>verify</postBuildHookScript>
+            <goals>
+              <goal>verify</goal>
+            </goals>
+          </configuration>
+          <executions>
+            <execution>
+              <id>integration-test</id>
+              <goals>
+                <goal>install</goal>
+                <goal>run</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>build-helper-maven-plugin</artifactId>
+          <version>${build-helper.version}</version>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+  </build>
+
   <profiles>
     <profile>
       <id>disable-doclint-for-jdk8</id>
@@ -183,55 +167,5 @@
         <additionalparam>-Xdoclint:none</additionalparam>
       </properties>
     </profile>
-    <profile>
-      <id>jdk9</id>
-      <activation>
-        <jdk>[1.9,)</jdk>
-      </activation>
-      <build>
-        <pluginManagement>
-          <plugins>
-            <plugin>
-              <groupId>org.apache.maven.plugins</groupId>
-              <artifactId>maven-compiler-plugin</artifactId>
-              <configuration>
-                <release>8</release>
-              </configuration>
-            </plugin>
-          </plugins>
-        </pluginManagement>
-      </build>
-    </profile>
-    <profile>
-      <!-- run integration tests
-          to use this profile:
-          or run integration tests: mvn -Prun-its
-          Always run on travis
-      -->
-      <id>run-its</id>
-      <activation>
-        <property>
-          <name>env.CONTINUOUS_INTEGRATION</name>
-        </property>
-      </activation>
-      <build>
-        <defaultGoal>verify</defaultGoal>
-        <plugins>
-          <plugin>
-            <artifactId>maven-invoker-plugin</artifactId>
-            <executions>
-              <execution>
-                <id>integration-test</id>
-                <goals>
-                  <goal>install</goal>
-                  <goal>run</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-
   </profiles>
 </project>
