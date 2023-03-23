@@ -32,39 +32,6 @@
   </parent>
 
   <artifactId>animal-sniffer-annotations</artifactId>
-
   <name>Animal Sniffer Annotations</name>
-
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-enforcer-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>enforce-java</id>
-            <goals>
-              <goal>enforce</goal>
-            </goals>
-            <configuration>
-              <rules>
-                <requireJavaVersion>
-                  <message>Annotations require Java 1.5+ to compile</message>
-                  <version>[1.5,)</version>
-                </requireJavaVersion>
-              </rules>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <configuration>
-          <source>${mojo.java.target}</source>
-          <target>${mojo.java.target}</target>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
 
 </project>
