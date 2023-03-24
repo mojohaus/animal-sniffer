@@ -22,46 +22,31 @@
   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
   THE SOFTWARE. 
 -->
-<project>
-  <!-- TODO remove when upgrading parent to 62, see issue https://github.com/mojohaus/mojo-parent/issues/162 -->
-  <bannerLeft>
-    <name>MojoHaus</name>
-    <src>https://www.mojohaus.org/images/mojo_logo.png</src>
-    <href>https://www.mojohaus.org/</href>
-  </bannerLeft>
+<project xmlns="http://maven.apache.org/DECORATION/1.3.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/DECORATION/1.3.0 https://maven.apache.org/xsd/decoration-1.3.0.xsd">
 
-  <publishDate format="yyyy-MM-dd" position="right" />
-  <version position="right" />
-
-  <skin>
-    <groupId>org.apache.maven.skins</groupId>
-    <artifactId>maven-fluido-skin</artifactId>
-    <version>1.9</version>
-  </skin>
-
-  <edit>${project.scm.url}</edit>
+  <custom>
+    <fluidoSkin>
+      <gitHub>
+        <projectId>mojohaus/animal-sniffer</projectId>
+        <ribbonOrientation>right</ribbonOrientation>
+        <ribbonColor>gray</ribbonColor>
+      </gitHub>
+    </fluidoSkin>
+  </custom>
 
   <body>
-    <links>
-      <item name="Maven" href="https://maven.apache.org/"/>
-    </links>
     <breadcrumbs>
-      <item name="MojoHaus" href="https://www.mojohaus.org/"/>
+      <item name="MojoHaus" href="https://www.mojohaus.org/" />
       <item name="${this.name}" href="${this.url}" />
     </breadcrumbs>
 
-    <menu ref="parent"/>
     <menu name="Overview">
-      <item name="Introduction" href="index.html"/>
+      <item name="Introduction" href="index.html" />
     </menu>
-    <menu name="Modules">
-      <item name="Java boot classpath detector" href="java-boot-classpath-detector/index.html"/>
-      <item name="Animal Sniffer Annotations" href="animal-sniffer-annotations/index.html"/>
-      <item name="Animal Sniffer" href="animal-sniffer/index.html"/>
-      <item name="Animal Sniffer Maven Plugin" href="animal-sniffer-maven-plugin/index.html"/>
-      <item name="Animal Sniffer Maven Enforcer Rule" href="animal-sniffer-enforcer-rule/index.html"/>
-      <item name="Animal Sniffer ANT Tasks" href="animal-sniffer-ant-tasks/index.html"/>
-    </menu>
-    <menu ref="reports"/>
+
+    <menu ref="modules"/>
+    <menu ref="reports" inherit="bottom"/>
+
   </body>
 </project>

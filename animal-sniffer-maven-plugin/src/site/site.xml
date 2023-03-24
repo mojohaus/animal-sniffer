@@ -22,25 +22,24 @@
   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
   THE SOFTWARE. 
 -->
-<project>
+<project xmlns="http://maven.apache.org/DECORATION/1.3.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/DECORATION/1.3.0 https://maven.apache.org/xsd/decoration-1.3.0.xsd">
+
+
   <body>
-    <breadcrumbs>
-      <item name="Animal Sniffer Maven plugin" href="./" />
-    </breadcrumbs>
-    <menu name="Parent Project">
-      <item name="Codehaus Mojo Parent" href="../index.html"/>
-      <item name="Animal Sniffer Parent project" href="../animal-sniffer/index.html"/>
-    </menu>
+
+    <menu ref="parent"/>
+
     <menu name="Overview">
       <item name="Introduction" href="index.html"/>
       <item name="Usage" href="usage.html"/>
       <item name="Frequently Asked Questions" href="faq.html"/>
     </menu>
+
     <menu name="Examples">
       <item name="Checking a project against API signatures" href="examples/checking-signatures.html"/>
       <item name="Generating signatures of the Java Runtime" href="examples/generating-java-signatures.html"/>
       <item name="Generating signatures of other APIs" href="examples/generating-other-api-signatures.html"/>
     </menu>
-    <menu ref="reports"/>
   </body>
 </project>

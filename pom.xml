@@ -41,10 +41,11 @@
   </description>
   <url>https://www.mojohaus.org/animal-sniffer</url>
   <inceptionYear>2008</inceptionYear>
+
   <licenses>
     <license>
       <name>MIT license</name>
-      <url>http://www.opensource.org/licenses/mit-license.php</url>
+      <url>https://spdx.org/licenses/MIT.txt</url>
       <distribution>repo</distribution>
     </license>
   </licenses>
@@ -94,16 +95,9 @@
     <url>https://github.com/mojohaus/animal-sniffer/actions</url>
   </ciManagement>
 
-  <distributionManagement>
-    <site>
-      <id>github</id>
-      <url>scm:git:ssh://git@github.com/mojohaus/animal-sniffer.git</url>
-    </site>
-  </distributionManagement>
 
   <properties>
-    <topSiteURL>scm:git:ssh://git@github.com/mojohaus/animal-sniffer.git</topSiteURL>
-    <scmpublish.content>${project.build.directory}/staging</scmpublish.content>
+    <scmpublish.content>${project.build.directory}/staging/animal-sniffer-parent</scmpublish.content>
     <maven.version>3.2.5</maven.version>
     <mojo.java.target>8</mojo.java.target>
     <build-helper.version>3.3.0</build-helper.version>
@@ -152,6 +146,21 @@
           <groupId>org.codehaus.mojo</groupId>
           <artifactId>build-helper-maven-plugin</artifactId>
           <version>${build-helper.version}</version>
+        </plugin>
+        <plugin>
+          <!-- multi module project - stage site -->
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-site-plugin</artifactId>
+          <executions>
+            <execution>
+              <id>default-site</id>
+              <goals>
+                <goal>site</goal>
+                <goal>stage</goal>
+              </goals>
+              <phase>site</phase>
+            </execution>
+          </executions>
         </plugin>
       </plugins>
     </pluginManagement>

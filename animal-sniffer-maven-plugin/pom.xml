@@ -87,54 +87,44 @@
       <artifactId>plexus-utils</artifactId>
       <version>3.5.1</version>
     </dependency>
-    
+
     <dependency>
       <groupId>org.apache.maven.plugin-tools</groupId>
       <artifactId>maven-plugin-annotations</artifactId>
       <scope>provided</scope>
     </dependency>
-    
+
   </dependencies>
 
-  <build>
+  <reporting>
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-plugin-plugin</artifactId>
+        <artifactId>maven-plugin-report-plugin</artifactId>
+        <reportSets>
+          <reportSet>
+            <reports>
+              <report>report</report>
+            </reports>
+          </reportSet>
+        </reportSets>
         <configuration>
-          <!-- see http://jira.codehaus.org/browse/MNG-5346 -->
-          <skipErrorNoDescriptorsFound>true</skipErrorNoDescriptorsFound>
-        </configuration>
-        <executions>
-          <execution>
-            <id>mojo-descriptor</id>
-            <goals>
-              <goal>descriptor</goal>
-            </goals>
-          </execution>
-          <execution>
-            <id>help-goal</id>
-            <goals>
-              <goal>helpmojo</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-    
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-invoker-plugin</artifactId>
-        <configuration>
-          <filterProperties>
-            <java.home>${env.JAVA_HOME}</java.home>
-          </filterProperties>
-          <extraArtifacts>
-            <extraArtifact>org.codehaus.mojo:animal-sniffer-annotations:${project.version}</extraArtifact>
-          </extraArtifacts>
+          <requirementsHistories>
+            <history>
+              <version>1.23</version>
+              <maven>3.2.5</maven>
+              <jdk>1.8</jdk>
+            </history>
+            <history>
+              <version>1.22</version>
+              <maven>2.2.1</maven>
+              <jdk>1.8</jdk>
+            </history>
+          </requirementsHistories>
         </configuration>
       </plugin>
     </plugins>
-  </build>
+  </reporting>
 
   <profiles>
     <profile>
@@ -144,6 +134,14 @@
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-invoker-plugin</artifactId>
+            <configuration>
+              <filterProperties>
+                <java.home>${env.JAVA_HOME}</java.home>
+              </filterProperties>
+              <extraArtifacts>
+                <extraArtifact>org.codehaus.mojo:animal-sniffer-annotations:${project.version}</extraArtifact>
+              </extraArtifacts>
+            </configuration>
           </plugin>
         </plugins>
       </build>

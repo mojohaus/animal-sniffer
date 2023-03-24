@@ -92,43 +92,17 @@
           </execution>
         </executions>
       </plugin>
-      <plugin>
-        <artifactId>maven-invoker-plugin</artifactId>
-        <configuration>
-          <pomIncludes>
-            <pomInclude>*/pom.xml</pomInclude>
-          </pomIncludes>
-        </configuration>
-      </plugin>
     </plugins>
   </build>
 
   <profiles>
     <profile>
-      <!-- run integration tests
-          to use this profile:
-          or run integration tests: mvn -Prun-its
-      -->
       <id>run-its</id>
       <build>
-        <defaultGoal>verify</defaultGoal>
         <plugins>
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-invoker-plugin</artifactId>
-            <executions>
-              <execution>
-                <id>integration-test</id>
-                <goals>
-                  <goal>install</goal>
-                  <goal>run</goal>
-                </goals>
-                <configuration>
-                  <streamLogs>false</streamLogs>
-                  <debug>true</debug>
-                </configuration>
-              </execution>
-            </executions>
           </plugin>
         </plugins>
       </build>
