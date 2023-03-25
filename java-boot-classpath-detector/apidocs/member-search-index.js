@@ -1,1 +1,1 @@
-memberSearchIndex = [{"p":"org.codehaus.mojo.animal_sniffer.jbcpd","c":"ShowClassPath","l":"main(String[])","url":"main(java.lang.String[])"},{"p":"org.codehaus.mojo.animal_sniffer.jbcpd","c":"ShowClassPath","l":"ShowClassPath()","url":"%3Cinit%3E()"}]
+memberSearchIndex = [{"p":"org.codehaus.mojo.animal_sniffer.jbcpd","c":"ShowClassPath","l":"main(String[])","u":"main(java.lang.String[])"},{"p":"org.codehaus.mojo.animal_sniffer.jbcpd","c":"ShowClassPath","l":"ShowClassPath()","u":"%3Cinit%3E()"}];updateSearchResults();

@@ -1,1 +1,1 @@
-packageSearchIndex = [{"l":"All Packages","url":"allpackages-index.html"},{"l":"org.codehaus.mojo.animal_sniffer.maven"}]
+packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"org.codehaus.mojo.animal_sniffer_maven_plugin"},{"l":"org.codehaus.mojo.animal_sniffer.maven"}];updateSearchResults();
