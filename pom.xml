@@ -98,7 +98,7 @@
 
   <properties>
     <scmpublish.content>${project.build.directory}/staging/animal-sniffer-parent</scmpublish.content>
-    <maven.version>3.2.5</maven.version>
+    <maven.version>3.5.4</maven.version>
     <mojo.java.target>8</mojo.java.target>
     <build-helper.version>3.3.0</build-helper.version>
     <project.build.outputTimestamp>2023-03-25T07:56:10Z</project.build.outputTimestamp>
