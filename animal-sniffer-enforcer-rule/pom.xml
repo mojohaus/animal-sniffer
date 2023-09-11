@@ -40,7 +40,7 @@
   </description>
 
   <properties>
-    <enforcer-api.version>3.2.1</enforcer-api.version>
+    <enforcer-api.version>3.4.1</enforcer-api.version>
   </properties>
 
   <dependencies>
