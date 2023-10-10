@@ -98,9 +98,6 @@
 
   <properties>
     <scmpublish.content>${project.build.directory}/staging/animal-sniffer-parent</scmpublish.content>
-    <maven.version>3.6.3</maven.version>
-    <mojo.java.target>8</mojo.java.target>
-    <build-helper.version>3.4.0</build-helper.version>
     <project.build.outputTimestamp>2023-03-25T07:56:10Z</project.build.outputTimestamp>
   </properties>
 
@@ -143,11 +140,6 @@
           </executions>
         </plugin>
         <plugin>
-          <groupId>org.codehaus.mojo</groupId>
-          <artifactId>build-helper-maven-plugin</artifactId>
-          <version>${build-helper.version}</version>
-        </plugin>
-        <plugin>
           <!-- multi module project - stage site -->
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-site-plugin</artifactId>
@@ -161,6 +153,11 @@
               <phase>site</phase>
             </execution>
           </executions>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-shade-plugin</artifactId>
+          <version>3.5.1</version>
         </plugin>
       </plugins>
     </pluginManagement>
