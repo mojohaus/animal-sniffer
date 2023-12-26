@@ -240,7 +240,7 @@ public class SignatureCheckerTest extends TestCase
 
         @Override
         public void warn(String message) {
-            fail("Unexepcted warning: " + message);
+            fail("Unexpected warning: " + message);
         }
 
         @Override
@@ -248,12 +248,12 @@ public class SignatureCheckerTest extends TestCase
             if (t != null) {
                 t.printStackTrace();
             }
-            fail("Unexepcted warning: " + message);
+            fail("Unexpected warning: " + message);
         }
 
         @Override
         public void error(String message) {
-            fail("Unexepcted error: " + message);
+            fail("Unexpected error: " + message);
         }
 
         @Override
@@ -261,7 +261,7 @@ public class SignatureCheckerTest extends TestCase
             if (t != null) {
                 t.printStackTrace();
             }
-            fail("Unexepcted error: " + message);
+            fail("Unexpected error: " + message);
         }
     }
 }
