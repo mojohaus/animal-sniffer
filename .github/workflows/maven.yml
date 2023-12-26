@@ -21,6 +21,9 @@ name: GitHub CI
 
 on: [push, pull_request]
 
+permissions:
+  contents: read
+
 jobs:
   build:
     name: Verify
@@ -28,7 +31,7 @@ jobs:
     with:
       jdk-matrix: '["8", "11", "17", "20"]'
       jdk-distribution-matrix: '["temurin", "zulu"]'
-      ff-jdk: "11"
-      ff-maven: "3.9.1"                     # Maven version for fail-fast-build
-      maven-matrix: '[ "3.2.5", "3.8.8" ]'  # Maven versions matrix for verify builds
+      ff-jdk: "17"
+      ff-maven: "3.9.5"                     # Maven version for fail-fast-build
+      maven-matrix: '[ "3.6.3", "3.8.8" ]'  # Maven versions matrix for verify builds
 
