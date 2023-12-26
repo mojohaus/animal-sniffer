@@ -35,7 +35,6 @@ import java.io.OutputStream;
 import java.net.URI;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -116,7 +115,7 @@ public class SignatureBuilder
         {
             for ( InputStream in : ins )
             {
-                try (ObjectInputStream ois = new ObjectInputStream( new GZIPInputStream( in ) ))
+                try (ObjectInputStream ois = new SignatureObjectInputStream( new GZIPInputStream( in ) ))
                 {
                     while ( true )
                     {
@@ -182,6 +181,7 @@ public class SignatureBuilder
         }
     }
 
+    @Override
     protected void process( String name, InputStream image )
         throws IOException
     {
@@ -202,10 +202,11 @@ public class SignatureBuilder
             super(Opcodes.ASM9);
         }
 
+        @Override
         public void visit( int version, int access, String name, String signature, String superName,
                            String[] interfaces )
         {
-            this.clazz = new Clazz( name, new HashSet<>(), superName, interfaces );
+            this.clazz = new Clazz( name, superName, interfaces );
         }
 
         public void end()
@@ -222,12 +223,14 @@ public class SignatureBuilder
             }
         }
 
+        @Override
         public MethodVisitor visitMethod( int access, String name, String desc, String signature, String[] exceptions )
         {
             clazz.getSignatures().add( name + desc );
             return null;
         }
 
+        @Override
         public FieldVisitor visitField( int access, String name, String desc, String signature, Object value )
         {
             clazz.getSignatures().add( name + "#" + desc );

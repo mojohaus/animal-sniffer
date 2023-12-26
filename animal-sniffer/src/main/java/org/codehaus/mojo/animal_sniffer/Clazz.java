@@ -27,7 +27,7 @@ package org.codehaus.mojo.animal_sniffer;
 
 import java.io.Serializable;
 import java.util.Arrays;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Objects;
 import java.util.Set;
 
@@ -60,19 +60,55 @@ public final class Clazz
     private final String[] superInterfaces;
 
     /**
-     * Creates a new class signature.
+     * Internal constructor which just assigns all fields, without performing any defensive copying
+     * or similar.
      *
-     * @param name            the name of the class.
-     * @param signatures      the signatures.
-     * @param superClass      the superclass.
-     * @param superInterfaces the interfaces implemented by the class.
+     * @param dummy Unused; only needed to avoid constructor signature conflicts
      */
-    public Clazz( String name, Set<String> signatures, String superClass, String[] superInterfaces )
-    {
+    private Clazz( String name, Set<String> signatures, String superClass, String[] superInterfaces, Void dummy ) {
         this.name = name;
         this.signatures = signatures;
         this.superClass = superClass;
-        this.superInterfaces = superInterfaces.clone();
+        this.superInterfaces = superInterfaces;
+    }
+
+    /**
+     * Creates a new class signature, with an initially empty set of member signatures.
+     *
+     * @param name            the name of the class.
+     * @param superClass      the superclass.
+     * @param superInterfaces the interfaces implemented by the class; a copy of this array is created.
+     */
+    public Clazz( String name, String superClass, String[] superInterfaces )
+    {
+        this(
+            name,
+            new LinkedHashSet<>(),
+            superClass,
+            superInterfaces.clone(),
+            null
+        );
+    }
+
+    /**
+     * Creates a new class signature.
+     *
+     * @param name            the name of the class.
+     * @param signatures      the signatures; a copy of this set is created.
+     * @param superClass      the superclass.
+     * @param superInterfaces the interfaces implemented by the class; a copy of this array is created.
+     */
+    public Clazz( String name, Set<String> signatures, String superClass, String[] superInterfaces )
+    {
+        this(
+            name,
+            // Create defensive copy; this also makes sure that field has known JDK Set implementation as value,
+            // which is important for Java Serialization and for SignatureObjectInputStream
+            new LinkedHashSet<>(signatures),
+            superClass,
+            superInterfaces.clone(),
+            null
+        );
     }
 
     /**
@@ -94,7 +130,7 @@ public final class Clazz
             // nothing we can do... this is a breaking change
             throw new ClassCastException( "Cannot merge class " + defB.name + " as it has changed superclass:" );
         }
-        Set<String> superInterfaces = new HashSet<>();
+        Set<String> superInterfaces = new LinkedHashSet<>();
         if ( defA.superInterfaces != null )
         {
             superInterfaces.addAll( Arrays.asList( defA.superInterfaces ) );
@@ -103,7 +139,7 @@ public final class Clazz
         {
             superInterfaces.addAll( Arrays.asList( defB.superInterfaces ) );
         }
-        Set<String> signatures = new HashSet<>();
+        Set<String> signatures = new LinkedHashSet<>();
         signatures.addAll( defA.signatures );
         signatures.addAll( defB.signatures );
         this.name = defA.getName();
@@ -117,6 +153,9 @@ public final class Clazz
         return name;
     }
 
+    /**
+     * Gets a mutable reference to the set of member signatures.
+     */
     public Set<String> getSignatures()
     {
         return signatures;

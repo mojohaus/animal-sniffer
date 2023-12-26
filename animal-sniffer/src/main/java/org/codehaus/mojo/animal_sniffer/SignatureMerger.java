@@ -64,7 +64,7 @@ public class SignatureMerger
         {
             try
             {
-                ObjectInputStream ois = new ObjectInputStream( new GZIPInputStream( i ) );
+                ObjectInputStream ois = new SignatureObjectInputStream( new GZIPInputStream( i ) );
                 while ( true )
                 {
                     Clazz c = (Clazz) ois.readObject();

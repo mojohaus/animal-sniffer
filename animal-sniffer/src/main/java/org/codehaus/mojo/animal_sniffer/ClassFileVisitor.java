@@ -124,8 +124,7 @@ public abstract class ClassFileVisitor
     /**
      * Recursively finds class files and invokes {@link #process(String, InputStream)}
      *
-     * @param path Directory (or other Path like {@code Paths.get(URI.create("jrt:/modules"))}) full of class files,
-     *             or a class file (in which case that single class is processed).
+     * @param path Directory (or other Path like {@code Paths.get(URI.create("jrt:/modules"))}) full of class files
      */
     public void process( Path path )
         throws IOException

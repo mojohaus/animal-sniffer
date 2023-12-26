@@ -138,7 +138,7 @@ public class SignatureChecker
     public static Map<String, Clazz> loadClasses( InputStream in ) throws IOException
     {
         Map<String, Clazz> classes = new HashMap<>();
-        try (ObjectInputStream ois = new ObjectInputStream( new GZIPInputStream( in ) ))
+        try (ObjectInputStream ois = new SignatureObjectInputStream( new GZIPInputStream( in ) ))
         {
             while ( true )
             {
@@ -573,7 +573,6 @@ public class SignatureChecker
 
         /**
          * If the given signature is found in the specified class, return true.
-         * @param baseFind TODO
          */
         private boolean find( Clazz c , String sig )
         {
