@@ -30,8 +30,8 @@ jobs:
     uses: apache/maven-gh-actions-shared/.github/workflows/maven-verify.yml@v4
     with:
       jdk-matrix: '["8", "11", "17", "20"]'
-      jdk-distribution-matrix: '["temurin", "zulu"]'
+      jdk-distribution-matrix: '["zulu"]'
       ff-jdk: "17"
-      ff-maven: "3.9.5"                     # Maven version for fail-fast-build
+      ff-maven: "3.9.6"                     # Maven version for fail-fast-build
       maven-matrix: '[ "3.6.3", "3.8.8" ]'  # Maven versions matrix for verify builds
 
