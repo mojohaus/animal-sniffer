@@ -31,48 +31,39 @@ package org.codehaus.mojo.animal_sniffer.ant;
  * @author Stephen Connolly
  * @since 07-Sep-2009 16:55:55
  */
-public class Ignore
-{
+public class Ignore {
     private String className;
 
-    public String getClassName()
-    {
+    public String getClassName() {
         return className;
     }
 
-    public void setClassName( String className )
-    {
+    public void setClassName(String className) {
         this.className = className;
     }
 
-    public boolean equals( Object o )
-    {
-        if ( this == o )
-        {
+    public boolean equals(Object o) {
+        if (this == o) {
             return true;
         }
-        if ( !( o instanceof Ignore ) )
-        {
+        if (!(o instanceof Ignore)) {
             return false;
         }
 
         Ignore ignore = (Ignore) o;
 
-        if ( className != null ? !className.equals( ignore.className ) : ignore.className != null )
-        {
+        if (className != null ? !className.equals(ignore.className) : ignore.className != null) {
             return false;
         }
 
         return true;
     }
 
-    public int hashCode()
-    {
+    public int hashCode() {
         return 0;
     }
 
-    public String toString()
-    {
+    public String toString() {
         return "Ignore{" + "className='" + className + '\'' + '}';
     }
 }

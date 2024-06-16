@@ -35,9 +35,7 @@
   <packaging>maven-plugin</packaging>
 
   <name>Animal Sniffer Maven Plugin</name>
-  <description>
-    Animal Sniffer Maven Plugin.
-  </description>
+  <description>Animal Sniffer Maven Plugin.</description>
 
   <prerequisites>
     <maven>${mavenVersion}</maven>
@@ -101,13 +99,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-plugin-report-plugin</artifactId>
-        <reportSets>
-          <reportSet>
-            <reports>
-              <report>report</report>
-            </reports>
-          </reportSet>
-        </reportSets>
         <configuration>
           <requirementsHistories>
             <history>
@@ -122,6 +113,13 @@
             </history>
           </requirementsHistories>
         </configuration>
+        <reportSets>
+          <reportSet>
+            <reports>
+              <report>report</report>
+            </reports>
+          </reportSet>
+        </reportSets>
       </plugin>
     </plugins>
   </reporting>

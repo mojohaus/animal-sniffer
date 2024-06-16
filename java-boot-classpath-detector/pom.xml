@@ -35,9 +35,7 @@
   <packaging>jar</packaging>
 
   <name>Java boot classpath detector</name>
-  <description>
-    Queries a java home in order to find its boot class path.
-  </description>
+  <description>Queries a java home in order to find its boot class path.</description>
 
   <build>
     <plugins>

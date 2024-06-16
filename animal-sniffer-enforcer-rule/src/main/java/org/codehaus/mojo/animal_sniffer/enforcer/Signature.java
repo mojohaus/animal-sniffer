@@ -33,51 +33,42 @@ import org.apache.maven.artifact.factory.ArtifactFactory;
  *
  * @author Kohsuke Kawaguchi
  */
-public class Signature
-{
+public class Signature {
     private String groupId;
 
     private String artifactId;
 
     private String version;
 
-    public String getGroupId()
-    {
+    public String getGroupId() {
         return groupId;
     }
 
-    public void setGroupId( String groupId )
-    {
+    public void setGroupId(String groupId) {
         this.groupId = groupId;
     }
 
-    public String getArtifactId()
-    {
+    public String getArtifactId() {
         return artifactId;
     }
 
-    public void setArtifactId( String artifactId )
-    {
+    public void setArtifactId(String artifactId) {
         this.artifactId = artifactId;
     }
 
-    public String getVersion()
-    {
+    public String getVersion() {
         return version;
     }
 
-    public void setVersion( String version )
-    {
+    public void setVersion(String version) {
         this.version = version;
     }
 
-    public org.apache.maven.artifact.Artifact createArtifact( ArtifactFactory factory )
-    {
-        return factory.createArtifact( groupId, artifactId, version, null, "signature"/*don't really care*/ );
+    public org.apache.maven.artifact.Artifact createArtifact(ArtifactFactory factory) {
+        return factory.createArtifact(groupId, artifactId, version, null, "signature" /*don't really care*/);
     }
 
-    public String toString()
-    {
+    public String toString() {
         return groupId + ":" + artifactId + ":" + version;
     }
 }

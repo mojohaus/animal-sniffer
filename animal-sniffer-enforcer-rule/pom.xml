@@ -35,9 +35,7 @@
   <packaging>jar</packaging>
 
   <name>Animal Sniffer Maven Enforcer Rule</name>
-  <description>
-    Animal Sniffer Maven Enforcer Rule.
-  </description>
+  <description>Animal Sniffer Maven Enforcer Rule.</description>
 
   <properties>
     <enforcer-api.version>3.5.0</enforcer-api.version>

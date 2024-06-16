@@ -51,9 +51,7 @@ import org.codehaus.mojo.animal_sniffer.SignatureChecker;
  * @author connollys
  * @since 1.3
  */
-public class CheckSignatureTask
-    extends Task
-{
+public class CheckSignatureTask extends Task {
 
     private File signature;
 
@@ -69,218 +67,168 @@ public class CheckSignatureTask
 
     private Vector<Annotation> annotations = new Vector<>();
 
-    public void addPath( Path path )
-    {
-        paths.add( path );
+    public void addPath(Path path) {
+        paths.add(path);
     }
 
-    public Ignore createIgnore( )
-    {
+    public Ignore createIgnore() {
         final Ignore result = new Ignore();
-        ignores.add( result );
+        ignores.add(result);
         return result;
     }
 
-    public Annotation createAnnotation()
-    {
+    public Annotation createAnnotation() {
         final Annotation result = new Annotation();
-        annotations.add( result );
+        annotations.add(result);
         return result;
     }
 
-    public void setSignature( File signature )
-    {
+    public void setSignature(File signature) {
         this.signature = signature;
     }
 
-    public Path createClasspath()
-    {
-        log( "In createClasspath", Project.MSG_INFO );
-        if ( this.classpath == null )
-        {
-            this.classpath = new Path( getProject() );
+    public Path createClasspath() {
+        log("In createClasspath", Project.MSG_INFO);
+        if (this.classpath == null) {
+            this.classpath = new Path(getProject());
         }
         return this.classpath.createPath();
     }
 
-    public void setClasspath( Path classpath )
-    {
-        log( "In setClasspath", Project.MSG_INFO );
-        if ( this.classpath == null )
-        {
+    public void setClasspath(Path classpath) {
+        log("In setClasspath", Project.MSG_INFO);
+        if (this.classpath == null) {
             this.classpath = classpath;
-        }
-        else
-        {
-            this.classpath.append( classpath );
+        } else {
+            this.classpath.append(classpath);
         }
     }
 
-    public void setClasspathRef( Reference r )
-    {
-        log( "In setClasspathRef", Project.MSG_INFO );
-        createClasspath().setRefid( r );
+    public void setClasspathRef(Reference r) {
+        log("In setClasspathRef", Project.MSG_INFO);
+        createClasspath().setRefid(r);
     }
 
-    public Path createSourcepath()
-    {
-        log( "In createSourcepath", Project.MSG_INFO );
-        if ( this.sourcepath == null )
-        {
-            this.sourcepath = new Path( getProject() );
+    public Path createSourcepath() {
+        log("In createSourcepath", Project.MSG_INFO);
+        if (this.sourcepath == null) {
+            this.sourcepath = new Path(getProject());
         }
         return this.sourcepath.createPath();
     }
 
-    public void setSourcepath( Path sourcepath )
-    {
-        log( "In setSourcepath", Project.MSG_INFO );
-        if ( this.sourcepath == null )
-        {
+    public void setSourcepath(Path sourcepath) {
+        log("In setSourcepath", Project.MSG_INFO);
+        if (this.sourcepath == null) {
             this.sourcepath = sourcepath;
-        }
-        else
-        {
-            this.sourcepath.append( sourcepath );
+        } else {
+            this.sourcepath.append(sourcepath);
         }
     }
 
-    public void setSourcepathRef( Reference r )
-    {
-        log( "In setSourcepathRef", Project.MSG_INFO );
-        createSourcepath().setRefid( r );
+    public void setSourcepathRef(Reference r) {
+        log("In setSourcepathRef", Project.MSG_INFO);
+        createSourcepath().setRefid(r);
     }
 
-    public void setFailOnError( boolean failOnError )
-    {
-        log( "In setFailOnError", Project.MSG_INFO );
+    public void setFailOnError(boolean failOnError) {
+        log("In setFailOnError", Project.MSG_INFO);
         this.failOnError = failOnError;
     }
 
-    public void execute()
-        throws BuildException
-    {
+    public void execute() throws BuildException {
         validate();
-        try
-        {
-            log( "Checking unresolved references to " + signature, Project.MSG_INFO );
+        try {
+            log("Checking unresolved references to " + signature, Project.MSG_INFO);
 
-            if ( !signature.isFile() )
-            {
-                throw new BuildException( "Could not find signature: " + signature );
+            if (!signature.isFile()) {
+                throw new BuildException("Could not find signature: " + signature);
             }
 
             final Set<String> ignoredPackages = buildPackageList();
 
-            for ( Ignore ignore: ignores )
-            {
-                if ( ignore == null || ignore.getClassName() == null )
-                {
+            for (Ignore ignore : ignores) {
+                if (ignore == null || ignore.getClassName() == null) {
                     continue;
                 }
-                ignoredPackages.add( ignore.getClassName().replace( '.', '/' ) );
+                ignoredPackages.add(ignore.getClassName().replace('.', '/'));
             }
 
             final SignatureChecker signatureChecker =
-                new SignatureChecker( new FileInputStream( signature ), ignoredPackages, new AntLogger( this ) );
+                    new SignatureChecker(new FileInputStream(signature), ignoredPackages, new AntLogger(this));
 
             final List<File> tmp = new ArrayList<>();
             if (sourcepath != null) {
-                for ( Object next : sourcepath )
-                {
-                    if ( next instanceof FileResource )
-                    {
-                        final File file = ( (FileResource) next ).getFile();
-                        tmp.add( file );
+                for (Object next : sourcepath) {
+                    if (next instanceof FileResource) {
+                        final File file = ((FileResource) next).getFile();
+                        tmp.add(file);
                     }
                 }
             }
             signatureChecker.setSourcePath(tmp);
 
             final Collection<String> annotationTypes = new HashSet<>();
-            for ( Annotation annotation : annotations )
-            {
-                if ( annotation != null && annotation.getClassName() != null )
-                {
-                    annotationTypes.add( annotation.getClassName() );
+            for (Annotation annotation : annotations) {
+                if (annotation != null && annotation.getClassName() != null) {
+                    annotationTypes.add(annotation.getClassName());
                 }
             }
-            signatureChecker.setAnnotationTypes( annotationTypes );
+            signatureChecker.setAnnotationTypes(annotationTypes);
 
-            for ( Path path : paths )
-            {
+            for (Path path : paths) {
                 final String[] files = path.list();
-                for ( String file : files )
-                {
-                    signatureChecker.process( new File( file ) );
+                for (String file : files) {
+                    signatureChecker.process(new File(file));
                 }
             }
 
-            if ( signatureChecker.isSignatureBroken() )
-            {
+            if (signatureChecker.isSignatureBroken()) {
                 String message = "Signature errors found. Verify them and ignore them with the "
-                                              + "proper annotation if needed.";
-                if ( failOnError )
-                {
-                    throw new BuildException( message, getLocation() );
-                }
-                else
-                {
-                    log( message, Project.MSG_WARN );
+                        + "proper annotation if needed.";
+                if (failOnError) {
+                    throw new BuildException(message, getLocation());
+                } else {
+                    log(message, Project.MSG_WARN);
                 }
             }
-        }
-        catch ( IOException e )
-        {
-            throw new BuildException( "Failed to check signatures", e );
+        } catch (IOException e) {
+            throw new BuildException("Failed to check signatures", e);
         }
     }
 
-    protected void validate()
-    {
-        if ( signature == null )
-        {
-            throw new BuildException( "signature not set" );
+    protected void validate() {
+        if (signature == null) {
+            throw new BuildException("signature not set");
         }
-        if ( paths.size() < 1 )
-        {
-            throw new BuildException( "path not set" );
+        if (paths.size() < 1) {
+            throw new BuildException("path not set");
         }
-
     }
 
     /**
      * List of packages defined in the application.
      */
-    private Set<String> buildPackageList()
-        throws IOException
-    {
-        ClassListBuilder plb = new ClassListBuilder( new AntLogger( this ) );
-        apply( plb );
+    private Set<String> buildPackageList() throws IOException {
+        ClassListBuilder plb = new ClassListBuilder(new AntLogger(this));
+        apply(plb);
         return plb.getPackages();
     }
 
-    private void apply( ClassFileVisitor v )
-        throws IOException
-    {
-        for ( Path path : paths )
-        {
+    private void apply(ClassFileVisitor v) throws IOException {
+        for (Path path : paths) {
             final String[] files = path.list();
-            for ( String file : files )
-            {
-                log( "Ignoring the signatures from file to be checked: " + file, Project.MSG_INFO );
-                v.process( new File( file ) );
+            for (String file : files) {
+                log("Ignoring the signatures from file to be checked: " + file, Project.MSG_INFO);
+                v.process(new File(file));
             }
         }
-        if ( classpath != null )
-        {
-            for ( Object next : classpath )
-            {
-                if ( next instanceof FileResource )
-                {
-                    final File file = ( (FileResource) next ).getFile();
-                    log( "Ignoring the signatures from classpath: " + file, Project.MSG_INFO );
-                    v.process( file );
+        if (classpath != null) {
+            for (Object next : classpath) {
+                if (next instanceof FileResource) {
+                    final File file = ((FileResource) next).getFile();
+                    log("Ignoring the signatures from classpath: " + file, Project.MSG_INFO);
+                    v.process(file);
                 }
             }
         }

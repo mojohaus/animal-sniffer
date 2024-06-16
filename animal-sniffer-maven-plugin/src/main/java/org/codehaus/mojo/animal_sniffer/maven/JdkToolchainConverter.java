@@ -25,6 +25,10 @@ package org.codehaus.mojo.animal_sniffer.maven;
  *
  */
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.codehaus.plexus.component.configurator.ComponentConfigurationException;
 import org.codehaus.plexus.component.configurator.ConfigurationListener;
 import org.codehaus.plexus.component.configurator.converters.AbstractConfigurationConverter;
@@ -33,52 +37,47 @@ import org.codehaus.plexus.component.configurator.converters.lookup.ConverterLoo
 import org.codehaus.plexus.component.configurator.expression.ExpressionEvaluator;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  * Plexus ConfigurationConverter
  *
  * @author Stephen Connolly
  */
-public class JdkToolchainConverter
-    extends AbstractConfigurationConverter
-{
+public class JdkToolchainConverter extends AbstractConfigurationConverter {
     public static final String ROLE = ConfigurationConverter.class.getName();
 
     /**
      * @see org.codehaus.plexus.component.configurator.converters.ConfigurationConverter#canConvert(java.lang.Class)
      */
-    public boolean canConvert( Class type )
-    {
-        return JdkToolchain.class.isAssignableFrom( type );
+    public boolean canConvert(Class type) {
+        return JdkToolchain.class.isAssignableFrom(type);
     }
 
     /**
      * @see org.codehaus.plexus.component.configurator.converters.ConfigurationConverter#fromConfiguration(org.codehaus.plexus.component.configurator.converters.lookup.ConverterLookup, org.codehaus.plexus.configuration.PlexusConfiguration, java.lang.Class, java.lang.Class, java.lang.ClassLoader, org.codehaus.plexus.component.configurator.expression.ExpressionEvaluator, org.codehaus.plexus.component.configurator.ConfigurationListener)
      */
-    public Object fromConfiguration( ConverterLookup converterLookup, PlexusConfiguration configuration, Class type,
-                                     Class baseType, ClassLoader classLoader, ExpressionEvaluator expressionEvaluator,
-                                     ConfigurationListener listener )
-        throws ComponentConfigurationException
-    {
-        return fromConfiguration( configuration, expressionEvaluator );
+    public Object fromConfiguration(
+            ConverterLookup converterLookup,
+            PlexusConfiguration configuration,
+            Class type,
+            Class baseType,
+            ClassLoader classLoader,
+            ExpressionEvaluator expressionEvaluator,
+            ConfigurationListener listener)
+            throws ComponentConfigurationException {
+        return fromConfiguration(configuration, expressionEvaluator);
     }
 
-    private JdkToolchain fromConfiguration( PlexusConfiguration configuration, ExpressionEvaluator expressionEvaluator )
-        throws ComponentConfigurationException
-    {
+    private JdkToolchain fromConfiguration(PlexusConfiguration configuration, ExpressionEvaluator expressionEvaluator)
+            throws ComponentConfigurationException {
         PlexusConfiguration[] params = configuration.getChildren();
         Map<String, String> parameters = new HashMap<>();
-        for ( PlexusConfiguration param : params )
-        {
+        for (PlexusConfiguration param : params) {
             String name = param.getName();
             String val = param.getValue();
-            parameters.put( name, val );
+            parameters.put(name, val);
         }
         final JdkToolchain result = new JdkToolchain();
-        result.setParameters( Collections.unmodifiableMap( parameters ) );
+        result.setParameters(Collections.unmodifiableMap(parameters));
         return result;
     }
 }

@@ -36,9 +36,7 @@ import java.util.Set;
  *
  * @author Kohsuke Kawaguchi
  */
-public final class Clazz
-    implements Serializable
-{
+public final class Clazz implements Serializable {
     /**
      * The name of the class.
      */
@@ -65,7 +63,7 @@ public final class Clazz
      *
      * @param dummy Unused; only needed to avoid constructor signature conflicts
      */
-    private Clazz( String name, Set<String> signatures, String superClass, String[] superInterfaces, Void dummy ) {
+    private Clazz(String name, Set<String> signatures, String superClass, String[] superInterfaces, Void dummy) {
         this.name = name;
         this.signatures = signatures;
         this.superClass = superClass;
@@ -79,15 +77,8 @@ public final class Clazz
      * @param superClass      the superclass.
      * @param superInterfaces the interfaces implemented by the class; a copy of this array is created.
      */
-    public Clazz( String name, String superClass, String[] superInterfaces )
-    {
-        this(
-            name,
-            new LinkedHashSet<>(),
-            superClass,
-            superInterfaces.clone(),
-            null
-        );
+    public Clazz(String name, String superClass, String[] superInterfaces) {
+        this(name, new LinkedHashSet<>(), superClass, superInterfaces.clone(), null);
     }
 
     /**
@@ -98,17 +89,15 @@ public final class Clazz
      * @param superClass      the superclass.
      * @param superInterfaces the interfaces implemented by the class; a copy of this array is created.
      */
-    public Clazz( String name, Set<String> signatures, String superClass, String[] superInterfaces )
-    {
+    public Clazz(String name, Set<String> signatures, String superClass, String[] superInterfaces) {
         this(
-            name,
-            // Create defensive copy; this also makes sure that field has known JDK Set implementation as value,
-            // which is important for Java Serialization and for SignatureObjectInputStream
-            new LinkedHashSet<>(signatures),
-            superClass,
-            superInterfaces.clone(),
-            null
-        );
+                name,
+                // Create defensive copy; this also makes sure that field has known JDK Set implementation as value,
+                // which is important for Java Serialization and for SignatureObjectInputStream
+                new LinkedHashSet<>(signatures),
+                superClass,
+                superInterfaces.clone(),
+                null);
     }
 
     /**
@@ -118,59 +107,49 @@ public final class Clazz
      * @param defB the second instance
      * @throws ClassCastException if the two instances have different names or if the superclasses differ.
      */
-    public Clazz( Clazz defA, Clazz defB )
-    {
-        if ( !Objects.equals(defA.name, defB.name ) )
-        {
+    public Clazz(Clazz defA, Clazz defB) {
+        if (!Objects.equals(defA.name, defB.name)) {
             // nothing we can do... this is an invalid argument
-            throw new ClassCastException( "Cannot merge different classes: " + defA.name + " and " + defB.name );
+            throw new ClassCastException("Cannot merge different classes: " + defA.name + " and " + defB.name);
         }
-        if ( !Objects.equals(defA.superClass, defB.superClass ) )
-        {
+        if (!Objects.equals(defA.superClass, defB.superClass)) {
             // nothing we can do... this is a breaking change
-            throw new ClassCastException( "Cannot merge class " + defB.name + " as it has changed superclass:" );
+            throw new ClassCastException("Cannot merge class " + defB.name + " as it has changed superclass:");
         }
         Set<String> superInterfaces = new LinkedHashSet<>();
-        if ( defA.superInterfaces != null )
-        {
-            superInterfaces.addAll( Arrays.asList( defA.superInterfaces ) );
+        if (defA.superInterfaces != null) {
+            superInterfaces.addAll(Arrays.asList(defA.superInterfaces));
         }
-        if ( defB.superInterfaces != null )
-        {
-            superInterfaces.addAll( Arrays.asList( defB.superInterfaces ) );
+        if (defB.superInterfaces != null) {
+            superInterfaces.addAll(Arrays.asList(defB.superInterfaces));
         }
         Set<String> signatures = new LinkedHashSet<>();
-        signatures.addAll( defA.signatures );
-        signatures.addAll( defB.signatures );
+        signatures.addAll(defA.signatures);
+        signatures.addAll(defB.signatures);
         this.name = defA.getName();
         this.signatures = signatures;
         this.superClass = defA.superClass;
-        this.superInterfaces = superInterfaces.toArray( new String[0] );
+        this.superInterfaces = superInterfaces.toArray(new String[0]);
     }
 
-    public String getName()
-    {
+    public String getName() {
         return name;
     }
 
     /**
      * Gets a mutable reference to the set of member signatures.
      */
-    public Set<String> getSignatures()
-    {
+    public Set<String> getSignatures() {
         return signatures;
     }
 
-    public String getSuperClass()
-    {
+    public String getSuperClass() {
         return superClass;
     }
 
-    public String[] getSuperInterfaces()
-    {
+    public String[] getSuperInterfaces() {
         return superInterfaces;
     }
 
     private static final long serialVersionUID = 1L;
-
 }

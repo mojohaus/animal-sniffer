@@ -34,9 +34,7 @@
   <artifactId>animal-sniffer</artifactId>
 
   <name>Animal Sniffer</name>
-  <description>
-    Animal Sniffer.
-  </description>
+  <description>Animal Sniffer.</description>
 
   <dependencies>
     <dependency>

@@ -24,8 +24,6 @@
 
 package org.codehaus.mojo.animal_sniffer;
 
-import static org.junit.Assert.assertArrayEquals;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InvalidClassException;
@@ -37,64 +35,63 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.zip.GZIPOutputStream;
 
+import junit.framework.TestCase;
 import org.codehaus.mojo.animal_sniffer.logging.Logger;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertArrayEquals;
 
-public class SignatureCheckerTest extends TestCase
-{
+public class SignatureCheckerTest extends TestCase {
 
-    public SignatureCheckerTest( String testName )
-    {
-        super( testName );
+    public SignatureCheckerTest(String testName) {
+        super(testName);
     }
 
-    public void testAnnotationFqn()
-    {
-        assertEquals( IgnoreJRERequirement.class.getName(), SignatureChecker.ANNOTATION_FQN );
+    public void testAnnotationFqn() {
+        assertEquals(IgnoreJRERequirement.class.getName(), SignatureChecker.ANNOTATION_FQN);
     }
 
-    public void testToSourceForm()
-    {
-        assertSourceForm( "java.util.HashMap", "java/util/HashMap", null );
-        assertSourceForm( "java.util.Map.Entry", "java/util/Map$Entry", null );
-        assertSourceForm( "String", "java/lang/String", null );
-        assertSourceForm( "java.lang.reflect.Field", "java/lang/reflect/Field", null );
-        assertSourceForm( "Thread.State", "java/lang/Thread$State", null );
-        assertSourceForm( "java.util.Set my.Class.myfield", "my/Class", "myfield#Ljava/util/Set;" );
-        assertSourceForm( "String[] my.Class.myfield", "my/Class", "myfield#[Ljava/lang/String;" );
-        assertSourceForm( "double[][][] my.Class.myfield", "my/Class", "myfield#[[[D" );
-        assertSourceForm( "void my.Class.mymethod()", "my/Class", "mymethod()V" );
-        assertSourceForm( "Object my.Class.mymethod(int, double, Thread)", "my/Class",
-                          "mymethod(IDLjava/lang/Thread;)Ljava/lang/Object;" );
+    public void testToSourceForm() {
+        assertSourceForm("java.util.HashMap", "java/util/HashMap", null);
+        assertSourceForm("java.util.Map.Entry", "java/util/Map$Entry", null);
+        assertSourceForm("String", "java/lang/String", null);
+        assertSourceForm("java.lang.reflect.Field", "java/lang/reflect/Field", null);
+        assertSourceForm("Thread.State", "java/lang/Thread$State", null);
+        assertSourceForm("java.util.Set my.Class.myfield", "my/Class", "myfield#Ljava/util/Set;");
+        assertSourceForm("String[] my.Class.myfield", "my/Class", "myfield#[Ljava/lang/String;");
+        assertSourceForm("double[][][] my.Class.myfield", "my/Class", "myfield#[[[D");
+        assertSourceForm("void my.Class.mymethod()", "my/Class", "mymethod()V");
+        assertSourceForm(
+                "Object my.Class.mymethod(int, double, Thread)",
+                "my/Class",
+                "mymethod(IDLjava/lang/Thread;)Ljava/lang/Object;");
     }
 
-    public void testToAnnotationDescriptor()
-    {
-        assertAnnotationDescriptor( "Lorg/codehaus/mojo/animal_sniffer/IgnoreJRERequirement;",
-                                    "org.codehaus.mojo.animal_sniffer.IgnoreJRERequirement" );
-        assertAnnotationDescriptor( "Lorg/jvnet/animal_sniffer/IgnoreJRERequirement;",
-                                    "org.jvnet.animal_sniffer.IgnoreJRERequirement" );
+    public void testToAnnotationDescriptor() {
+        assertAnnotationDescriptor(
+                "Lorg/codehaus/mojo/animal_sniffer/IgnoreJRERequirement;",
+                "org.codehaus.mojo.animal_sniffer.IgnoreJRERequirement");
+        assertAnnotationDescriptor(
+                "Lorg/jvnet/animal_sniffer/IgnoreJRERequirement;", "org.jvnet.animal_sniffer.IgnoreJRERequirement");
 
-        assertAnnotationDescriptor( "Lcom/foo/Bar;", "com.foo.Bar" );
-        assertAnnotationDescriptor( "Lcom/foo/Bar;", "com/foo/Bar" );
+        assertAnnotationDescriptor("Lcom/foo/Bar;", "com.foo.Bar");
+        assertAnnotationDescriptor("Lcom/foo/Bar;", "com/foo/Bar");
     }
 
-    private static void assertSourceForm( String expected, String type, String sig )
-    {
-        assertEquals( expected, SignatureChecker.toSourceForm( type, sig ) );
+    private static void assertSourceForm(String expected, String type, String sig) {
+        assertEquals(expected, SignatureChecker.toSourceForm(type, sig));
     }
 
-    private static void assertAnnotationDescriptor( String expected, String fqn )
-    {
-        assertEquals( expected, SignatureChecker.toAnnotationDescriptor( fqn ) );
+    private static void assertAnnotationDescriptor(String expected, String fqn) {
+        assertEquals(expected, SignatureChecker.toAnnotationDescriptor(fqn));
     }
 
-    public void testLoadClasses() throws Exception
-    {
+    public void testLoadClasses() throws Exception {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         try (ObjectOutputStream objOut = new ObjectOutputStream(new GZIPOutputStream(out))) {
-            objOut.writeObject(new Clazz("my/Class1", Collections.singleton("field1#Ljava/lang/String;"), "java/lang/Object", new String[] {"my/SuperInterface"}));
+            objOut.writeObject(new Clazz(
+                    "my/Class1", Collections.singleton("field1#Ljava/lang/String;"), "java/lang/Object", new String[] {
+                        "my/SuperInterface"
+                    }));
             objOut.writeObject(new Clazz("my/Class2", Collections.emptySet(), "my/SuperClass", new String[0]));
             objOut.writeObject(null);
         }
@@ -118,8 +115,7 @@ public class SignatureCheckerTest extends TestCase
     /**
      * Verifies that only certain allowed classes may be deserialized.
      */
-    public void testLoadClasses_DisallowedClass() throws Exception
-    {
+    public void testLoadClasses_DisallowedClass() throws Exception {
         // Java Serialization data for an instance of DisallowedDummyClass followed by `null`
         byte[] serializationData = {
             31, -117, 8, 0, 0, 0, 0, 0, 0, -1, 37, -63, 65, 14, 64, 48, 16, 0, -64, 37,
@@ -130,16 +126,14 @@ public class SignatureCheckerTest extends TestCase
             -126, -50, 87, -21, 96, 0, 0, 0,
         };
 
-        try
-        {
+        try {
             SignatureChecker.loadClasses(new ByteArrayInputStream(serializationData));
             fail();
-        }
-        catch (InvalidClassException e) {
+        } catch (InvalidClassException e) {
             assertEquals(DisallowedDummyClass.class.getName(), e.classname);
-            assertEquals(DisallowedDummyClass.class.getName() + "; Disallowed class for signature data", e.getMessage());
+            assertEquals(
+                    DisallowedDummyClass.class.getName() + "; Disallowed class for signature data", e.getMessage());
         }
-
 
         // Java Serialization data for an instance of a non-existent class followed by `null`
         byte[] missingClassSerializationData = {
@@ -151,20 +145,17 @@ public class SignatureCheckerTest extends TestCase
             0, 0,
         };
 
-        try
-        {
+        try {
             SignatureChecker.loadClasses(new ByteArrayInputStream(missingClassSerializationData));
             fail();
-        }
-        catch (InvalidClassException e) {
+        } catch (InvalidClassException e) {
             String className = "org.codehaus.mojo.animal_sniffer.SignatureCheckerTest$UnknownClass";
             assertEquals(className, e.classname);
             assertEquals(className + "; Class not found, probably disallowed class", e.getMessage());
         }
     }
 
-    private static class DisallowedDummyClass implements Serializable
-    {
+    private static class DisallowedDummyClass implements Serializable {
         private static final long serialVersionUID = 1L;
 
         static {
@@ -177,8 +168,7 @@ public class SignatureCheckerTest extends TestCase
      * Uses first {@link SignatureBuilder} to build signature data and then {@link SignatureChecker}
      * to load it.
      */
-    public void testLoadClasses_Roundtrip() throws Exception
-    {
+    public void testLoadClasses_Roundtrip() throws Exception {
         /*
          * Bytes for this class:
          * ```
@@ -220,23 +210,18 @@ public class SignatureCheckerTest extends TestCase
         assertArrayEquals(new String[0], class1.getSuperInterfaces());
     }
 
-    static class TestLogger implements Logger
-    {
+    static class TestLogger implements Logger {
         @Override
-        public void debug(String message) {
-        }
+        public void debug(String message) {}
 
         @Override
-        public void debug(String message, Throwable t) {
-        }
+        public void debug(String message, Throwable t) {}
 
         @Override
-        public void info(String message) {
-        }
+        public void info(String message) {}
 
         @Override
-        public void info(String message, Throwable t) {
-        }
+        public void info(String message, Throwable t) {}
 
         @Override
         public void warn(String message) {

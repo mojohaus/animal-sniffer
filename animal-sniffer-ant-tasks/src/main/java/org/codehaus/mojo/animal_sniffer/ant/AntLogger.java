@@ -25,9 +25,9 @@ package org.codehaus.mojo.animal_sniffer.ant;
  *
  */
 
-import org.codehaus.mojo.animal_sniffer.logging.Logger;
-import org.apache.tools.ant.Task;
 import org.apache.tools.ant.Project;
+import org.apache.tools.ant.Task;
+import org.codehaus.mojo.animal_sniffer.logging.Logger;
 
 /**
  * An animal sniffer logger that delegates to a maven log.
@@ -35,53 +35,42 @@ import org.apache.tools.ant.Project;
  * @author connollys
  * @since 1.3
  */
-public final class AntLogger
-    implements Logger
-{
+public final class AntLogger implements Logger {
     private final Task delegate;
 
-    public AntLogger( Task delegate )
-    {
+    public AntLogger(Task delegate) {
         this.delegate = delegate;
     }
 
-    public void info( String message )
-    {
-        delegate.log( message, Project.MSG_INFO );
+    public void info(String message) {
+        delegate.log(message, Project.MSG_INFO);
     }
 
-    public void info( String message, Throwable t )
-    {
-        delegate.log( message, t, Project.MSG_INFO );
+    public void info(String message, Throwable t) {
+        delegate.log(message, t, Project.MSG_INFO);
     }
 
-    public void debug( String message )
-    {
-        delegate.log( message, Project.MSG_DEBUG );
+    public void debug(String message) {
+        delegate.log(message, Project.MSG_DEBUG);
     }
 
-    public void debug( String message, Throwable t )
-    {
-        delegate.log( message, t, Project.MSG_DEBUG );
+    public void debug(String message, Throwable t) {
+        delegate.log(message, t, Project.MSG_DEBUG);
     }
 
-    public void warn( String message )
-    {
-        delegate.log( message, Project.MSG_WARN );
+    public void warn(String message) {
+        delegate.log(message, Project.MSG_WARN);
     }
 
-    public void warn( String message, Throwable t )
-    {
-        delegate.log( message, t, Project.MSG_WARN );
+    public void warn(String message, Throwable t) {
+        delegate.log(message, t, Project.MSG_WARN);
     }
 
-    public void error( String message )
-    {
-        delegate.log( message, Project.MSG_ERR );
+    public void error(String message) {
+        delegate.log(message, Project.MSG_ERR);
     }
 
-    public void error( String message, Throwable t )
-    {
-        delegate.log( message, t, Project.MSG_ERR );
+    public void error(String message, Throwable t) {
+        delegate.log(message, t, Project.MSG_ERR);
     }
 }

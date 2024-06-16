@@ -35,9 +35,7 @@
   <packaging>jar</packaging>
 
   <name>Animal Sniffer Ant Tasks</name>
-  <description>
-    Animal Sniffer Ant Tasks.
-  </description>
+  <description>Animal Sniffer Ant Tasks.</description>
 
   <properties>
     <!-- skip execution of invoker tests for now, as something is seriously botched
@@ -66,10 +64,10 @@
         <artifactId>maven-shade-plugin</artifactId>
         <executions>
           <execution>
-            <phase>package</phase>
             <goals>
               <goal>shade</goal>
             </goals>
+            <phase>package</phase>
             <configuration>
               <createDependencyReducedPom>false</createDependencyReducedPom>
               <keepDependenciesWithProvidedScope>true</keepDependenciesWithProvidedScope>

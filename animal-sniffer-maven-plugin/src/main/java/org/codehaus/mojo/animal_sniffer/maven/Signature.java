@@ -34,51 +34,42 @@ import org.eclipse.aether.artifact.DefaultArtifact;
  *
  * @author Kohsuke Kawaguchi
  */
-public class Signature
-{
+public class Signature {
     private String groupId;
 
     private String artifactId;
 
     private String version;
 
-    public String getGroupId()
-    {
+    public String getGroupId() {
         return groupId;
     }
 
-    public void setGroupId( String groupId )
-    {
+    public void setGroupId(String groupId) {
         this.groupId = groupId;
     }
 
-    public String getArtifactId()
-    {
+    public String getArtifactId() {
         return artifactId;
     }
 
-    public void setArtifactId( String artifactId )
-    {
+    public void setArtifactId(String artifactId) {
         this.artifactId = artifactId;
     }
 
-    public String getVersion()
-    {
+    public String getVersion() {
         return version;
     }
 
-    public void setVersion( String version )
-    {
+    public void setVersion(String version) {
         this.version = version;
     }
 
-    public Artifact createArtifact()
-    {
-        return new DefaultArtifact( groupId, artifactId, "signature", version);
+    public Artifact createArtifact() {
+        return new DefaultArtifact(groupId, artifactId, "signature", version);
     }
 
-    public String toString()
-    {
+    public String toString() {
         return groupId + ":" + artifactId + ":" + version;
     }
 }

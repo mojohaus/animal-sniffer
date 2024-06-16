@@ -25,8 +25,8 @@ package org.codehaus.mojo.animal_sniffer.maven;
  *
  */
 
-import org.codehaus.mojo.animal_sniffer.logging.Logger;
 import org.apache.maven.plugin.logging.Log;
+import org.codehaus.mojo.animal_sniffer.logging.Logger;
 
 /**
  * An animal sniffer logger that delegates to a maven log.
@@ -34,53 +34,42 @@ import org.apache.maven.plugin.logging.Log;
  * @author connollys
  * @since 1.3
  */
-public final class MavenLogger
-    implements Logger
-{
+public final class MavenLogger implements Logger {
     private final Log delegate;
 
-    public MavenLogger( Log delegate )
-    {
+    public MavenLogger(Log delegate) {
         this.delegate = delegate;
     }
 
-    public void info( String message )
-    {
-        delegate.info( message );
+    public void info(String message) {
+        delegate.info(message);
     }
 
-    public void info( String message, Throwable t )
-    {
-        delegate.info( message, t );
+    public void info(String message, Throwable t) {
+        delegate.info(message, t);
     }
 
-    public void debug( String message )
-    {
-        delegate.debug( message );
+    public void debug(String message) {
+        delegate.debug(message);
     }
 
-    public void debug( String message, Throwable t )
-    {
-        delegate.debug( message, t );
+    public void debug(String message, Throwable t) {
+        delegate.debug(message, t);
     }
 
-    public void warn( String message )
-    {
-        delegate.warn( message );
+    public void warn(String message) {
+        delegate.warn(message);
     }
 
-    public void warn( String message, Throwable t )
-    {
-        delegate.warn( message, t );
+    public void warn(String message, Throwable t) {
+        delegate.warn(message, t);
     }
 
-    public void error( String message )
-    {
-        delegate.error( message );
+    public void error(String message) {
+        delegate.error(message);
     }
 
-    public void error( String message, Throwable t )
-    {
-        delegate.error( message, t );
+    public void error(String message, Throwable t) {
+        delegate.error(message, t);
     }
 }
