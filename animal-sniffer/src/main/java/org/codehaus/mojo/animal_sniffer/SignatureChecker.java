@@ -58,9 +58,7 @@ import org.objectweb.asm.Type;
  *
  * @author Kohsuke Kawaguchi
  */
-public class SignatureChecker
-    extends ClassFileVisitor
-{
+public class SignatureChecker extends ClassFileVisitor {
     /**
      * The fully qualified name of the annotation to use to annotate methods/fields/classes that are
      * to be ignored by animal sniffer.
@@ -94,71 +92,54 @@ public class SignatureChecker
 
     private Collection<String> annotationDescriptors;
 
-    public static void main( String[] args )
-        throws Exception
-    {
+    public static void main(String[] args) throws Exception {
         Set<String> ignoredPackages = new HashSet<>();
-        ignoredPackages.add( "org.jvnet.animal_sniffer.*" );
-        ignoredPackages.add( "org.codehaus.mojo.animal_sniffer.*" );
-        ignoredPackages.add( "org.objectweb.*" );
-        new SignatureChecker( new FileInputStream( "signature" ), ignoredPackages,
-                              new PrintWriterLogger( System.out ) ).process( new File( "target/classes" ) );
+        ignoredPackages.add("org.jvnet.animal_sniffer.*");
+        ignoredPackages.add("org.codehaus.mojo.animal_sniffer.*");
+        ignoredPackages.add("org.objectweb.*");
+        new SignatureChecker(new FileInputStream("signature"), ignoredPackages, new PrintWriterLogger(System.out))
+                .process(new File("target/classes"));
     }
 
-    public SignatureChecker( InputStream in, Set<String> ignoredPackages, Logger logger )
-        throws IOException
-    {
-        this( loadClasses( in ), ignoredPackages, logger );
+    public SignatureChecker(InputStream in, Set<String> ignoredPackages, Logger logger) throws IOException {
+        this(loadClasses(in), ignoredPackages, logger);
     }
 
-    public SignatureChecker( Map<String, Clazz> classes, Set<String> ignoredPackages, Logger logger )
-        throws IOException
-    {
+    public SignatureChecker(Map<String, Clazz> classes, Set<String> ignoredPackages, Logger logger) throws IOException {
         this.classes = classes;
         this.ignoredPackages = new HashSet<>();
         this.ignoredPackageRules = new LinkedList<>();
-        for(String wildcard : ignoredPackages )
-        {
-            if ( wildcard.indexOf( '*' ) == -1 && wildcard.indexOf( '?' ) == -1 )
-            {
-                this.ignoredPackages.add( wildcard.replace( '.', '/' ) );
-            }
-            else
-            {
-                this.ignoredPackageRules.add( newMatchRule( wildcard.replace( '.', '/' ) ) );
+        for (String wildcard : ignoredPackages) {
+            if (wildcard.indexOf('*') == -1 && wildcard.indexOf('?') == -1) {
+                this.ignoredPackages.add(wildcard.replace('.', '/'));
+            } else {
+                this.ignoredPackageRules.add(newMatchRule(wildcard.replace('.', '/')));
             }
         }
         this.annotationDescriptors = new HashSet<>();
-        this.annotationDescriptors.add( toAnnotationDescriptor( ANNOTATION_FQN ) );
-        this.annotationDescriptors.add( toAnnotationDescriptor( PREVIOUS_ANNOTATION_FQN ) );
+        this.annotationDescriptors.add(toAnnotationDescriptor(ANNOTATION_FQN));
+        this.annotationDescriptors.add(toAnnotationDescriptor(PREVIOUS_ANNOTATION_FQN));
 
         this.logger = logger;
     }
 
-    public static Map<String, Clazz> loadClasses( InputStream in ) throws IOException
-    {
+    public static Map<String, Clazz> loadClasses(InputStream in) throws IOException {
         Map<String, Clazz> classes = new HashMap<>();
-        try (ObjectInputStream ois = new SignatureObjectInputStream( new GZIPInputStream( in ) ))
-        {
-            while ( true )
-            {
+        try (ObjectInputStream ois = new SignatureObjectInputStream(new GZIPInputStream(in))) {
+            while (true) {
                 Clazz c = (Clazz) ois.readObject();
-                if ( c == null )
-                {
+                if (c == null) {
                     return classes; // finished
                 }
-                classes.put( c.getName(), c );
+                classes.put(c.getName(), c);
             }
-        }
-        catch ( ClassNotFoundException e )
-        {
-            throw new NoClassDefFoundError( e.getMessage() );
+        } catch (ClassNotFoundException e) {
+            throw new NoClassDefFoundError(e.getMessage());
         }
     }
 
     /** @since 1.9 */
-    public void setSourcePath( List<File> sourcePath )
-    {
+    public void setSourcePath(List<File> sourcePath) {
         this.sourcePath = sourcePath;
     }
 
@@ -176,112 +157,86 @@ public class SignatureChecker
      *                        to consider for ignoring annotated method, class and field
      * @since 1.11
      */
-    public void setAnnotationTypes( Collection<String> annotationTypes )
-    {
+    public void setAnnotationTypes(Collection<String> annotationTypes) {
         this.annotationDescriptors.clear();
-        for ( String annotationType : annotationTypes )
-        {
-            annotationDescriptors.add( toAnnotationDescriptor( annotationType ) );
+        for (String annotationType : annotationTypes) {
+            annotationDescriptors.add(toAnnotationDescriptor(annotationType));
         }
     }
 
     @Override
-    protected void process( final String name, InputStream image )
-        throws IOException
-    {
-        ClassReader cr = new ClassReader( image );
+    protected void process(final String name, InputStream image) throws IOException {
+        ClassReader cr = new ClassReader(image);
 
-        try
-        {
-            cr.accept( new CheckingVisitor( name ), 0 );
-        }
-        catch ( ArrayIndexOutOfBoundsException e )
-        {
-            logger.error( "Bad class file " + name );
+        try {
+            cr.accept(new CheckingVisitor(name), 0);
+        } catch (ArrayIndexOutOfBoundsException e) {
+            logger.error("Bad class file " + name);
             // MANIMALSNIFFER-9 it is a pity that ASM does not throw a nicer error on encountering a malformed
             // class file.
-            throw new IOException( "Bad class file " + name, e );
+            throw new IOException("Bad class file " + name, e);
         }
     }
 
-    private interface MatchRule
-    {
-        boolean matches( String text );
+    private interface MatchRule {
+        boolean matches(String text);
     }
 
-    private static class PrefixMatchRule
-        implements SignatureChecker.MatchRule
-    {
+    private static class PrefixMatchRule implements SignatureChecker.MatchRule {
         private final String prefix;
 
-        public PrefixMatchRule( String prefix )
-        {
+        public PrefixMatchRule(String prefix) {
             this.prefix = prefix;
         }
 
         @Override
-        public boolean matches( String text )
-        {
-            return text.startsWith( prefix );
+        public boolean matches(String text) {
+            return text.startsWith(prefix);
         }
     }
 
-    private static class ExactMatchRule
-        implements SignatureChecker.MatchRule
-    {
+    private static class ExactMatchRule implements SignatureChecker.MatchRule {
         private final String match;
 
-        public ExactMatchRule( String match )
-        {
+        public ExactMatchRule(String match) {
             this.match = match;
         }
 
         @Override
-        public boolean matches( String text )
-        {
-            return match.equals( text );
+        public boolean matches(String text) {
+            return match.equals(text);
         }
     }
 
-    private static class RegexMatchRule
-        implements SignatureChecker.MatchRule
-    {
+    private static class RegexMatchRule implements SignatureChecker.MatchRule {
         private final Pattern regex;
 
-        public RegexMatchRule( Pattern regex )
-        {
+        public RegexMatchRule(Pattern regex) {
             this.regex = regex;
         }
 
         @Override
-        public boolean matches( String text )
-        {
-            return regex.matcher( text ).matches();
+        public boolean matches(String text) {
+            return regex.matcher(text).matches();
         }
     }
 
-    private SignatureChecker.MatchRule newMatchRule( String matcher )
-    {
-        int i = matcher.indexOf( '*' );
-        if ( i == -1 )
-        {
-            return new ExactMatchRule( matcher );
+    private SignatureChecker.MatchRule newMatchRule(String matcher) {
+        int i = matcher.indexOf('*');
+        if (i == -1) {
+            return new ExactMatchRule(matcher);
         }
-        if ( i == matcher.length() - 1 )
-        {
-            return new PrefixMatchRule( matcher.substring( 0, i ) );
+        if (i == matcher.length() - 1) {
+            return new PrefixMatchRule(matcher.substring(0, i));
         }
-        return new RegexMatchRule( RegexUtils.compileWildcard( matcher ) );
+        return new RegexMatchRule(RegexUtils.compileWildcard(matcher));
     }
 
-    public boolean isSignatureBroken()
-    {
+    public boolean isSignatureBroken() {
         return hadError;
     }
 
-    private class CheckingVisitor
-        extends ClassVisitor
-    {
+    private class CheckingVisitor extends ClassVisitor {
         private final Set<String> ignoredPackageCache;
 
         private String packagePrefix;
@@ -292,49 +247,40 @@ public class SignatureChecker
 
         private boolean ignoreClass = false;
 
-        public CheckingVisitor( String name )
-        {
+        public CheckingVisitor(String name) {
             super(Opcodes.ASM9);
-            this.ignoredPackageCache = new HashSet<>( 50 * ignoredPackageRules.size() );
+            this.ignoredPackageCache = new HashSet<>(50 * ignoredPackageRules.size());
             this.name = name;
         }
 
         @Override
-        public void visit( int version, int access, String name, String signature, String superName, String[] interfaces )
-        {
+        public void visit(
+                int version, int access, String name, String signature, String superName, String[] interfaces) {
             internalName = name;
-            packagePrefix = name.substring(0, name.lastIndexOf( '/' ) + 1 );
+            packagePrefix = name.substring(0, name.lastIndexOf('/') + 1);
         }
 
         @Override
-        public void visitSource( String source, String debug )
-        {
-            for ( File root : sourcePath )
-            {
-                File s = new File( root, packagePrefix + source );
-                if ( s.isFile() )
-                {
+        public void visitSource(String source, String debug) {
+            for (File root : sourcePath) {
+                File s = new File(root, packagePrefix + source);
+                if (s.isFile()) {
                     name = s.getAbsolutePath();
                 }
             }
         }
 
         @Override
-        public void visitOuterClass( String owner, String name, String desc )
-        {
-            if ( ignoredOuterClassesOrMethods.contains( owner ) ||
-                 ( name != null && ignoredOuterClassesOrMethods.contains ( owner + "#" + name + desc ) ) )
-            {
+        public void visitOuterClass(String owner, String name, String desc) {
+            if (ignoredOuterClassesOrMethods.contains(owner)
+                    || (name != null && ignoredOuterClassesOrMethods.contains(owner + "#" + name + desc))) {
                 ignoreClass = true;
             }
         }
 
-        public boolean isIgnoreAnnotation(String desc)
-        {
-            for ( String annoDesc : annotationDescriptors )
-            {
-                if ( desc.equals( annoDesc ) )
-                {
+        public boolean isIgnoreAnnotation(String desc) {
+            for (String annoDesc : annotationDescriptors) {
+                if (desc.equals(annoDesc)) {
                     return true;
                 }
             }
@@ -342,55 +288,53 @@ public class SignatureChecker
         }
 
         @Override
-        public AnnotationVisitor visitAnnotation(String desc, boolean visible)
-        {
-            if ( isIgnoreAnnotation( desc ) )
-            {
+        public AnnotationVisitor visitAnnotation(String desc, boolean visible) {
+            if (isIgnoreAnnotation(desc)) {
                 ignoreClass = true;
-                ignoredOuterClassesOrMethods.add( internalName );
+                ignoredOuterClassesOrMethods.add(internalName);
             }
             return super.visitAnnotation(desc, visible);
         }
 
         @Override
-        public FieldVisitor visitField(int access, String name, final String descriptor, String signature, Object value) {
+        public FieldVisitor visitField(
+                int access, String name, final String descriptor, String signature, Object value) {
             return new FieldVisitor(Opcodes.ASM9) {
 
                 boolean ignoreError = ignoreClass;
 
                 @Override
-                public AnnotationVisitor visitAnnotation( String annoDesc, boolean visible )
-                {
-                    if ( isIgnoreAnnotation(annoDesc) )
-                    {
+                public AnnotationVisitor visitAnnotation(String annoDesc, boolean visible) {
+                    if (isIgnoreAnnotation(annoDesc)) {
                         ignoreError = true;
                     }
-                    return super.visitAnnotation( annoDesc, visible );
+                    return super.visitAnnotation(annoDesc, visible);
                 }
 
                 @Override
                 public void visitEnd() {
                     // When field is declared in nested class, include declaring class name (including enclosing
                     // class name) to make error message more helpful
-                    String fieldNamePrefix = internalName.contains("$") ? internalName.substring(internalName.lastIndexOf('/') + 1) + '.' : "";
+                    String fieldNamePrefix = internalName.contains("$")
+                            ? internalName.substring(internalName.lastIndexOf('/') + 1) + '.'
+                            : "";
                     currentFieldName = fieldNamePrefix + name;
                     checkType(Type.getType(descriptor), ignoreError);
                     currentFieldName = null;
                 }
-
             };
         }
 
         @Override
-        public MethodVisitor visitMethod( int access, final String name, final String desc, String signature, String[] exceptions )
-        {
+        public MethodVisitor visitMethod(
+                int access, final String name, final String desc, String signature, String[] exceptions) {
             line = 0;
-            return new MethodVisitor(Opcodes.ASM9)
-            {
+            return new MethodVisitor(Opcodes.ASM9) {
                 /**
                  * True if @IgnoreJRERequirement is set.
                  */
                 boolean ignoreError = ignoreClass;
+
                 Label label = null;
                 Map<Label, Set<String>> exceptions = new HashMap<>();
 
@@ -400,171 +344,139 @@ public class SignatureChecker
                 }
 
                 @Override
-                public AnnotationVisitor visitAnnotation( String annoDesc, boolean visible )
-                {
-                    if ( isIgnoreAnnotation(annoDesc) )
-                    {
+                public AnnotationVisitor visitAnnotation(String annoDesc, boolean visible) {
+                    if (isIgnoreAnnotation(annoDesc)) {
                         ignoreError = true;
-                        ignoredOuterClassesOrMethods.add( internalName + "#" + name + desc );
+                        ignoredOuterClassesOrMethods.add(internalName + "#" + name + desc);
                     }
-                    return super.visitAnnotation( annoDesc, visible );
+                    return super.visitAnnotation(annoDesc, visible);
                 }
 
                 private static final String LAMBDA_METAFACTORY = "java/lang/invoke/LambdaMetafactory";
 
                 @Override
-                public void visitInvokeDynamicInsn( String name, String desc, Handle bsm, Object... bsmArgs )
-                {
-                    if ( LAMBDA_METAFACTORY.equals( bsm.getOwner() ) )
-                    {
-                        if ( "metafactory".equals( bsm.getName() ) ||
-                             "altMetafactory".equals( bsm.getName() ) )
-                        {
+                public void visitInvokeDynamicInsn(String name, String desc, Handle bsm, Object... bsmArgs) {
+                    if (LAMBDA_METAFACTORY.equals(bsm.getOwner())) {
+                        if ("metafactory".equals(bsm.getName()) || "altMetafactory".equals(bsm.getName())) {
                             // check the method reference
                             Handle methodHandle = (Handle) bsmArgs[1];
-                            check( methodHandle.getOwner(), methodHandle.getName() + methodHandle.getDesc(), ignoreError );
+                            check(
+                                    methodHandle.getOwner(),
+                                    methodHandle.getName() + methodHandle.getDesc(),
+                                    ignoreError);
                             // check the functional interface type
-                            checkType( Type.getReturnType( desc ), ignoreError );
+                            checkType(Type.getReturnType(desc), ignoreError);
                         }
                     }
                 }
 
                 @Override
-                public void visitMethodInsn( int opcode, String owner, String name, String desc, boolean itf )
-                {
-                    checkType( Type.getReturnType( desc ), ignoreError );
-                    check( owner, name + desc, ignoreError );
+                public void visitMethodInsn(int opcode, String owner, String name, String desc, boolean itf) {
+                    checkType(Type.getReturnType(desc), ignoreError);
+                    check(owner, name + desc, ignoreError);
                 }
 
                 @Override
-                public void visitTypeInsn( int opcode, String type )
-                {
-                    checkType( type, ignoreError );
+                public void visitTypeInsn(int opcode, String type) {
+                    checkType(type, ignoreError);
                 }
 
                 @Override
-                public void visitFieldInsn( int opcode, String owner, String name, String desc )
-                {
-                    check( owner, name + '#' + desc, ignoreError );
+                public void visitFieldInsn(int opcode, String owner, String name, String desc) {
+                    check(owner, name + '#' + desc, ignoreError);
                 }
 
                 @Override
-                public void visitTryCatchBlock( Label start, Label end, Label handler, String type )
-                {
-                    if ( type != null )
-                    {
-                        Set<String> exceptionTypes = exceptions.computeIfAbsent( handler, k -> new HashSet<>() );
+                public void visitTryCatchBlock(Label start, Label end, Label handler, String type) {
+                    if (type != null) {
+                        Set<String> exceptionTypes = exceptions.computeIfAbsent(handler, k -> new HashSet<>());
                         // we collect the types for the handler
                         // because we do not have the line number here
                         // and we need a list for a multi catch block
-                        exceptionTypes.add( type );
+                        exceptionTypes.add(type);
                     }
                 }
 
                 @Override
-                public void visitFrame( int type, int nLocal, Object[] local, int nStack, Object[] stack )
-                {
+                public void visitFrame(int type, int nLocal, Object[] local, int nStack, Object[] stack) {
                     Set<String> exceptionTypes = exceptions.remove(label);
-                    if ( exceptionTypes != null )
-                    {
-                        for (String exceptionType: exceptionTypes)
-                        {
-                            checkType( exceptionType, ignoreError );
+                    if (exceptionTypes != null) {
+                        for (String exceptionType : exceptionTypes) {
+                            checkType(exceptionType, ignoreError);
                         }
-                        for ( int i = 0; i < nStack; i++ )
-                        {
+                        for (int i = 0; i < nStack; i++) {
                             Object obj = stack[i];
                             // on the frame stack we check if we have a type which is not
                             // present in the catch/multi catch statement
-                            if ( obj instanceof String && !exceptionTypes.contains( obj ) )
-                            {
-                                checkType( obj.toString(), ignoreError);
+                            if (obj instanceof String && !exceptionTypes.contains(obj)) {
+                                checkType(obj.toString(), ignoreError);
                             }
                         }
                     }
                 }
 
                 @Override
-                public void visitLineNumber( int line, Label start )
-                {
+                public void visitLineNumber(int line, Label start) {
                     CheckingVisitor.this.line = line;
                 }
 
                 @Override
-                public void visitLabel( Label label ) {
+                public void visitLabel(Label label) {
                     this.label = label;
                 }
-
             };
         }
 
-        private void checkType(Type asmType, boolean ignoreError )
-        {
-            if ( asmType == null )
-            {
+        private void checkType(Type asmType, boolean ignoreError) {
+            if (asmType == null) {
                 return;
             }
-            if ( asmType.getSort() == Type.OBJECT )
-            {
-                checkType( asmType.getInternalName(), ignoreError );
+            if (asmType.getSort() == Type.OBJECT) {
+                checkType(asmType.getInternalName(), ignoreError);
             }
-            if ( asmType.getSort() == Type.ARRAY )
-            {
+            if (asmType.getSort() == Type.ARRAY) {
                 // recursive call
-                checkType( asmType.getElementType(), ignoreError );
+                checkType(asmType.getElementType(), ignoreError);
             }
         }
 
-        private void checkType( String type, boolean ignoreError )
-        {
-            if ( shouldBeIgnored( type, ignoreError ) )
-            {
+        private void checkType(String type, boolean ignoreError) {
+            if (shouldBeIgnored(type, ignoreError)) {
                 return;
             }
-            if ( type.charAt( 0 ) == '[' )
-            {
+            if (type.charAt(0) == '[') {
                 return; // array
             }
-            Clazz sigs = classes.get( type );
-            if ( sigs == null )
-            {
-                error( type, null );
+            Clazz sigs = classes.get(type);
+            if (sigs == null) {
+                error(type, null);
             }
         }
 
-        private void check( String owner, String sig, boolean ignoreError )
-        {
-            if ( shouldBeIgnored( owner, ignoreError ) )
-            {
+        private void check(String owner, String sig, boolean ignoreError) {
+            if (shouldBeIgnored(owner, ignoreError)) {
                 return;
             }
-            if ( find( classes.get( owner ), sig ) )
-            {
+            if (find(classes.get(owner), sig)) {
                 return; // found it
             }
-            error( owner, sig );
+            error(owner, sig);
         }
 
-        private boolean shouldBeIgnored( String type, boolean ignoreError )
-        {
-            if ( ignoreError )
-            {
-                return true;    // warning suppressed in this context
+        private boolean shouldBeIgnored(String type, boolean ignoreError) {
+            if (ignoreError) {
+                return true; // warning suppressed in this context
             }
-            if ( type.charAt( 0 ) == '[' )
-            {
+            if (type.charAt(0) == '[') {
                 return true; // array
             }
 
-            if ( ignoredPackages.contains( type ) || ignoredPackageCache.contains( type ) )
-            {
+            if (ignoredPackages.contains(type) || ignoredPackageCache.contains(type)) {
                 return true;
             }
-            for ( MatchRule rule : ignoredPackageRules )
-            {
-                if ( rule.matches( type ) )
-                {
-                    ignoredPackageCache.add( type );
+            for (MatchRule rule : ignoredPackageRules) {
+                if (rule.matches(type)) {
+                    ignoredPackageCache.add(type);
                     return true;
                 }
             }
@@ -574,34 +486,27 @@ public class SignatureChecker
         /**
          * If the given signature is found in the specified class, return true.
          */
-        private boolean find( Clazz c , String sig )
-        {
-            if ( c == null )
-            {
+        private boolean find(Clazz c, String sig) {
+            if (c == null) {
                 return false;
             }
-            if ( c.getSignatures().contains( sig ) )
-            {
+            if (c.getSignatures().contains(sig)) {
                 return true;
             }
 
-            if ( sig.startsWith( "<" ) )
+            if (sig.startsWith("<"))
             // constructor and static initializer shouldn't go up the inheritance hierarchy
             {
                 return false;
             }
 
-            if ( find( classes.get( c.getSuperClass() ), sig ) )
-            {
+            if (find(classes.get(c.getSuperClass()), sig)) {
                 return true;
             }
 
-            if ( c.getSuperInterfaces() != null )
-            {
-                for ( int i = 0; i < c.getSuperInterfaces().length; i++ )
-                {
-                    if ( find( classes.get( c.getSuperInterfaces()[i] ), sig ) )
-                    {
+            if (c.getSuperInterfaces() != null) {
+                for (int i = 0; i < c.getSuperInterfaces().length; i++) {
+                    if (find(classes.get(c.getSuperInterfaces()[i]), sig)) {
                         return true;
                     }
                 }
@@ -610,8 +515,7 @@ public class SignatureChecker
             return false;
         }
 
-        private void error( String type, String sig )
-        {
+        private void error(String type, String sig) {
             hadError = true;
 
             String location = "";
@@ -620,87 +524,71 @@ public class SignatureChecker
             } else if (line > 0) {
                 location = ":" + line;
             }
-            logger.error(name + location + ": Undefined reference: " + toSourceForm( type, sig ) );
+            logger.error(name + location + ": Undefined reference: " + toSourceForm(type, sig));
         }
     }
 
-    static String toSourceForm( String type, String sig )
-    {
-        String sourceType = toSourceType( type );
-        if ( sig == null )
-        {
+    static String toSourceForm(String type, String sig) {
+        String sourceType = toSourceType(type);
+        if (sig == null) {
             return sourceType;
         }
-        int hash = sig.indexOf( '#' );
-        if ( hash != -1 )
-        {
-            return toSourceType( CharBuffer.wrap( sig, hash + 1, sig.length() ) ) + " " + sourceType + "." + sig.substring( 0, hash );
+        int hash = sig.indexOf('#');
+        if (hash != -1) {
+            return toSourceType(CharBuffer.wrap(sig, hash + 1, sig.length())) + " " + sourceType + "."
+                    + sig.substring(0, hash);
         }
-        int lparen = sig.indexOf( '(' );
-        if ( lparen != -1 )
-        {
-            int rparen = sig.indexOf( ')' );
-            if ( rparen != -1 )
-            {
+        int lparen = sig.indexOf('(');
+        if (lparen != -1) {
+            int rparen = sig.indexOf(')');
+            if (rparen != -1) {
                 StringBuilder b = new StringBuilder();
-                String returnType = sig.substring( rparen + 1 );
-                if ( returnType.equals( "V" ) )
-                {
-                    b.append( "void" );
+                String returnType = sig.substring(rparen + 1);
+                if (returnType.equals("V")) {
+                    b.append("void");
+                } else {
+                    b.append(toSourceType(CharBuffer.wrap(returnType)));
                 }
-                else
-                {
-                    b.append( toSourceType( CharBuffer.wrap( returnType ) ) );
-                }
-                b.append( ' ' );
-                b.append( sourceType );
-                b.append( '.' );
+                b.append(' ');
+                b.append(sourceType);
+                b.append('.');
                 // XXX consider prettifying <init>
-                b.append( sig.substring( 0, lparen ) );
-                b.append( '(' );
+                b.append(sig.substring(0, lparen));
+                b.append('(');
                 boolean first = true;
-                CharBuffer args = CharBuffer.wrap( sig, lparen + 1, rparen );
-                while ( args.hasRemaining() )
-                {
-                    if ( first )
-                    {
+                CharBuffer args = CharBuffer.wrap(sig, lparen + 1, rparen);
+                while (args.hasRemaining()) {
+                    if (first) {
                         first = false;
+                    } else {
+                        b.append(", ");
                     }
-                    else
-                    {
-                        b.append( ", " );
-                    }
-                    b.append( toSourceType( args ) );
+                    b.append(toSourceType(args));
                 }
-                b.append( ')' );
+                b.append(')');
                 return b.toString();
             }
         }
         return "{" + type + ":" + sig + "}"; // ??
     }
 
-    static String toAnnotationDescriptor( String classFqn )
-    {
-        return "L" + fromSourceType( classFqn ) + ";";
+    static String toAnnotationDescriptor(String classFqn) {
+        return "L" + fromSourceType(classFqn) + ";";
     }
 
-    private static String toSourceType( CharBuffer type )
-    {
-        switch ( type.get() )
-        {
+    private static String toSourceType(CharBuffer type) {
+        switch (type.get()) {
             case 'L':
-                for ( int i = type.position(); i < type.limit(); i++ )
-                {
-                    if ( type.get( i ) == ';' )
-                    {
-                        String text = type.subSequence( 0, i - type.position() ).toString();
-                        type.position( i + 1 );
-                        return toSourceType( text );
+                for (int i = type.position(); i < type.limit(); i++) {
+                    if (type.get(i) == ';') {
+                        String text = type.subSequence(0, i - type.position()).toString();
+                        type.position(i + 1);
+                        return toSourceType(text);
                     }
                 }
                 return "{" + type + "}"; // ??
             case '[':
-                return toSourceType( type ) + "[]";
+                return toSourceType(type) + "[]";
             case 'B':
                 return "byte";
             case 'C':
@@ -722,14 +610,11 @@ public class SignatureChecker
         }
     }
 
-    private static String toSourceType( String text )
-    {
-        return text.replaceFirst( "^java/lang/([^/]+)$", "$1" ).replace( '/', '.' ).replace( '$', '.' );
+    private static String toSourceType(String text) {
+        return text.replaceFirst("^java/lang/([^/]+)$", "$1").replace('/', '.').replace('$', '.');
     }
 
-    private static String fromSourceType( String text )
-    {
-        return text.replace( '.', '/' ).replace( '.', '$' );
+    private static String fromSourceType(String text) {
+        return text.replace('.', '/').replace('.', '$');
     }
-
 }

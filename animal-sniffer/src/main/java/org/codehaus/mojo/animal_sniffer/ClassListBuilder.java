@@ -25,63 +25,58 @@ package org.codehaus.mojo.animal_sniffer;
  *
  */
 
-import org.codehaus.mojo.animal_sniffer.logging.Logger;
-import org.objectweb.asm.ClassReader;
-import org.objectweb.asm.ClassVisitor;
-import org.objectweb.asm.Opcodes;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashSet;
 import java.util.Set;
+
+import org.codehaus.mojo.animal_sniffer.logging.Logger;
+import org.objectweb.asm.ClassReader;
+import org.objectweb.asm.ClassVisitor;
+import org.objectweb.asm.Opcodes;
 
 /**
  * List up classes seen.
  *
  * @author Kohsuke Kawaguchi
  */
-public class ClassListBuilder
-    extends ClassFileVisitor
-{
+public class ClassListBuilder extends ClassFileVisitor {
     private final Set<String> packages;
 
-    public Set<String> getPackages()
-    {
+    public Set<String> getPackages() {
         return packages;
     }
 
-    public ClassListBuilder( Set<String> packages, Logger logger )
-    {
-        super( logger );
+    public ClassListBuilder(Set<String> packages, Logger logger) {
+        super(logger);
         this.packages = packages;
     }
 
-    public ClassListBuilder( Logger logger )
-    {
-        this( new HashSet<>(), logger );
+    public ClassListBuilder(Logger logger) {
+        this(new HashSet<>(), logger);
     }
 
-    protected void process( String name, InputStream image )
-        throws IOException
-    {
-        try
-        {
-            ClassReader cr = new ClassReader( image );
-            cr.accept( new ClassVisitor(Opcodes.ASM9)
-            {
-                public void visit( int version, int access, String name, String signature, String superName,
-                                   String[] interfaces )
-                {
-                    packages.add( name.replace( '/', '.' ) );
-                }
-            }, 0 );
-        }
-        catch ( ArrayIndexOutOfBoundsException | IllegalArgumentException e )
-        {
-            logger.error( "Bad class file " + name );
+    protected void process(String name, InputStream image) throws IOException {
+        try {
+            ClassReader cr = new ClassReader(image);
+            cr.accept(
+                    new ClassVisitor(Opcodes.ASM9) {
+                        public void visit(
+                                int version,
+                                int access,
+                                String name,
+                                String signature,
+                                String superName,
+                                String[] interfaces) {
+                            packages.add(name.replace('/', '.'));
+                        }
+                    },
+                    0);
+        } catch (ArrayIndexOutOfBoundsException | IllegalArgumentException e) {
+            logger.error("Bad class file " + name);
             // MANIMALSNIFFER-9 it is a pity that ASM does not throw a nicer error on encountering a malformed
             // class file.
-            throw new IOException( "Bad class file " + name, e );
+            throw new IOException("Bad class file " + name, e);
         }
     }
 }

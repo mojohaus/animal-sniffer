@@ -76,8 +76,8 @@ public final class ShowClassPath {
                 System.out.println(cp);
                 return;
             }
-            System.err.println("Cannot auto-detect boot class path " + System.getProperty("java.version") + " " +
-                    System.getProperty("java.class.path"));
+            System.err.println("Cannot auto-detect boot class path " + System.getProperty("java.version") + " "
+                    + System.getProperty("java.class.path"));
             System.exit(1);
         }
         System.out.println(System.getProperty(name));

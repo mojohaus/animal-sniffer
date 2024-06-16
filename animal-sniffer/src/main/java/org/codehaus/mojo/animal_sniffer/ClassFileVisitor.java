@@ -40,24 +40,22 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
+
 import org.codehaus.mojo.animal_sniffer.logging.Logger;
 import org.codehaus.mojo.animal_sniffer.logging.PrintWriterLogger;
 
 /**
  * @author Kohsuke Kawaguchi
  */
-public abstract class ClassFileVisitor
-{
+public abstract class ClassFileVisitor {
 
     protected final Logger logger;
 
-    protected ClassFileVisitor()
-    {
-        this( new PrintWriterLogger( System.err ) );
+    protected ClassFileVisitor() {
+        this(new PrintWriterLogger(System.err));
     }
 
-    protected ClassFileVisitor( Logger logger )
-    {
+    protected ClassFileVisitor(Logger logger) {
         this.logger = logger;
     }
 
@@ -66,32 +64,27 @@ public abstract class ClassFileVisitor
      */
     private boolean checkJars = true;
 
-    public boolean isCheckJars()
-    {
+    public boolean isCheckJars() {
         return checkJars;
     }
 
-    public void setCheckJars( boolean checkJars )
-    {
+    public void setCheckJars(boolean checkJars) {
         this.checkJars = checkJars;
     }
 
     /**
      * Multi-arg version of {@link #process(File)}.
      */
-    public void process( File[] files )
-        throws IOException
-    {
-        Arrays.sort( files, ( f1, f2 ) -> {
+    public void process(File[] files) throws IOException {
+        Arrays.sort(files, (f1, f2) -> {
             String n1 = f1.getName();
             String n2 = f2.getName();
             // Ensure that outer classes are visited before inner classes:
             int diff = n1.length() - n2.length();
-            return diff != 0 ? diff : n1.compareTo( n2 );
-        } );
-        for ( File f : files )
-        {
-            process( f );
+            return diff != 0 ? diff : n1.compareTo(n2);
+        });
+        for (File f : files) {
+            process(f);
         }
     }
 
@@ -102,20 +95,13 @@ public abstract class ClassFileVisitor
      *             or a class file (in which case that single class is processed),
      *             or a jar file (in which case all the classes in this jar file are processed.)
      */
-    public void process( File file )
-        throws IOException
-    {
-        if ( file.isDirectory() )
-        {
-            processDirectory( file );
-        }
-        else if ( file.getName().endsWith( ".class" ) )
-        {
-            processClassFile( file );
-        }
-        else if ( ( file.getName().endsWith( ".jar" ) || file.getName().endsWith( ".jmod" ) ) && checkJars )
-        {
-            processJarFile( file );
+    public void process(File file) throws IOException {
+        if (file.isDirectory()) {
+            processDirectory(file);
+        } else if (file.getName().endsWith(".class")) {
+            processClassFile(file);
+        } else if ((file.getName().endsWith(".jar") || file.getName().endsWith(".jmod")) && checkJars) {
+            processJarFile(file);
         }
 
         // ignore other files
@@ -126,9 +112,7 @@ public abstract class ClassFileVisitor
      *
      * @param path Directory (or other Path like {@code Paths.get(URI.create("jrt:/modules"))}) full of class files
      */
-    public void process( Path path )
-        throws IOException
-    {
+    public void process(Path path) throws IOException {
         Files.walkFileTree(path, new SimpleFileVisitor<Path>() {
 
             final SortedSet<Path> files = new TreeSet<>();
@@ -161,73 +145,53 @@ public abstract class ClassFileVisitor
             public FileVisitResult visitFileFailed(Path file, IOException exc) {
                 return FileVisitResult.CONTINUE;
             }
-
         });
     }
 
-    protected void processDirectory( File dir )
-        throws IOException
-    {
+    protected void processDirectory(File dir) throws IOException {
         File[] files = dir.listFiles();
-        if ( files == null )
-        {
+        if (files == null) {
             return;
         }
-        process( files );
+        process(files);
     }
 
-    protected void processJarFile( File file )
-        throws IOException
-    {
-        try ( JarFile jar = new JarFile( file ) )
-        {
-            SortedSet<JarEntry> entries = new TreeSet<>( ( e1, e2 ) -> {
+    protected void processJarFile(File file) throws IOException {
+        try (JarFile jar = new JarFile(file)) {
+            SortedSet<JarEntry> entries = new TreeSet<>((e1, e2) -> {
                 String n1 = e1.getName();
                 String n2 = e2.getName();
                 int diff = n1.length() - n2.length();
-                return diff != 0 ? diff : n1.compareTo( n2 );
-            } );
+                return diff != 0 ? diff : n1.compareTo(n2);
+            });
             Enumeration<JarEntry> e = jar.entries();
-            while ( e.hasMoreElements() )
-            {
+            while (e.hasMoreElements()) {
                 JarEntry x = e.nextElement();
                 String name = x.getName();
-                if ( !name.endsWith( ".class" ) )
-                {
+                if (!name.endsWith(".class")) {
                     continue; // uninteresting to log even at debug
                 }
-                if ( name.startsWith( "META-INF/" ) || name.equals( "module-info.class" ) )
-                {
-                    logger.debug( "Ignoring " + name );
+                if (name.startsWith("META-INF/") || name.equals("module-info.class")) {
+                    logger.debug("Ignoring " + name);
                     continue;
                 }
-                entries.add( x );
+                entries.add(x);
             }
-            for (JarEntry x : entries)
-            {
+            for (JarEntry x : entries) {
                 // Even debug level seems too verbose for: logger.debug( "Processing " + x.getName() + " in " + file );
-                try (InputStream is = jar.getInputStream( x ))
-                {
-                    process( file.getPath() + ':' + x.getName(), is );
+                try (InputStream is = jar.getInputStream(x)) {
+                    process(file.getPath() + ':' + x.getName(), is);
                 }
             }
 
+        } catch (IOException cause) {
+            throw new IOException(" failed to process jar " + file.getPath() + " : " + cause.getMessage(), cause);
         }
-        catch ( IOException cause )
-        {
-            throw new IOException( " failed to process jar " + file.getPath() + " : " + cause.getMessage(),
-                                   cause );
-
-        }
-
     }
 
-    protected void processClassFile( File file )
-        throws IOException
-    {
-        try (InputStream in = new FileInputStream( file ))
-        {
-            process( file.getPath(), in );
+    protected void processClassFile(File file) throws IOException {
+        try (InputStream in = new FileInputStream(file)) {
+            process(file.getPath(), in);
         }
     }
 
@@ -235,6 +199,5 @@ public abstract class ClassFileVisitor
      * @param name  Displayable name to identify what class file we are processing
      * @param image Class file image.
      */
-    protected abstract void process( String name, InputStream image )
-        throws IOException;
+    protected abstract void process(String name, InputStream image) throws IOException;
 }

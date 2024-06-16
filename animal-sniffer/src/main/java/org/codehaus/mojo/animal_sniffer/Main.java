@@ -40,42 +40,32 @@ import java.util.Map;
 /**
  * @author Kohsuke Kawaguchi
  */
-public class Main
-    extends ClassFileVisitor
-{
+public class Main extends ClassFileVisitor {
     private boolean humanReadableName = false;
 
     private String maximumVersion = "00.0";
 
-    public static void main( String[] args )
-        throws IOException
-    {
-        if ( args.length == 0 )
-        {
-            System.err.println( "Usage: java -jar animal-sniffer.jar [JAR/CLASS FILES]" );
+    public static void main(String[] args) throws IOException {
+        if (args.length == 0) {
+            System.err.println("Usage: java -jar animal-sniffer.jar [JAR/CLASS FILES]");
             System.err.println("  -h   : show a human readable Java version number");
             System.err.println("  -t N : return exit code 1 if any file has a class file version number > N");
-            System.exit( -1 );
+            System.exit(-1);
         }
 
         Main m = new Main();
         String threshold = null;
 
         List<Path> files = new ArrayList<Path>();
-        for ( int i = 0; i < args.length; i++ )
-        {
-            if (args[i].equals("-h"))
-            {
+        for (int i = 0; i < args.length; i++) {
+            if (args[i].equals("-h")) {
                 m.humanReadableName = true;
                 continue;
             }
-            if (args[i].equals("-t"))
-            {
+            if (args[i].equals("-t")) {
                 threshold = args[++i];
-                for ( Map.Entry<String, String> entry : HUMAN_READABLE_NAME.entrySet() )
-                {
-                    if ( entry.getValue().equals( threshold ) )
-                    {
+                for (Map.Entry<String, String> entry : HUMAN_READABLE_NAME.entrySet()) {
+                    if (entry.getValue().equals(threshold)) {
                         threshold = entry.getKey();
                         break;
                     }
@@ -90,8 +80,7 @@ public class Main
             m.process(file);
         }
 
-        if ( threshold != null && m.maximumVersion.compareTo(threshold) > 0 )
-        {
+        if (threshold != null && m.maximumVersion.compareTo(threshold) > 0) {
             System.exit(1);
         }
     }
@@ -111,54 +100,47 @@ public class Main
         return Paths.get(s);
     }
 
-    protected void process( String name, InputStream image )
-        throws IOException
-    {
-        DataInputStream dis = new DataInputStream( image );
+    protected void process(String name, InputStream image) throws IOException {
+        DataInputStream dis = new DataInputStream(image);
         byte[] buf = new byte[8];
-        dis.readFully( buf );
+        dis.readFully(buf);
 
         String v = u2(buf[6], buf[7]) + "." + u2(buf[4], buf[5]);
-        if (maximumVersion.compareTo(v)<0)
-        {
+        if (maximumVersion.compareTo(v) < 0) {
             maximumVersion = v;
         }
 
-        if (humanReadableName)
-        {
+        if (humanReadableName) {
             String hn = HUMAN_READABLE_NAME.get(v);
-            if (hn!=null)
-            {
+            if (hn != null) {
                 v = hn;
             }
         }
 
-        System.out.println( v + " " + name );
+        System.out.println(v + " " + name);
     }
 
-    private static int u2( byte u, byte d )
-    {
-        return ( (int) u ) * 256 + d;
+    private static int u2(byte u, byte d) {
+        return ((int) u) * 256 + d;
     }
 
     private static final Map<String, String> HUMAN_READABLE_NAME = new HashMap<>();
 
-    static
-    {
-        HUMAN_READABLE_NAME.put("45.0","Java1");
-        HUMAN_READABLE_NAME.put("46.0","Java2");
-        HUMAN_READABLE_NAME.put("47.0","Java3");
-        HUMAN_READABLE_NAME.put("48.0","Java4");
-        HUMAN_READABLE_NAME.put("49.0","Java5");
-        HUMAN_READABLE_NAME.put("50.0","Java6");
-        HUMAN_READABLE_NAME.put("51.0","Java7");
-        HUMAN_READABLE_NAME.put("52.0","Java8");
-        HUMAN_READABLE_NAME.put("53.0","Java9");
-        HUMAN_READABLE_NAME.put("54.0","Java10");
-        HUMAN_READABLE_NAME.put("55.0","Java11");
-        HUMAN_READABLE_NAME.put("56.0","Java12");
-        HUMAN_READABLE_NAME.put("57.0","Java13");
-        HUMAN_READABLE_NAME.put("58.0","Java14");
-        HUMAN_READABLE_NAME.put("59.0","Java15");
+    static {
+        HUMAN_READABLE_NAME.put("45.0", "Java1");
+        HUMAN_READABLE_NAME.put("46.0", "Java2");
+        HUMAN_READABLE_NAME.put("47.0", "Java3");
+        HUMAN_READABLE_NAME.put("48.0", "Java4");
+        HUMAN_READABLE_NAME.put("49.0", "Java5");
+        HUMAN_READABLE_NAME.put("50.0", "Java6");
+        HUMAN_READABLE_NAME.put("51.0", "Java7");
+        HUMAN_READABLE_NAME.put("52.0", "Java8");
+        HUMAN_READABLE_NAME.put("53.0", "Java9");
+        HUMAN_READABLE_NAME.put("54.0", "Java10");
+        HUMAN_READABLE_NAME.put("55.0", "Java11");
+        HUMAN_READABLE_NAME.put("56.0", "Java12");
+        HUMAN_READABLE_NAME.put("57.0", "Java13");
+        HUMAN_READABLE_NAME.put("58.0", "Java14");
+        HUMAN_READABLE_NAME.put("59.0", "Java15");
     }
 }
