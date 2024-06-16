@@ -41,9 +41,7 @@ import org.codehaus.mojo.animal_sniffer.SignatureBuilder;
 /**
  * @author Kohsuke Kawaguchi
  */
-public class BuildSignaturesTask
-    extends Task
-{
+public class BuildSignaturesTask extends Task {
 
     private File destfile;
 
@@ -55,122 +53,92 @@ public class BuildSignaturesTask
 
     private Vector<Ignore> excludeClasses = new Vector<>();
 
-    public void setDestfile( File dest )
-    {
+    public void setDestfile(File dest) {
         this.destfile = dest;
     }
 
-    public void addPath( Path path )
-    {
-        paths.add( path );
+    public void addPath(Path path) {
+        paths.add(path);
     }
 
-    public Signature createSignature()
-    {
+    public Signature createSignature() {
         Signature signature = new Signature();
-        signatures.add( signature );
+        signatures.add(signature);
         return signature;
     }
 
-    public Ignore createIncludeClasses()
-    {
+    public Ignore createIncludeClasses() {
         final Ignore result = new Ignore();
-        includeClasses.add( result );
+        includeClasses.add(result);
         return result;
     }
 
-    public Ignore createExcludeClasses()
-    {
+    public Ignore createExcludeClasses() {
         final Ignore result = new Ignore();
-        excludeClasses.add( result );
+        excludeClasses.add(result);
         return result;
     }
 
-    protected void validate()
-    {
-        if ( destfile == null )
-        {
-            throw new BuildException( "destfile not set" );
+    protected void validate() {
+        if (destfile == null) {
+            throw new BuildException("destfile not set");
         }
-        if ( paths.size() < 1 )
-        {
-            throw new BuildException( "path not set" );
+        if (paths.size() < 1) {
+            throw new BuildException("path not set");
         }
-        for ( Signature signature : signatures )
-        {
-            if ( signature.getSrc() == null )
-            {
-                throw new BuildException( "signature src not set" );
+        for (Signature signature : signatures) {
+            if (signature.getSrc() == null) {
+                throw new BuildException("signature src not set");
             }
-            if ( !signature.getSrc().isFile() )
-            {
-                throw new BuildException( "signature " + signature.getSrc() + " does not exist" );
+            if (!signature.getSrc().isFile()) {
+                throw new BuildException("signature " + signature.getSrc() + " does not exist");
             }
         }
-        for ( Ignore tmp : includeClasses )
-        {
-            if ( tmp.getClassName() == null )
-            {
-                throw new BuildException( "includeClasses className not set" );
+        for (Ignore tmp : includeClasses) {
+            if (tmp.getClassName() == null) {
+                throw new BuildException("includeClasses className not set");
             }
         }
-        for ( Ignore tmp : excludeClasses )
-        {
-            if ( tmp.getClassName() == null )
-            {
-                throw new BuildException( "excludeClasses className not set" );
+        for (Ignore tmp : excludeClasses) {
+            if (tmp.getClassName() == null) {
+                throw new BuildException("excludeClasses className not set");
             }
         }
-
     }
 
-    public void execute()
-        throws BuildException
-    {
+    public void execute() throws BuildException {
         validate();
-        try
-        {
+        try {
             Vector<InputStream> inStreams = new Vector<>();
-            for ( Signature signature : signatures )
-            {
-                log( "Importing signatures from " + signature.getSrc() );
-                inStreams.add( new FileInputStream( signature.getSrc() ) );
+            for (Signature signature : signatures) {
+                log("Importing signatures from " + signature.getSrc());
+                inStreams.add(new FileInputStream(signature.getSrc()));
             }
 
-            SignatureBuilder builder =
-                new SignatureBuilder( inStreams.toArray( new InputStream[0] ),
-                                      new FileOutputStream( destfile ), new AntLogger( this ) );
-            for ( Ignore tmp: includeClasses )
-            {
-                builder.addInclude( tmp.getClassName() );
+            SignatureBuilder builder = new SignatureBuilder(
+                    inStreams.toArray(new InputStream[0]), new FileOutputStream(destfile), new AntLogger(this));
+            for (Ignore tmp : includeClasses) {
+                builder.addInclude(tmp.getClassName());
             }
-            for ( Ignore tmp : excludeClasses )
-            {
-                builder.addExclude( tmp.getClassName() );
+            for (Ignore tmp : excludeClasses) {
+                builder.addExclude(tmp.getClassName());
             }
-            for ( Path path : paths )
-            {
+            for (Path path : paths) {
                 final String[] files = path.list();
-                for ( String file : files )
-                {
-                    log( "Capturing signatures from " + file, Project.MSG_INFO );
-                    process( builder, new File( file ) );
+                for (String file : files) {
+                    log("Capturing signatures from " + file, Project.MSG_INFO);
+                    process(builder, new File(file));
                 }
             }
             builder.close();
-        }
-        catch ( IOException e )
-        {
-            throw new BuildException( e );
+        } catch (IOException e) {
+            throw new BuildException(e);
         }
     }
 
-    private void process( SignatureBuilder builder, File f )
-        throws IOException
-    {
-        if ( f.exists() )
-        {
-            builder.process( f );
+    private void process(SignatureBuilder builder, File f) throws IOException {
+        if (f.exists()) {
+            builder.process(f);
         }
     }
 }

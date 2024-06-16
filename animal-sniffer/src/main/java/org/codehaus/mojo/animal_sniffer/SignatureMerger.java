@@ -42,60 +42,44 @@ import org.codehaus.mojo.animal_sniffer.logging.Logger;
  *
  * @author Stephen Connolly
  */
-public class SignatureMerger
-{
+public class SignatureMerger {
     private final Map<String, Clazz> classes = new HashMap<>();
 
     private final Logger logger;
 
-    public static void main( String[] args )
-        throws Exception
-    {
+    public static void main(String[] args) throws Exception {
         // TODO add command arg parsing
-//        new SignatureMerger( new FileInputStream( "signature" ), ignoredPackages,
-//                             new PrintWriterLogger( System.out ) ).process( new File( "target/classes" ) );
+        //        new SignatureMerger( new FileInputStream( "signature" ), ignoredPackages,
+        //                             new PrintWriterLogger( System.out ) ).process( new File( "target/classes" ) );
     }
 
-    public SignatureMerger( InputStream[] in, OutputStream out, Logger logger )
-        throws IOException
-    {
+    public SignatureMerger(InputStream[] in, OutputStream out, Logger logger) throws IOException {
         this.logger = logger;
-        for ( InputStream i : in )
-        {
-            try
-            {
-                ObjectInputStream ois = new SignatureObjectInputStream( new GZIPInputStream( i ) );
-                while ( true )
-                {
+        for (InputStream i : in) {
+            try {
+                ObjectInputStream ois = new SignatureObjectInputStream(new GZIPInputStream(i));
+                while (true) {
                     Clazz c = (Clazz) ois.readObject();
-                    if ( c == null )
-                    {
+                    if (c == null) {
                         return; // finished
                     }
-                    Clazz cur = classes.get( c.getName() );
-                    if ( cur == null )
-                    {
-                        classes.put( c.getName(), c );
-                    }
-                    else
-                    {
-                        classes.put( c.getName(), new Clazz( c, cur ) );
+                    Clazz cur = classes.get(c.getName());
+                    if (cur == null) {
+                        classes.put(c.getName(), c);
+                    } else {
+                        classes.put(c.getName(), new Clazz(c, cur));
                     }
                 }
-            }
-            catch ( ClassNotFoundException e )
-            {
-                throw new NoClassDefFoundError( e.getMessage() );
+            } catch (ClassNotFoundException e) {
+                throw new NoClassDefFoundError(e.getMessage());
             }
         }
-        ObjectOutputStream oos = new ObjectOutputStream( new GZIPOutputStream( out ) );
-        for ( Map.Entry<String, Clazz> entry : classes.entrySet() )
-        {
-            logger.info( entry.getKey() );
-            oos.writeObject( entry.getValue() );
+        ObjectOutputStream oos = new ObjectOutputStream(new GZIPOutputStream(out));
+        for (Map.Entry<String, Clazz> entry : classes.entrySet()) {
+            logger.info(entry.getKey());
+            oos.writeObject(entry.getValue());
         }
-        oos.writeObject( null );   // EOF marker
+        oos.writeObject(null); // EOF marker
         oos.close();
     }
-
 }

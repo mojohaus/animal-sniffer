@@ -15,16 +15,15 @@ import java.util.Set;
  * by signature files. All other classes are rejected for security reasons.
  */
 public class SignatureObjectInputStream extends ObjectInputStream {
-    private static final Set<String> ALLOWED_CLASS_NAMES = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(
-        Clazz.class.getName(),
-        String[].class.getName()
-    )));
+    private static final Set<String> ALLOWED_CLASS_NAMES =
+            Collections.unmodifiableSet(new HashSet<>(Arrays.asList(Clazz.class.getName(), String[].class.getName())));
 
     public SignatureObjectInputStream(InputStream in) throws IOException {
         super(in);
     }
 
-    // Impose restrictions on allowed classes, see https://wiki.sei.cmu.edu/confluence/display/java/SER12-J.+Prevent+deserialization+of+untrusted+data
+    // Impose restrictions on allowed classes, see
+    // https://wiki.sei.cmu.edu/confluence/display/java/SER12-J.+Prevent+deserialization+of+untrusted+data
     @Override
     protected Class<?> resolveClass(ObjectStreamClass desc) throws IOException, ClassNotFoundException {
         String className = desc.getName();
@@ -35,7 +34,8 @@ public class SignatureObjectInputStream extends ObjectInputStream {
 
         Class<?> c;
         try {
-            // Should be safe because default implementation uses `initialize=false`, and this is guaranteed by the Javadoc
+            // Should be safe because default implementation uses `initialize=false`, and this is guaranteed by the
+            // Javadoc
             c = super.resolveClass(desc);
         } catch (ClassNotFoundException classNotFoundException) {
             // To be safe throw InvalidClassException instead because all allowed classes should exist on classpath

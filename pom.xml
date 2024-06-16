@@ -36,9 +36,7 @@
   <packaging>pom</packaging>
 
   <name>Animal Sniffer</name>
-  <description>
-    Animal Sniffer Parent POM.
-  </description>
+  <description>Animal Sniffer Parent POM.</description>
   <url>https://www.mojohaus.org/animal-sniffer</url>
   <inceptionYear>2008</inceptionYear>
 
@@ -81,8 +79,8 @@
   <scm>
     <connection>scm:git:https://github.com/mojohaus/animal-sniffer.git</connection>
     <developerConnection>scm:git:ssh://git@github.com/mojohaus/animal-sniffer.git</developerConnection>
-    <url>https://github.com/mojohaus/animal-sniffer/tree/master</url>
     <tag>1.23</tag>
+    <url>https://github.com/mojohaus/animal-sniffer/tree/master</url>
   </scm>
 
   <issueManagement>
@@ -94,7 +92,6 @@
     <system>GitHub</system>
     <url>https://github.com/mojohaus/animal-sniffer/actions</url>
   </ciManagement>
-
 
   <properties>
     <scmpublish.content>${project.build.directory}/staging/animal-sniffer-parent</scmpublish.content>

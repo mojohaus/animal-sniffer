@@ -32,53 +32,43 @@ import java.util.Map;
  *
  * @author Stephen Connolly
  */
-public class JdkToolchain
-{
+public class JdkToolchain {
     private Map<String, String> parameters;
 
-    public String getToolchain()
-    {
+    public String getToolchain() {
         return "jdk";
     }
 
-    public Map<String, String> getParameters()
-    {
+    public Map<String, String> getParameters() {
         return parameters;
     }
 
-    public void setParameters( Map<String, String> parameters )
-    {
+    public void setParameters(Map<String, String> parameters) {
         this.parameters = parameters;
     }
 
-    public boolean equals( Object o )
-    {
-        if ( this == o )
-        {
+    public boolean equals(Object o) {
+        if (this == o) {
             return true;
         }
-        if ( o == null || getClass() != o.getClass() )
-        {
+        if (o == null || getClass() != o.getClass()) {
             return false;
         }
 
         JdkToolchain that = (JdkToolchain) o;
 
-        if ( parameters != null ? !parameters.equals( that.parameters ) : that.parameters != null )
-        {
+        if (parameters != null ? !parameters.equals(that.parameters) : that.parameters != null) {
             return false;
         }
 
         return true;
     }
 
-    public int hashCode()
-    {
+    public int hashCode() {
         return parameters != null ? parameters.hashCode() : 0;
     }
 
-    public String toString()
-    {
+    public String toString() {
         return "JdkToolchain{" + "parameters=" + parameters + '}';
     }
 }
