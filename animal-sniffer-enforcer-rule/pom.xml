@@ -38,7 +38,7 @@
   <description>Animal Sniffer Maven Enforcer Rule.</description>
 
   <properties>
-    <enforcer-api.version>3.6.1</enforcer-api.version>
+    <enforcer-api.version>3.6.2</enforcer-api.version>
   </properties>
 
   <dependencies>
