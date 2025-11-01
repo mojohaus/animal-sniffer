@@ -72,6 +72,11 @@ public class SignatureChecker extends ClassFileVisitor {
      */
     public static final String PREVIOUS_ANNOTATION_FQN = "org.jvnet.animal_sniffer.IgnoreJRERequirement";
 
+    /**
+     * Suffix used by Kotlin for synthetic annotation methods that hold property annotations.
+     */
+    private static final String KOTLIN_ANNOTATIONS_SUFFIX = "$annotations";
+
     private final Map<String, Clazz> classes;
 
     private final Logger logger;
@@ -200,8 +205,8 @@ public class SignatureChecker extends ClassFileVisitor {
 
         @Override
         public MethodVisitor visitMethod(int access, String name, String desc, String signature, String[] exceptions) {
-            // Only process synthetic $annotations methods
-            if (name.endsWith("$annotations") && (access & Opcodes.ACC_SYNTHETIC) != 0) {
+            // Only process synthetic $annotations methods (check synthetic flag first for performance)
+            if ((access & Opcodes.ACC_SYNTHETIC) != 0 && name.endsWith(KOTLIN_ANNOTATIONS_SUFFIX)) {
                 return new MethodVisitor(Opcodes.ASM9) {
                     @Override
                     public AnnotationVisitor visitAnnotation(String annoDesc, boolean visible) {
@@ -209,7 +214,8 @@ public class SignatureChecker extends ClassFileVisitor {
                         for (String ignoredAnnoDesc : annotationDescriptors) {
                             if (annoDesc.equals(ignoredAnnoDesc)) {
                                 // Extract the actual method name by removing the $annotations suffix
-                                String actualMethodName = name.substring(0, name.length() - "$annotations".length());
+                                String actualMethodName =
+                                        name.substring(0, name.length() - KOTLIN_ANNOTATIONS_SUFFIX.length());
                                 kotlinAnnotatedMethods.add(actualMethodName + desc);
                                 break;
                             }
