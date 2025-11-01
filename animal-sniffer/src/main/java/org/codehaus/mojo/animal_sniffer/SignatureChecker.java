@@ -169,12 +169,56 @@ public class SignatureChecker extends ClassFileVisitor {
         ClassReader cr = new ClassReader(image);
 
         try {
-            cr.accept(new CheckingVisitor(name), 0);
+            // First pass: collect methods with annotations from $annotations synthetic methods (Kotlin)
+            AnnotationCollector collector = new AnnotationCollector();
+            cr.accept(collector, ClassReader.SKIP_CODE | ClassReader.SKIP_DEBUG | ClassReader.SKIP_FRAMES);
+
+            // Second pass: actual checking with knowledge of Kotlin $annotations methods
+            cr.accept(new CheckingVisitor(name, collector.getKotlinAnnotatedMethods()), 0);
         } catch (ArrayIndexOutOfBoundsException e) {
             logger.error("Bad class file " + name);
             // MANIMALSNIFFER-9 it is a pity that ASM does not throw a nicer error on encountering a malformed
             // class file.
             throw new IOException("Bad class file " + name, e);
+        }
+    }
+
+    /**
+     * First-pass visitor to collect Kotlin $annotations methods that have @IgnoreJRERequirement.
+     * Kotlin places property annotations on synthetic $annotations methods rather than the actual getter/setter.
+     */
+    private class AnnotationCollector extends ClassVisitor {
+        private final Set<String> kotlinAnnotatedMethods = new HashSet<>();
+
+        public AnnotationCollector() {
+            super(Opcodes.ASM9);
+        }
+
+        public Set<String> getKotlinAnnotatedMethods() {
+            return kotlinAnnotatedMethods;
+        }
+
+        @Override
+        public MethodVisitor visitMethod(int access, String name, String desc, String signature, String[] exceptions) {
+            // Only process synthetic $annotations methods
+            if (name.endsWith("$annotations") && (access & Opcodes.ACC_SYNTHETIC) != 0) {
+                return new MethodVisitor(Opcodes.ASM9) {
+                    @Override
+                    public AnnotationVisitor visitAnnotation(String annoDesc, boolean visible) {
+                        // Check if this is an ignore annotation
+                        for (String ignoredAnnoDesc : annotationDescriptors) {
+                            if (annoDesc.equals(ignoredAnnoDesc)) {
+                                // Extract the actual method name by removing the $annotations suffix
+                                String actualMethodName = name.substring(0, name.length() - "$annotations".length());
+                                kotlinAnnotatedMethods.add(actualMethodName + desc);
+                                break;
+                            }
+                        }
+                        return super.visitAnnotation(annoDesc, visible);
+                    }
+                };
+            }
+            return null;
         }
     }
 
@@ -238,6 +282,7 @@ public class SignatureChecker extends ClassFileVisitor {
 
     private class CheckingVisitor extends ClassVisitor {
         private final Set<String> ignoredPackageCache;
+        private final Set<String> kotlinAnnotatedMethods;
 
         private String packagePrefix;
         private int line;
@@ -247,9 +292,10 @@ public class SignatureChecker extends ClassFileVisitor {
 
         private boolean ignoreClass = false;
 
-        public CheckingVisitor(String name) {
+        public CheckingVisitor(String name, Set<String> kotlinAnnotatedMethods) {
             super(Opcodes.ASM9);
             this.ignoredPackageCache = new HashSet<>(50 * ignoredPackageRules.size());
+            this.kotlinAnnotatedMethods = kotlinAnnotatedMethods;
             this.name = name;
         }
 
@@ -333,7 +379,7 @@ public class SignatureChecker extends ClassFileVisitor {
                 /**
                  * True if @IgnoreJRERequirement is set.
                  */
-                boolean ignoreError = ignoreClass;
+                boolean ignoreError = ignoreClass || kotlinAnnotatedMethods.contains(name + desc);
 
                 Label label = null;
                 Map<Label, Set<String>> exceptions = new HashMap<>();
