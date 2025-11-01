@@ -2,28 +2,33 @@ package test
 
 /**
  * Test case for Kotlin inline functions with @IgnoreJRERequirement annotation.
- * This reproduces the issue where @IgnoreJRERequirement doesn't work on Kotlin inline properties.
+ * This tests both inline and non-inline methods to ensure the annotation works correctly.
  */
 
-// Test with inline property (should be ignored when annotated)
-@org.codehaus.mojo.animal_sniffer.IgnoreJRERequirement
-inline val Thread.threadIdCompat: Long
-    get() {
+class ThreadUtils {
+    // Inline method that uses a restricted API
+    @org.codehaus.mojo.animal_sniffer.IgnoreJRERequirement
+    inline fun getThreadIdInline(thread: Thread): Long {
         @Suppress("DEPRECATION")
-        return id  // This should be ignored due to the annotation
+        return thread.id  // Thread.getId() is deprecated
     }
 
-// Test with non-inline property (should also work)
-@org.codehaus.mojo.animal_sniffer.IgnoreJRERequirement
-val Thread.threadIdNonInline: Long
-    get() {
+    // Non-inline method that uses a restricted API
+    @org.codehaus.mojo.animal_sniffer.IgnoreJRERequirement
+    fun getThreadIdNonInline(thread: Thread): Long {
         @Suppress("DEPRECATION")
-        return id  // This should be ignored due to the annotation
+        return thread.id  // Thread.getId() is deprecated
     }
 
-// Caller function that uses the inline property
-fun useThreadId() {
-    val thread = Thread.currentThread()
-    val id1 = thread.threadIdCompat
-    val id2 = thread.threadIdNonInline
+    // Method that calls the inline function
+    fun useInlineMethod() {
+        val thread = Thread.currentThread()
+        val id = getThreadIdInline(thread)
+    }
+
+    // Method that calls the non-inline function
+    fun useNonInlineMethod() {
+        val thread = Thread.currentThread()
+        val id = getThreadIdNonInline(thread)
+    }
 }
