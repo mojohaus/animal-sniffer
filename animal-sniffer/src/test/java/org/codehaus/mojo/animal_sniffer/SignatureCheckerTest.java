@@ -35,22 +35,23 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.zip.GZIPOutputStream;
 
-import junit.framework.TestCase;
 import org.codehaus.mojo.animal_sniffer.logging.Logger;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
-public class SignatureCheckerTest extends TestCase {
+public class SignatureCheckerTest {
 
     public SignatureCheckerTest(String testName) {
-        super(testName);
     }
 
-    public void testAnnotationFqn() {
-        assertEquals(IgnoreJRERequirement.class.getName(), SignatureChecker.ANNOTATION_FQN);
+    @Test
+    void annotationFqn() {
+        assertEquals(SignatureChecker.ANNOTATION_FQN, IgnoreJRERequirement.class.getName());
     }
 
-    public void testToSourceForm() {
+    @Test
+    void toSourceForm() {
         assertSourceForm("java.util.HashMap", "java/util/HashMap", null);
         assertSourceForm("java.util.Map.Entry", "java/util/Map$Entry", null);
         assertSourceForm("String", "java/lang/String", null);
@@ -66,7 +67,8 @@ public class SignatureCheckerTest extends TestCase {
                 "mymethod(IDLjava/lang/Thread;)Ljava/lang/Object;");
     }
 
-    public void testToAnnotationDescriptor() {
+    @Test
+    void toAnnotationDescriptor() {
         assertAnnotationDescriptor(
                 "Lorg/codehaus/mojo/animal_sniffer/IgnoreJRERequirement;",
                 "org.codehaus.mojo.animal_sniffer.IgnoreJRERequirement");
@@ -85,7 +87,8 @@ public class SignatureCheckerTest extends TestCase {
         assertEquals(expected, SignatureChecker.toAnnotationDescriptor(fqn));
     }
 
-    public void testLoadClasses() throws Exception {
+    @Test
+    void loadClasses() throws Exception {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         try (ObjectOutputStream objOut = new ObjectOutputStream(new GZIPOutputStream(out))) {
             objOut.writeObject(new Clazz(
@@ -115,7 +118,8 @@ public class SignatureCheckerTest extends TestCase {
     /**
      * Verifies that only certain allowed classes may be deserialized.
      */
-    public void testLoadClasses_DisallowedClass() throws Exception {
+    @Test
+    void loadClassesDisallowedClass() throws Exception {
         // Java Serialization data for an instance of DisallowedDummyClass followed by `null`
         byte[] serializationData = {
             31, -117, 8, 0, 0, 0, 0, 0, 0, -1, 37, -63, 65, 14, 64, 48, 16, 0, -64, 37,
@@ -168,7 +172,8 @@ public class SignatureCheckerTest extends TestCase {
      * Uses first {@link SignatureBuilder} to build signature data and then {@link SignatureChecker}
      * to load it.
      */
-    public void testLoadClasses_Roundtrip() throws Exception {
+    @Test
+    void loadClassesRoundtrip() throws Exception {
         /*
          * Bytes for this class:
          * ```
