@@ -32,7 +32,7 @@
   </parent>
 
   <artifactId>animal-sniffer-parent</artifactId>
-  <version>1.27</version>
+  <version>1.28-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <name>Animal Sniffer</name>
@@ -79,7 +79,7 @@
   <scm>
     <connection>scm:git:https://github.com/mojohaus/animal-sniffer.git</connection>
     <developerConnection>scm:git:ssh://git@github.com/mojohaus/animal-sniffer.git</developerConnection>
-    <tag>animal-sniffer-1.27</tag>
+    <tag>1.23</tag>
     <url>https://github.com/mojohaus/animal-sniffer/tree/master</url>
   </scm>
 
@@ -95,7 +95,7 @@
 
   <properties>
     <scmpublish.content>${project.build.directory}/staging/animal-sniffer-parent</scmpublish.content>
-    <project.build.outputTimestamp>2026-01-18T21:30:21Z</project.build.outputTimestamp>
+    <project.build.outputTimestamp>2026-01-18T21:30:40Z</project.build.outputTimestamp>
   </properties>
 
   <dependencyManagement>
