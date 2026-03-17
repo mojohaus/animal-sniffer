@@ -13,7 +13,7 @@ jobs:
     permissions:
       contents: write  # for release-drafter/release-drafter to create a github release
     steps:
-      - uses: release-drafter/release-drafter@00ce30b0ce8a4d67bccfca59421cdf6c55dd0784 # v6.3.0
+      - uses: release-drafter/release-drafter@44a942e465867c7465b76aa808ddca6e0acae5da # v7.1.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           
