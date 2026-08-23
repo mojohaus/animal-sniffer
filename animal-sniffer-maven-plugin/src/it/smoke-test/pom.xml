@@ -63,6 +63,12 @@
       </modules>
     </profile>
     <profile>
+      <id>positive-cli-test</id>
+      <modules>
+        <module>client</module>
+      </modules>
+    </profile>
+    <profile>
       <id>negative-test</id>
       <modules>
         <module>client</module>

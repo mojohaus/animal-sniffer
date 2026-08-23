@@ -67,6 +67,7 @@
                   <signature>
                     <groupId>localdomain.localhost</groupId>
                     <artifactId>api</artifactId>
+                    <classifier>test-classifier</classifier>
                     <version>2-SNAPSHOT</version>
                   </signature>
                   <ignores>
@@ -75,6 +76,34 @@
                   </ignores>
                   <ignoreDependencies>false</ignoreDependencies>
                 </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile>
+      <id>positive-cli-test</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>${pluginGroupId}</groupId>
+            <artifactId>${pluginArtifactId}</artifactId>
+            <version>${pluginVersion}</version>
+            <configuration>
+              <ignores>
+                <ignore>java.*</ignore>
+                <ignore>javax.*</ignore>
+              </ignores>
+              <ignoreDependencies>false</ignoreDependencies>
+            </configuration>
+            <executions>
+              <execution>
+                <id>check-jdk</id>
+                <phase>test</phase>
+                <goals>
+                  <goal>check</goal>
+                </goals>
               </execution>
             </executions>
           </plugin>
