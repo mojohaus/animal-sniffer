@@ -53,6 +53,7 @@ Checking a project against API signatures
           <signature>
             <groupId>___group id of signature___</groupId>
             <artifactId>___artifact id of signature___</artifactId>
+            <classifier>___optional classifier of signature___</classifier>
             <version>___version of signature___</version>
           </signature>
           ...
@@ -79,6 +80,7 @@ Checking a project against API signatures
       <dependency>
         <groupId>___group id of signature___</groupId>
         <artifactId>___artifact id of signature___</artifactId>
+        <classifier>___optional classifier of signature___</classifier>
         <version>___version of signature___</version>
         <!-- the type is optional, safer to include it though -->
         <type>signature</type>
@@ -123,6 +125,12 @@ Checking a project against API signatures
 
 ---
 mvn animal-sniffer:check
+---
+
+      To select a classified signature from the command line, use canonical Maven coordinates, e.g.
+
+---
+mvn animal-sniffer:check -Danimal.sniffer.signature=groupId:artifactId:signature:classifier:version
 ---
 
     * Make the checks part of your build process add an execution to your
