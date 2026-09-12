@@ -341,6 +341,9 @@ public class SignatureChecker extends ClassFileVisitor {
                 @Override
                 public void visitEnd() {
                     checkType(Type.getReturnType(desc), ignoreError);
+                    for (Type argumentType : Type.getArgumentTypes(desc)) {
+                        checkType(argumentType, ignoreError);
+                    }
                 }
 
                 @Override
