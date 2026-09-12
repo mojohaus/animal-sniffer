@@ -341,8 +341,12 @@ public class SignatureChecker extends ClassFileVisitor {
                 @Override
                 public void visitEnd() {
                     checkType(Type.getReturnType(desc), ignoreError);
-                    for (Type argumentType : Type.getArgumentTypes(desc)) {
-                        checkType(argumentType, ignoreError);
+                    // Synthetic methods, such as lambda bodies and accessors, may not retain
+                    // the suppression annotations of the source methods they were generated from.
+                    if ((access & Opcodes.ACC_SYNTHETIC) == 0) {
+                        for (Type argumentType : Type.getArgumentTypes(desc)) {
+                            checkType(argumentType, ignoreError);
+                        }
                     }
                 }
 
