@@ -40,6 +40,7 @@ import java.util.zip.GZIPOutputStream;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.DefaultLogger;
 import org.apache.tools.ant.Project;
+import org.apache.tools.ant.types.FileSet;
 import org.apache.tools.ant.types.Path;
 import org.codehaus.mojo.animal_sniffer.IgnoreJRERequirement;
 import org.junit.Before;
@@ -47,6 +48,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -102,6 +104,42 @@ public class CheckSignatureTaskTest {
     public void methodAnnotationAcrossPaths() throws Exception {
         addFiles(true, copyClasses(MethodSuppressed.class));
         assertSuppressed();
+    }
+
+    @Test
+    public void classAnnotationWithInterspersedResource() throws Exception {
+        addFilesetWithResource(ClassSuppressed.class);
+        assertSuppressed();
+    }
+
+    @Test
+    public void methodAnnotationWithInterspersedResource() throws Exception {
+        addFilesetWithResource(MethodSuppressed.class);
+        assertSuppressed();
+    }
+
+    @Test
+    public void classAnnotationAcrossPathsWithIgnoredFiles() throws Exception {
+        addPathsWithIgnoredFiles(ClassSuppressed.class);
+        assertSuppressed();
+    }
+
+    @Test
+    public void methodAnnotationAcrossPathsWithIgnoredFiles() throws Exception {
+        addPathsWithIgnoredFiles(MethodSuppressed.class);
+        assertSuppressed();
+    }
+
+    @Test
+    public void unannotatedClassWithInterspersedResource() throws Exception {
+        addFilesetWithResource(Unsuppressed.class);
+        assertRejected();
+    }
+
+    @Test
+    public void unannotatedClassAcrossPathsWithIgnoredFiles() throws Exception {
+        addPathsWithIgnoredFiles(Unsuppressed.class);
+        assertRejected();
     }
 
     @Test
@@ -237,6 +275,20 @@ public class CheckSignatureTaskTest {
     }
 
     @Test
+    public void classJmodBeforeFile() throws Exception {
+        File[] files = copyClasses(ClassSuppressed.class);
+        addFiles(false, jar("outer-" + files[0].getName() + ".jmod", files[1]), files[0]);
+        assertSuppressed();
+    }
+
+    @Test
+    public void unannotatedClassInJmod() throws Exception {
+        File[] files = copyClasses(Unsuppressed.class);
+        addFiles(false, files[1], jar("i.jmod", files[0]));
+        assertRejected();
+    }
+
+    @Test
     public void classFileBeforeDirectoryNamedLikeClass() throws Exception {
         File[] files = copyClasses(ClassSuppressed.class);
         addFiles(false, files[1], directory("i.class", files[0]));
@@ -257,6 +309,36 @@ public class CheckSignatureTaskTest {
         // Sorting loose files globally would move the longer MethodSuppressed name past its anonymous class's JAR.
         addFiles(true, methodFiles[1], jar("i.jar", methodFiles[0]), classFiles[1], classFiles[0]);
         assertSuppressed();
+    }
+
+    private void addFilesetWithResource(Class<?> fixture) throws IOException {
+        File[] files = copyClasses(fixture);
+        String outerName = files[1].getName();
+        File resource = new File(
+                files[0].getParentFile(),
+                outerName.substring(0, outerName.length() - ".class".length()) + "$2.properties");
+        Files.createFile(resource.toPath());
+        FileSet fileset = new FileSet();
+        fileset.setProject(task.getProject());
+        fileset.setDir(files[0].getParentFile());
+        Path path = new Path(task.getProject());
+        path.addFileset(fileset);
+        assertArrayEquals(
+                new String[] {files[0].getAbsolutePath(), resource.getAbsolutePath(), files[1].getAbsolutePath()},
+                path.list());
+        task.addPath(path);
+    }
+
+    private void addPathsWithIgnoredFiles(Class<?> fixture) throws IOException {
+        File[] files = copyClasses(fixture);
+        addFiles(
+                true,
+                files[0],
+                temporaryFolder.newFile("ignored.properties"),
+                temporaryFolder.newFile("ignored.zip"),
+                temporaryFolder.newFile("ignored.CLASS"),
+                temporaryFolder.newFile("README"),
+                files[1]);
     }
 
     private File directory(String name, File file) throws IOException {
