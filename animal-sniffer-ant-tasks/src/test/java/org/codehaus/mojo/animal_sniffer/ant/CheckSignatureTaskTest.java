@@ -152,6 +152,130 @@ public class CheckSignatureTaskTest {
         assertSuppressed();
     }
 
+    @Test
+    public void classAnnotationAcrossDirectories() throws Exception {
+        File[] files = copyClasses(ClassSuppressed.class);
+        addFiles(false, directory("outer-classes", files[1]), directory("i", files[0]));
+        assertSuppressed();
+    }
+
+    @Test
+    public void methodAnnotationAcrossDirectories() throws Exception {
+        File[] files = copyClasses(MethodSuppressed.class);
+        addFiles(true, directory("outer-classes", files[1]), directory("i", files[0]));
+        assertSuppressed();
+    }
+
+    @Test
+    public void classAnnotationAcrossJars() throws Exception {
+        File[] files = copyClasses(ClassSuppressed.class);
+        addFiles(false, jar("outer-classes.jar", files[1]), jar("i.jar", files[0]));
+        assertSuppressed();
+    }
+
+    @Test
+    public void methodAnnotationAcrossJars() throws Exception {
+        File[] files = copyClasses(MethodSuppressed.class);
+        addFiles(true, jar("outer-classes.jar", files[1]), jar("i.jar", files[0]));
+        assertSuppressed();
+    }
+
+    @Test
+    public void classFileBeforeDirectory() throws Exception {
+        File[] files = copyClasses(ClassSuppressed.class);
+        addFiles(false, files[1], directory("i", files[0]));
+        assertSuppressed();
+    }
+
+    @Test
+    public void methodFileBeforeDirectory() throws Exception {
+        File[] files = copyClasses(MethodSuppressed.class);
+        addFiles(true, files[1], directory("i", files[0]));
+        assertSuppressed();
+    }
+
+    @Test
+    public void classDirectoryBeforeFile() throws Exception {
+        File[] files = copyClasses(ClassSuppressed.class);
+        addFiles(false, directory("outer-" + files[0].getName(), files[1]), files[0]);
+        assertSuppressed();
+    }
+
+    @Test
+    public void methodDirectoryBeforeFile() throws Exception {
+        File[] files = copyClasses(MethodSuppressed.class);
+        addFiles(true, directory("outer-" + files[0].getName(), files[1]), files[0]);
+        assertSuppressed();
+    }
+
+    @Test
+    public void classFileBeforeJar() throws Exception {
+        File[] files = copyClasses(ClassSuppressed.class);
+        addFiles(false, files[1], jar("i.jar", files[0]));
+        assertSuppressed();
+    }
+
+    @Test
+    public void methodFileBeforeJar() throws Exception {
+        File[] files = copyClasses(MethodSuppressed.class);
+        addFiles(true, files[1], jar("i.jar", files[0]));
+        assertSuppressed();
+    }
+
+    @Test
+    public void classJarBeforeFile() throws Exception {
+        File[] files = copyClasses(ClassSuppressed.class);
+        addFiles(false, jar("outer-" + files[0].getName() + ".jar", files[1]), files[0]);
+        assertSuppressed();
+    }
+
+    @Test
+    public void methodJarBeforeFile() throws Exception {
+        File[] files = copyClasses(MethodSuppressed.class);
+        addFiles(true, jar("outer-" + files[0].getName() + ".jar", files[1]), files[0]);
+        assertSuppressed();
+    }
+
+    @Test
+    public void classFileBeforeDirectoryNamedLikeClass() throws Exception {
+        File[] files = copyClasses(ClassSuppressed.class);
+        addFiles(false, files[1], directory("i.class", files[0]));
+        assertSuppressed();
+    }
+
+    @Test
+    public void methodFileBeforeDirectoryNamedLikeClass() throws Exception {
+        File[] files = copyClasses(MethodSuppressed.class);
+        addFiles(true, files[1], directory("i.class", files[0]));
+        assertSuppressed();
+    }
+
+    @Test
+    public void looseFilesStayOnEitherSideOfJar() throws Exception {
+        File[] methodFiles = copyClasses(MethodSuppressed.class);
+        File[] classFiles = copyClasses(ClassSuppressed.class);
+        // Sorting loose files globally would move the longer MethodSuppressed name past its anonymous class's JAR.
+        addFiles(true, methodFiles[1], jar("i.jar", methodFiles[0]), classFiles[1], classFiles[0]);
+        assertSuppressed();
+    }
+
+    private File directory(String name, File file) throws IOException {
+        File directory = temporaryFolder.newFolder(name);
+        Files.copy(file.toPath(), new File(directory, file.getName()).toPath());
+        return directory;
+    }
+
+    private File jar(String name, File file) throws IOException {
+        File jar = temporaryFolder.newFile(name);
+        String packagePath = getClass().getPackage().getName().replace('.', '/');
+        try (JarOutputStream out = new JarOutputStream(new FileOutputStream(jar))) {
+            out.putNextEntry(new JarEntry(packagePath + "/" + file.getName()));
+            Files.copy(file.toPath(), out);
+            out.closeEntry();
+        }
+        return jar;
+    }
+
     private File[] copyClasses(Class<?> fixture) throws IOException {
         File directory = temporaryFolder.newFolder();
         String resource = fixture.getName().replace('.', '/');
