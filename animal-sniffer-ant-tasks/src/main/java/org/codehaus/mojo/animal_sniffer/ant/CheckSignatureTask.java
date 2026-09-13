@@ -176,12 +176,14 @@ public class CheckSignatureTask extends Task {
             }
             signatureChecker.setAnnotationTypes(annotationTypes);
 
+            final List<File> files = new ArrayList<>();
             for (Path path : paths) {
-                final String[] files = path.list();
-                for (String file : files) {
-                    signatureChecker.process(new File(file));
+                for (String file : path.list()) {
+                    files.add(new File(file));
                 }
             }
+            // Sort all paths together so enclosing classes are visited before their nested classes.
+            signatureChecker.process(files.toArray(new File[0]));
 
             if (signatureChecker.isSignatureBroken()) {
                 String message = "Signature errors found. Verify them and ignore them with the "
