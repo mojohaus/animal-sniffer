@@ -180,14 +180,17 @@ public class CheckSignatureTask extends Task {
             for (Path path : paths) {
                 for (String filename : path.list()) {
                     File file = new File(filename);
-                    if (!file.isDirectory() && file.getName().endsWith(".class")) {
-                        classFiles.add(file);
-                    } else {
+                    if (file.isDirectory()
+                            || file.getName().endsWith(".jar")
+                            || file.getName().endsWith(".jmod")) {
                         // Sort loose classes without moving them across directories or archives.
                         signatureChecker.process(classFiles.toArray(new File[0]));
                         classFiles.clear();
                         signatureChecker.process(file);
+                    } else if (file.getName().endsWith(".class")) {
+                        classFiles.add(file);
                     }
+                    // Other files are ignored without ending the run of loose classes.
                 }
             }
             // A run of loose classes can span multiple Path elements.
