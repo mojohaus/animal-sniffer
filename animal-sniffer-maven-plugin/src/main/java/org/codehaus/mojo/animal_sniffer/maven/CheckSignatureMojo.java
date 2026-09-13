@@ -102,10 +102,11 @@ public class CheckSignatureMojo extends AbstractMojo {
 
     /**
      * @param signatureId
-     *            A fully-qualified path to a signature jar. This allows users
-     *            to set a signature for command-line invocations, such as:
+     *            Signature artifact coordinates for command-line invocations. The shorthand form is
+     *            {@code groupId:artifactId:version}; the full Maven form is
+     *            {@code groupId:artifactId:signature:classifier:version}, where {@code signature} is the artifact type.
      *            <p>
-     *            <code>mvn org.codehaus.mojo:animal-sniffer-maven-plugin:1.15:check -Dsignature=org.codehaus.mojo.signature:java17:1.0</code>
+     *            <code>mvn org.codehaus.mojo:animal-sniffer-maven-plugin:check -Danimal.sniffer.signature=org.codehaus.mojo.signature:java17:1.0</code>
      */
     public void setSignature(String signatureId) {
         String[] signatureParts = signatureId.split(":");
@@ -114,6 +115,13 @@ public class CheckSignatureMojo extends AbstractMojo {
             this.signature.setGroupId(signatureParts[0]);
             this.signature.setArtifactId(signatureParts[1]);
             this.signature.setVersion(signatureParts[2]);
+        } else if (signatureParts.length == 5 && "signature".equals(signatureParts[2])) {
+            // Full coordinates name Animal Sniffer's signature type before the classifier:
+            this.signature = new Signature();
+            this.signature.setGroupId(signatureParts[0]);
+            this.signature.setArtifactId(signatureParts[1]);
+            this.signature.setClassifier(signatureParts[3]);
+            this.signature.setVersion(signatureParts[4]);
         }
     }
 
@@ -306,14 +314,15 @@ public class CheckSignatureMojo extends AbstractMojo {
         return classes;
     }
 
-    private static Dependency findMatchingDependency(Signature signature, List<Dependency> dependencies) {
+    static Dependency findMatchingDependency(Signature signature, List<Dependency> dependencies) {
         Dependency match = null;
         for (Dependency d : dependencies) {
             if (StringUtils.isBlank(d.getVersion())) {
                 continue;
             }
             if (StringUtils.equals(d.getGroupId(), signature.getGroupId())
-                    && StringUtils.equals(d.getArtifactId(), signature.getArtifactId())) {
+                    && StringUtils.equals(d.getArtifactId(), signature.getArtifactId())
+                    && classifiersMatch(d.getClassifier(), signature.getClassifier())) {
                 if ("signature".equals(d.getType())) {
                     // this is a perfect match
                     match = d;
@@ -332,6 +341,16 @@ public class CheckSignatureMojo extends AbstractMojo {
             }
         }
         return match;
+    }
+
+    /**
+     * Tests whether dependency and signature classifiers identify the same artifact variant.
+     */
+    private static boolean classifiersMatch(String dependencyClassifier, String signatureClassifier) {
+        if (StringUtils.isBlank(signatureClassifier)) {
+            return StringUtils.isBlank(dependencyClassifier);
+        }
+        return StringUtils.equals(dependencyClassifier, signatureClassifier);
     }
 
     /**
