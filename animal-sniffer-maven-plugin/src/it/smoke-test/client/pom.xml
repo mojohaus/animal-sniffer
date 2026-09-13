@@ -50,6 +50,17 @@
   <profiles>
     <profile>
       <id>positive-test</id>
+      <dependencyManagement>
+        <dependencies>
+          <dependency>
+            <groupId>localdomain.localhost</groupId>
+            <artifactId>api</artifactId>
+            <version>2-SNAPSHOT</version>
+            <type>signature</type>
+            <classifier>test-classifier</classifier>
+          </dependency>
+        </dependencies>
+      </dependencyManagement>
       <build>
         <plugins>
           <plugin>
@@ -68,7 +79,6 @@
                     <groupId>localdomain.localhost</groupId>
                     <artifactId>api</artifactId>
                     <classifier>test-classifier</classifier>
-                    <version>2-SNAPSHOT</version>
                   </signature>
                   <ignores>
                     <ignore>java.*</ignore>

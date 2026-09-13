@@ -104,6 +104,7 @@ Checking a project against API signatures
           <signature>
             <groupId>___group id of signature___</groupId>
             <artifactId>___artifact id of signature___</artifactId>
+            <classifier>___optional classifier of signature___</classifier>
           </signature>
           ...
         </configuration>
@@ -117,6 +118,9 @@ Checking a project against API signatures
 </project>
 ---
 
+
+  If the dependency has a classifier, you should specify the same classifier in the plugin's
+  <<<signature>>> configuration so its version can be resolved.
 
   Once you have configured your project with details of the signature to check, you have two ways to
   check your classes against this signature:
