@@ -176,12 +176,25 @@ public class CheckSignatureTask extends Task {
             }
             signatureChecker.setAnnotationTypes(annotationTypes);
 
+            final List<File> classFiles = new ArrayList<>();
             for (Path path : paths) {
-                final String[] files = path.list();
-                for (String file : files) {
-                    signatureChecker.process(new File(file));
+                for (String filename : path.list()) {
+                    File file = new File(filename);
+                    if (file.isDirectory()
+                            || file.getName().endsWith(".jar")
+                            || file.getName().endsWith(".jmod")) {
+                        // Sort loose classes without moving them across directories or archives.
+                        signatureChecker.process(classFiles.toArray(new File[0]));
+                        classFiles.clear();
+                        signatureChecker.process(file);
+                    } else if (file.getName().endsWith(".class")) {
+                        classFiles.add(file);
+                    }
+                    // Other files are ignored without ending the run of loose classes.
                 }
             }
+            // A run of loose classes can span multiple Path elements.
+            signatureChecker.process(classFiles.toArray(new File[0]));
 
             if (signatureChecker.isSignatureBroken()) {
                 String message = "Signature errors found. Verify them and ignore them with the "
