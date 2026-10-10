@@ -29,6 +29,14 @@ jobs:
     name: Verify
     uses: apache/maven-gh-actions-shared/.github/workflows/maven-verify.yml@v5
     with:
+      matrix-exclude: >
+        [
+          {"os": "macos-latest", "jdk": "8"},
+          {"os": "macos-latest", "jdk": "11"},
+          {"os": "macos-latest", "jdk": "17"},
+          {"os": "windows-latest", "jdk": "11"},
+          {"os": "windows-latest", "jdk": "17"}
+        ]
       jdk-matrix: '["8", "11", "17", "21"]'
       jdk-distribution-matrix: '["zulu"]'
       ff-jdk: "17"
