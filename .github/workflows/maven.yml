@@ -41,5 +41,5 @@ jobs:
       jdk-distribution-matrix: '["zulu"]'
       ff-jdk: "17"
       ff-maven: "3.9.8"                     # Maven version for fail-fast-build
-      maven-matrix: '[ "3.6.3", "3.9.8" ]'  # Maven versions matrix for verify builds
+      maven-matrix: '[ "3.9.0", "3.9.8" ]'  # Maven versions matrix for verify builds
 

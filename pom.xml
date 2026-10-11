@@ -98,6 +98,8 @@
     <invoker.parallelThreads>1C</invoker.parallelThreads>
     <scmpublish.content>${project.build.directory}/staging/animal-sniffer-parent</scmpublish.content>
     <project.build.outputTimestamp>2026-09-11T20:50:40Z</project.build.outputTimestamp>
+    <mavenVersion>3.9.16</mavenVersion>
+    <minimalMavenBuildVersion>3.9.0</minimalMavenBuildVersion>
   </properties>
 
   <dependencyManagement>

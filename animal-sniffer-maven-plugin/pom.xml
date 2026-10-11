@@ -38,7 +38,7 @@
   <description>Animal Sniffer Maven Plugin.</description>
 
   <prerequisites>
-    <maven>${mavenVersion}</maven>
+    <maven>3.9.0</maven>
   </prerequisites>
 
   <dependencies>
