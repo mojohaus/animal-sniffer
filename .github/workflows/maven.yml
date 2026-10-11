@@ -32,14 +32,6 @@ jobs:
       matrix-exclude: >
         [
           {"os": "macos-latest", "jdk": "8"},
-          {"os": "macos-latest", "jdk": "11"},
-          {"os": "macos-latest", "jdk": "17"},
-          {"os": "windows-latest", "jdk": "11"},
-          {"os": "windows-latest", "jdk": "17"}
+          {"os": "macos-latest", "jdk": "21"},
+          {"os": "windows-latest", "jdk": "21"}
         ]
-      jdk-matrix: '["8", "11", "17", "21"]'
-      jdk-distribution-matrix: '["zulu"]'
-      ff-jdk: "17"
-      ff-maven: "3.9.8"                     # Maven version for fail-fast-build
-      maven-matrix: '[ "3.9.0", "3.9.8" ]'  # Maven versions matrix for verify builds
-
