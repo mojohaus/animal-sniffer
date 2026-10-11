@@ -24,27 +24,6 @@
  *
  */
 
-import java.io.*;
-import java.util.regex.*;
-import org.codehaus.plexus.util.FileUtils;
+def buildLog = new File(basedir, "build.log").getText("UTF-8")
 
-try
-{
-    File file = new File( basedir, "build.log" );
-    String buf = FileUtils.fileRead( file, "UTF-8" );
-
-    Pattern p = Pattern.compile( "Bad class file .*\\Qicu4j-2.6.1.jar:com/ibm/icu/impl/data/LocaleElements_zh__PINYIN.class\\E" );
-
-    if ( !p.matcher( buf ).find() )
-    {
-        System.err.println( "User friendly error message not displayed" );
-        return false;
-    }
-}
-catch( Throwable t )
-{
-    t.printStackTrace();
-    return false;
-}
-
-return true;
+assert buildLog =~ /Bad class file .*\Qicu4j-2.6.1.jar:com\/ibm\/icu\/impl\/data\/LocaleElements_zh__PINYIN.class\E/ : "User friendly error message not displayed"
