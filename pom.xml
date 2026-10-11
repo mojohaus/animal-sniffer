@@ -95,7 +95,7 @@
 
   <properties>
     <!-- run the ITs in parallel -->
-    <invoker.parallelThreads>0.75C</invoker.parallelThreads>
+    <invoker.parallelThreads>1C</invoker.parallelThreads>
     <scmpublish.content>${project.build.directory}/staging/animal-sniffer-parent</scmpublish.content>
     <project.build.outputTimestamp>2026-09-11T20:50:40Z</project.build.outputTimestamp>
   </properties>
