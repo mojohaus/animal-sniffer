@@ -45,12 +45,12 @@ import static org.junit.jupiter.api.Assertions.fail;
 class SignatureCheckerTest {
 
     @Test
-    void testAnnotationFqn() {
-        assertEquals(IgnoreJRERequirement.class.getName(), SignatureChecker.ANNOTATION_FQN);
+    void annotationFqn() {
+        assertEquals(SignatureChecker.ANNOTATION_FQN, IgnoreJRERequirement.class.getName());
     }
 
     @Test
-    void testToSourceForm() {
+    void toSourceForm() {
         assertSourceForm("java.util.HashMap", "java/util/HashMap", null);
         assertSourceForm("java.util.Map.Entry", "java/util/Map$Entry", null);
         assertSourceForm("String", "java/lang/String", null);
@@ -67,7 +67,7 @@ class SignatureCheckerTest {
     }
 
     @Test
-    void testToAnnotationDescriptor() {
+    void toAnnotationDescriptor() {
         assertAnnotationDescriptor(
                 "Lorg/codehaus/mojo/animal_sniffer/IgnoreJRERequirement;",
                 "org.codehaus.mojo.animal_sniffer.IgnoreJRERequirement");
@@ -87,7 +87,7 @@ class SignatureCheckerTest {
     }
 
     @Test
-    void testLoadClasses() throws Exception {
+    void loadClasses() throws Exception {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         try (ObjectOutputStream objOut = new ObjectOutputStream(new GZIPOutputStream(out))) {
             objOut.writeObject(new Clazz(
@@ -118,7 +118,7 @@ class SignatureCheckerTest {
      * Verifies that only certain allowed classes may be deserialized.
      */
     @Test
-    void testLoadClasses_DisallowedClass() throws Exception {
+    void loadClassesDisallowedClass() throws Exception {
         // Java Serialization data for an instance of DisallowedDummyClass followed by `null`
         byte[] serializationData = {
             31, -117, 8, 0, 0, 0, 0, 0, 0, -1, 37, -63, 65, 14, 64, 48, 16, 0, -64, 37,
@@ -172,7 +172,7 @@ class SignatureCheckerTest {
      * to load it.
      */
     @Test
-    void testLoadClasses_Roundtrip() throws Exception {
+    void loadClassesRoundtrip() throws Exception {
         /*
          * Bytes for this class:
          * ```
