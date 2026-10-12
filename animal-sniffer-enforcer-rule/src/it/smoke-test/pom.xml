@@ -86,7 +86,7 @@
         </plugin>
       <plugin>
         <artifactId>maven-enforcer-plugin</artifactId>
-        <version>1.0</version>
+        <version>3.6.3</version>
         <dependencies>
           <dependency>
             <groupId>@project.groupId@</groupId>
