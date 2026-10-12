@@ -36,13 +36,10 @@ import java.util.Random;
 import java.util.Set;
 
 import org.apache.maven.artifact.Artifact;
-import org.apache.maven.artifact.factory.ArtifactFactory;
-import org.apache.maven.artifact.repository.ArtifactRepository;
-import org.apache.maven.artifact.resolver.AbstractArtifactResolutionException;
-import org.apache.maven.artifact.resolver.ArtifactResolver;
 import org.apache.maven.enforcer.rule.api.EnforcerRule;
 import org.apache.maven.enforcer.rule.api.EnforcerRuleException;
 import org.apache.maven.enforcer.rule.api.EnforcerRuleHelper;
+import org.apache.maven.execution.MavenSession;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.shared.artifact.filter.PatternExcludesArtifactFilter;
@@ -54,6 +51,9 @@ import org.codehaus.mojo.animal_sniffer.logging.Logger;
 import org.codehaus.plexus.component.configurator.expression.ExpressionEvaluationException;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 import org.codehaus.plexus.util.StringUtils;
+import org.eclipse.aether.RepositorySystem;
+import org.eclipse.aether.resolution.ArtifactRequest;
+import org.eclipse.aether.resolution.ArtifactResolutionException;
 
 /**
  * Created by IntelliJ IDEA.
@@ -142,13 +142,11 @@ public class CheckSignatureRule implements EnforcerRule {
 
             File testOutputDirectory = new File((String) helper.evaluate("${project.build.testOutputDirectory}"));
 
-            ArtifactResolver resolver = (ArtifactResolver) helper.getComponent(ArtifactResolver.class);
+            RepositorySystem repositorySystem = helper.getComponent(RepositorySystem.class);
 
             MavenProject project = (MavenProject) helper.evaluate("${project}");
 
-            ArtifactRepository localRepository = (ArtifactRepository) helper.evaluate("${localRepository}");
-
-            ArtifactFactory artifactFactory = (ArtifactFactory) helper.getComponent(ArtifactFactory.class);
+            MavenSession session = (MavenSession) helper.evaluate("${session}");
 
             if (StringUtils.isEmpty(signature.getVersion())) {
                 helper.getLog()
@@ -174,9 +172,12 @@ public class CheckSignatureRule implements EnforcerRule {
 
             helper.getLog().info("Checking unresolved references to " + signature);
 
-            org.apache.maven.artifact.Artifact a = signature.createArtifact(artifactFactory);
-
-            resolver.resolve(a, project.getRemoteArtifactRepositories(), localRepository);
+            ArtifactRequest request =
+                    new ArtifactRequest(signature.createArtifact(), project.getRemoteProjectRepositories(), null);
+            File signatureFile = repositorySystem
+                    .resolveArtifact(session.getRepositorySession(), request)
+                    .getArtifact()
+                    .getFile();
             // just check code from this module
 
             MavenLogger logger = new MavenLogger(helper.getLog());
@@ -193,7 +194,7 @@ public class CheckSignatureRule implements EnforcerRule {
             }
 
             final SignatureChecker signatureChecker =
-                    new SignatureChecker(new FileInputStream(a.getFile()), ignoredPackages, logger);
+                    new SignatureChecker(new FileInputStream(signatureFile), ignoredPackages, logger);
             signatureChecker.setCheckJars(false); // don't want to descend into jar files that have been copied to
             // the output directory as resources.
 
@@ -215,7 +216,7 @@ public class CheckSignatureRule implements EnforcerRule {
             }
         } catch (IOException e) {
             throw new EnforcerRuleException("Failed to check signatures", e);
-        } catch (AbstractArtifactResolutionException e) {
+        } catch (ArtifactResolutionException e) {
             throw new EnforcerRuleException("Failed to obtain signature: " + signature, e);
         } catch (ComponentLookupException e) {
             throw new EnforcerRuleException("Unable to lookup a component " + e.getLocalizedMessage(), e);
