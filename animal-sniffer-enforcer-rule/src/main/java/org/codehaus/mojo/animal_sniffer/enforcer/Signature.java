@@ -25,7 +25,8 @@ package org.codehaus.mojo.animal_sniffer.enforcer;
  *
  */
 
-import org.apache.maven.artifact.factory.ArtifactFactory;
+import org.eclipse.aether.artifact.Artifact;
+import org.eclipse.aether.artifact.DefaultArtifact;
 
 /**
  * Represents artifact in Maven POM.
@@ -64,8 +65,8 @@ public class Signature {
         this.version = version;
     }
 
-    public org.apache.maven.artifact.Artifact createArtifact(ArtifactFactory factory) {
-        return factory.createArtifact(groupId, artifactId, version, null, "signature" /*don't really care*/);
+    public Artifact createArtifact() {
+        return new DefaultArtifact(groupId, artifactId, "signature", version);
     }
 
     public String toString() {
