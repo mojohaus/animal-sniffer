@@ -24,37 +24,17 @@
  *
  */
 
-import java.io.*;
-import org.codehaus.plexus.util.FileUtils;
+def buildLog = new File(basedir, "build.log").getText("UTF-8")
 
-try
-{
-    File file = new File( basedir, "build.log" );
-    String buf = FileUtils.fileRead( file, "UTF-8" );
-
-    String[] expected = {
-        "Bad.java:9: Undefined reference: void java.util.concurrent.DelayQueue.<init>()",
-        "Bad.java:9: Undefined reference: java.util.concurrent.ScheduledFuture",
-        "Bad.java:11: Undefined reference: boolean java.util.concurrent.ScheduledFuture.isCancelled()",
-        "Bad.java:15: Undefined reference: java.util.concurrent.Callable java.util.concurrent.Executors.callable(Runnable)",
-        "Bad.java:15: Undefined reference: Object java.util.concurrent.Callable.call()",
-        // XXX seems like there should be more of them...
-    };
-    for (String s : expected) {
-        if (!buf.contains(s)) {
-            System.err.println("Failed to find: " + s);
-            return false;
-        }
-    }
-    if (buf.contains("Good.java")) {
-        System.err.println("Should not have warned about Good.java");
-        return false;
-    }
+def expected = [
+    "Bad.java:9: Undefined reference: void java.util.concurrent.DelayQueue.<init>()",
+    "Bad.java:9: Undefined reference: java.util.concurrent.ScheduledFuture",
+    "Bad.java:11: Undefined reference: boolean java.util.concurrent.ScheduledFuture.isCancelled()",
+    "Bad.java:15: Undefined reference: java.util.concurrent.Callable java.util.concurrent.Executors.callable(Runnable)",
+    "Bad.java:15: Undefined reference: Object java.util.concurrent.Callable.call()",
+    // XXX seems like there should be more of them...
+]
+for (s in expected) {
+    assert buildLog.contains(s) : "Failed to find: " + s
 }
-catch( Throwable t )
-{
-    t.printStackTrace();
-    return false;
-}
-
-return true;
+assert !buildLog.contains("Good.java") : "Should not have warned about Good.java"
