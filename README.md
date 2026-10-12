@@ -8,6 +8,8 @@ flag from Javac see (https://openjdk.java.net/jeps/247)
 [![Maven Central](https://img.shields.io/maven-central/v/org.codehaus.mojo/animal-sniffer-maven-plugin.svg?label=Maven%20Central)](https://search.maven.org/artifact/org.codehaus.mojo/animal-sniffer-maven-plugin)
 [![Build Status](https://github.com/mojohaus/animal-sniffer/actions/workflows/maven.yml/badge.svg)](https://github.com/mojohaus/animal-sniffer/actions/workflows/maven.yml)
 
+Contributor and agent notes are in [AGENTS.md](AGENTS.md).
+
 ## Releasing
 
 * Make sure `gpg-agent` is running.
