@@ -53,6 +53,7 @@
               <goal>build</goal>
             </goals>
             <configuration>
+              <classifier>test-classifier</classifier>
               <primaryArtifact>false</primaryArtifact>
               <includeJavaHome>false</includeJavaHome>
             </configuration>
