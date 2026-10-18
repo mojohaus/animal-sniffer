@@ -39,6 +39,8 @@ public class Signature {
 
     private String artifactId;
 
+    private String classifier;
+
     private String version;
 
     public String getGroupId() {
@@ -57,6 +59,22 @@ public class Signature {
         this.artifactId = artifactId;
     }
 
+    /**
+     * Returns the classifier used to resolve the signature artifact.
+     */
+    public String getClassifier() {
+        return classifier;
+    }
+
+    /**
+     * Sets the optional classifier used to resolve the signature artifact.
+     *
+     * @param classifier the signature artifact classifier
+     */
+    public void setClassifier(String classifier) {
+        this.classifier = classifier;
+    }
+
     public String getVersion() {
         return version;
     }
@@ -66,10 +84,13 @@ public class Signature {
     }
 
     public Artifact createArtifact() {
-        return new DefaultArtifact(groupId, artifactId, "signature", version);
+        return new DefaultArtifact(groupId, artifactId, classifier, "signature", version);
     }
 
     public String toString() {
-        return groupId + ":" + artifactId + ":" + version;
+        if (classifier == null || classifier.isEmpty()) {
+            return groupId + ":" + artifactId + ":" + version;
+        }
+        return groupId + ":" + artifactId + ":signature:" + classifier + ":" + version;
     }
 }
