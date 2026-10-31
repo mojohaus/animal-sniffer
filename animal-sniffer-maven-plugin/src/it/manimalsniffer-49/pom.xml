@@ -37,20 +37,11 @@
     <pluginManagement>
       <plugins>
         <plugin>
-          <artifactId>maven-clean-plugin</artifactId>
-          <version>2.2</version>
-        </plugin>
-        <plugin>
           <artifactId>maven-compiler-plugin</artifactId>
-          <version>3.11.0</version>
           <configuration>
             <source>@mojo.java.target@</source>
             <target>@mojo.java.target@</target>
           </configuration>
-        </plugin>
-        <plugin>
-          <artifactId>maven-surefire-plugin</artifactId>
-          <version>2.4.2</version>
         </plugin>
       </plugins>
     </pluginManagement>
