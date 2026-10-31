@@ -48,7 +48,6 @@
       <plugins>
         <plugin>
           <artifactId>maven-compiler-plugin</artifactId>
-          <version>3.5.1</version>
           <configuration>
             <source>@mojo.java.target@</source>
             <target>@mojo.java.target@</target>
