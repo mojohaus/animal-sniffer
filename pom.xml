@@ -94,6 +94,7 @@
   </ciManagement>
 
   <properties>
+    <sisuVersion>1.0.0</sisuVersion>
     <!-- run the ITs in parallel -->
     <invoker.parallelThreads>1C</invoker.parallelThreads>
     <scmpublish.content>${project.build.directory}/staging/animal-sniffer-parent</scmpublish.content>
