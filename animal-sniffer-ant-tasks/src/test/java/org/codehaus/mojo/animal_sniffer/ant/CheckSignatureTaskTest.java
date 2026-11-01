@@ -43,27 +43,26 @@ import org.apache.tools.ant.Project;
 import org.apache.tools.ant.types.FileSet;
 import org.apache.tools.ant.types.Path;
 import org.codehaus.mojo.animal_sniffer.IgnoreJRERequirement;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
-public class CheckSignatureTaskTest {
-    @Rule
-    public TemporaryFolder temporaryFolder = new TemporaryFolder();
+class CheckSignatureTaskTest {
+    @TempDir
+    File temporaryFolder;
 
     private CheckSignatureTask task;
     private ByteArrayOutputStream errors;
 
-    @Before
-    public void setUp() throws Exception {
-        File signature = temporaryFolder.newFile("empty.signature");
+    @BeforeEach
+    void setUp() throws Exception {
+        File signature = newFile("empty.signature");
         try (ObjectOutputStream out = new ObjectOutputStream(new GZIPOutputStream(new FileOutputStream(signature)))) {
             out.writeObject(null);
         }
@@ -83,102 +82,102 @@ public class CheckSignatureTaskTest {
     }
 
     @Test
-    public void classAnnotationWithReversedFiles() throws Exception {
+    void classAnnotationWithReversedFiles() throws Exception {
         addFiles(false, copyClasses(ClassSuppressed.class));
         assertSuppressed();
     }
 
     @Test
-    public void methodAnnotationWithReversedFiles() throws Exception {
+    void methodAnnotationWithReversedFiles() throws Exception {
         addFiles(false, copyClasses(MethodSuppressed.class));
         assertSuppressed();
     }
 
     @Test
-    public void classAnnotationAcrossPaths() throws Exception {
+    void classAnnotationAcrossPaths() throws Exception {
         addFiles(true, copyClasses(ClassSuppressed.class));
         assertSuppressed();
     }
 
     @Test
-    public void methodAnnotationAcrossPaths() throws Exception {
+    void methodAnnotationAcrossPaths() throws Exception {
         addFiles(true, copyClasses(MethodSuppressed.class));
         assertSuppressed();
     }
 
     @Test
-    public void classAnnotationWithInterspersedResource() throws Exception {
+    void classAnnotationWithInterspersedResource() throws Exception {
         addFilesetWithResource(ClassSuppressed.class);
         assertSuppressed();
     }
 
     @Test
-    public void methodAnnotationWithInterspersedResource() throws Exception {
+    void methodAnnotationWithInterspersedResource() throws Exception {
         addFilesetWithResource(MethodSuppressed.class);
         assertSuppressed();
     }
 
     @Test
-    public void classAnnotationAcrossPathsWithIgnoredFiles() throws Exception {
+    void classAnnotationAcrossPathsWithIgnoredFiles() throws Exception {
         addPathsWithIgnoredFiles(ClassSuppressed.class);
         assertSuppressed();
     }
 
     @Test
-    public void methodAnnotationAcrossPathsWithIgnoredFiles() throws Exception {
+    void methodAnnotationAcrossPathsWithIgnoredFiles() throws Exception {
         addPathsWithIgnoredFiles(MethodSuppressed.class);
         assertSuppressed();
     }
 
     @Test
-    public void unannotatedClassWithInterspersedResource() throws Exception {
+    void unannotatedClassWithInterspersedResource() throws Exception {
         addFilesetWithResource(Unsuppressed.class);
         assertRejected();
     }
 
     @Test
-    public void unannotatedClassAcrossPathsWithIgnoredFiles() throws Exception {
+    void unannotatedClassAcrossPathsWithIgnoredFiles() throws Exception {
         addPathsWithIgnoredFiles(Unsuppressed.class);
         assertRejected();
     }
 
     @Test
-    public void classAnnotationWithOuterFileFirst() throws Exception {
+    void classAnnotationWithOuterFileFirst() throws Exception {
         File[] files = copyClasses(ClassSuppressed.class);
         addFiles(false, files[1], files[0]);
         assertSuppressed();
     }
 
     @Test
-    public void methodAnnotationWithOuterFileFirst() throws Exception {
+    void methodAnnotationWithOuterFileFirst() throws Exception {
         File[] files = copyClasses(MethodSuppressed.class);
         addFiles(false, files[1], files[0]);
         assertSuppressed();
     }
 
     @Test
-    public void unannotatedClassWithReversedFiles() throws Exception {
+    void unannotatedClassWithReversedFiles() throws Exception {
         addFiles(false, copyClasses(Unsuppressed.class));
         assertRejected();
     }
 
     @Test
-    public void unannotatedClassAcrossPaths() throws Exception {
+    void unannotatedClassAcrossPaths() throws Exception {
         addFiles(true, copyClasses(Unsuppressed.class));
         assertRejected();
     }
 
     @Test
-    public void classAnnotationInDirectory() throws Exception {
+    void classAnnotationInDirectory() throws Exception {
         File[] files = copyClasses(ClassSuppressed.class);
         addFiles(false, files[0].getParentFile());
         assertSuppressed();
     }
 
     @Test
-    public void classAnnotationInJar() throws Exception {
+    void classAnnotationInJar() throws Exception {
         File[] files = copyClasses(ClassSuppressed.class);
-        File jar = temporaryFolder.newFile("classes.jar");
+        File jar = newFile("classes.jar");
         try (JarOutputStream out = new JarOutputStream(new FileOutputStream(jar))) {
             for (File file : files) {
                 out.putNextEntry(new JarEntry(file.getName()));
@@ -191,119 +190,119 @@ public class CheckSignatureTaskTest {
     }
 
     @Test
-    public void classAnnotationAcrossDirectories() throws Exception {
+    void classAnnotationAcrossDirectories() throws Exception {
         File[] files = copyClasses(ClassSuppressed.class);
         addFiles(false, directory("outer-classes", files[1]), directory("i", files[0]));
         assertSuppressed();
     }
 
     @Test
-    public void methodAnnotationAcrossDirectories() throws Exception {
+    void methodAnnotationAcrossDirectories() throws Exception {
         File[] files = copyClasses(MethodSuppressed.class);
         addFiles(true, directory("outer-classes", files[1]), directory("i", files[0]));
         assertSuppressed();
     }
 
     @Test
-    public void classAnnotationAcrossJars() throws Exception {
+    void classAnnotationAcrossJars() throws Exception {
         File[] files = copyClasses(ClassSuppressed.class);
         addFiles(false, jar("outer-classes.jar", files[1]), jar("i.jar", files[0]));
         assertSuppressed();
     }
 
     @Test
-    public void methodAnnotationAcrossJars() throws Exception {
+    void methodAnnotationAcrossJars() throws Exception {
         File[] files = copyClasses(MethodSuppressed.class);
         addFiles(true, jar("outer-classes.jar", files[1]), jar("i.jar", files[0]));
         assertSuppressed();
     }
 
     @Test
-    public void classFileBeforeDirectory() throws Exception {
+    void classFileBeforeDirectory() throws Exception {
         File[] files = copyClasses(ClassSuppressed.class);
         addFiles(false, files[1], directory("i", files[0]));
         assertSuppressed();
     }
 
     @Test
-    public void methodFileBeforeDirectory() throws Exception {
+    void methodFileBeforeDirectory() throws Exception {
         File[] files = copyClasses(MethodSuppressed.class);
         addFiles(true, files[1], directory("i", files[0]));
         assertSuppressed();
     }
 
     @Test
-    public void classDirectoryBeforeFile() throws Exception {
+    void classDirectoryBeforeFile() throws Exception {
         File[] files = copyClasses(ClassSuppressed.class);
         addFiles(false, directory("outer-" + files[0].getName(), files[1]), files[0]);
         assertSuppressed();
     }
 
     @Test
-    public void methodDirectoryBeforeFile() throws Exception {
+    void methodDirectoryBeforeFile() throws Exception {
         File[] files = copyClasses(MethodSuppressed.class);
         addFiles(true, directory("outer-" + files[0].getName(), files[1]), files[0]);
         assertSuppressed();
     }
 
     @Test
-    public void classFileBeforeJar() throws Exception {
+    void classFileBeforeJar() throws Exception {
         File[] files = copyClasses(ClassSuppressed.class);
         addFiles(false, files[1], jar("i.jar", files[0]));
         assertSuppressed();
     }
 
     @Test
-    public void methodFileBeforeJar() throws Exception {
+    void methodFileBeforeJar() throws Exception {
         File[] files = copyClasses(MethodSuppressed.class);
         addFiles(true, files[1], jar("i.jar", files[0]));
         assertSuppressed();
     }
 
     @Test
-    public void classJarBeforeFile() throws Exception {
+    void classJarBeforeFile() throws Exception {
         File[] files = copyClasses(ClassSuppressed.class);
         addFiles(false, jar("outer-" + files[0].getName() + ".jar", files[1]), files[0]);
         assertSuppressed();
     }
 
     @Test
-    public void methodJarBeforeFile() throws Exception {
+    void methodJarBeforeFile() throws Exception {
         File[] files = copyClasses(MethodSuppressed.class);
         addFiles(true, jar("outer-" + files[0].getName() + ".jar", files[1]), files[0]);
         assertSuppressed();
     }
 
     @Test
-    public void classJmodBeforeFile() throws Exception {
+    void classJmodBeforeFile() throws Exception {
         File[] files = copyClasses(ClassSuppressed.class);
         addFiles(false, jar("outer-" + files[0].getName() + ".jmod", files[1]), files[0]);
         assertSuppressed();
     }
 
     @Test
-    public void unannotatedClassInJmod() throws Exception {
+    void unannotatedClassInJmod() throws Exception {
         File[] files = copyClasses(Unsuppressed.class);
         addFiles(false, files[1], jar("i.jmod", files[0]));
         assertRejected();
     }
 
     @Test
-    public void classFileBeforeDirectoryNamedLikeClass() throws Exception {
+    void classFileBeforeDirectoryNamedLikeClass() throws Exception {
         File[] files = copyClasses(ClassSuppressed.class);
         addFiles(false, files[1], directory("i.class", files[0]));
         assertSuppressed();
     }
 
     @Test
-    public void methodFileBeforeDirectoryNamedLikeClass() throws Exception {
+    void methodFileBeforeDirectoryNamedLikeClass() throws Exception {
         File[] files = copyClasses(MethodSuppressed.class);
         addFiles(true, files[1], directory("i.class", files[0]));
         assertSuppressed();
     }
 
     @Test
-    public void looseFilesStayOnEitherSideOfJar() throws Exception {
+    void looseFilesStayOnEitherSideOfJar() throws Exception {
         File[] methodFiles = copyClasses(MethodSuppressed.class);
         File[] classFiles = copyClasses(ClassSuppressed.class);
         // Sorting loose files globally would move the longer MethodSuppressed name past its anonymous class's JAR.
@@ -334,21 +333,21 @@ public class CheckSignatureTaskTest {
         addFiles(
                 true,
                 files[0],
-                temporaryFolder.newFile("ignored.properties"),
-                temporaryFolder.newFile("ignored.zip"),
-                temporaryFolder.newFile("ignored.CLASS"),
-                temporaryFolder.newFile("README"),
+                newFile("ignored.properties"),
+                newFile("ignored.zip"),
+                newFile("ignored.CLASS"),
+                newFile("README"),
                 files[1]);
     }
 
     private File directory(String name, File file) throws IOException {
-        File directory = temporaryFolder.newFolder(name);
+        File directory = newFolder(name);
         Files.copy(file.toPath(), new File(directory, file.getName()).toPath());
         return directory;
     }
 
     private File jar(String name, File file) throws IOException {
-        File jar = temporaryFolder.newFile(name);
+        File jar = newFile(name);
         String packagePath = getClass().getPackage().getName().replace('.', '/');
         try (JarOutputStream out = new JarOutputStream(new FileOutputStream(jar))) {
             out.putNextEntry(new JarEntry(packagePath + "/" + file.getName()));
@@ -359,7 +358,7 @@ public class CheckSignatureTaskTest {
     }
 
     private File[] copyClasses(Class<?> fixture) throws IOException {
-        File directory = temporaryFolder.newFolder();
+        File directory = newFolder();
         String resource = fixture.getName().replace('.', '/');
         String filename = resource.substring(resource.lastIndexOf('/') + 1);
         // Deliberately put the anonymous class before its annotated enclosing class or method.
@@ -399,10 +398,10 @@ public class CheckSignatureTaskTest {
             task.execute();
             fail("Expected an undefined reference in the unannotated anonymous class");
         } catch (BuildException e) {
-            assertTrue(e.getMessage(), e.getMessage().startsWith("Signature errors found."));
+            assertTrue(e.getMessage().startsWith("Signature errors found."), e.getMessage());
         }
         String output = errors.toString("UTF-8");
-        assertTrue(output, output.contains("Undefined reference: java.util.List java.util.Collections.emptyList()"));
+        assertTrue(output.contains("Undefined reference: java.util.List java.util.Collections.emptyList()"), output);
     }
 
     @IgnoreJRERequirement
@@ -438,5 +437,19 @@ public class CheckSignatureTaskTest {
                 }
             };
         }
+    }
+
+    private File newFile(String name) throws IOException {
+        File file = new File(temporaryFolder, name);
+        assertTrue(file.createNewFile(), "file " + name + " already exists");
+        return file;
+    }
+
+    private File newFolder(String name) throws IOException {
+        return Files.createDirectory(new File(temporaryFolder, name).toPath()).toFile();
+    }
+
+    private File newFolder() throws IOException {
+        return Files.createTempDirectory(temporaryFolder.toPath(), "classes").toFile();
     }
 }
