@@ -25,6 +25,8 @@ package org.codehaus.mojo.animal_sniffer.maven;
  *
  */
 
+import javax.inject.Inject;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -46,7 +48,6 @@ import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
-import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
@@ -203,8 +204,7 @@ public class BuildSignaturesMojo extends AbstractMojo {
 
     /**
      */
-    @Component
-    private MavenProjectHelper projectHelper;
+    private final MavenProjectHelper projectHelper;
 
     /**
      * The maven project.
@@ -214,13 +214,11 @@ public class BuildSignaturesMojo extends AbstractMojo {
 
     /**
      */
-    @Component
-    private ToolchainManager toolchainManager;
+    private final ToolchainManager toolchainManager;
 
     /**
      */
-    @Component
-    private ToolchainManagerPrivate toolchainManagerPrivate;
+    private final ToolchainManagerPrivate toolchainManagerPrivate;
 
     /**
      * The current build session instance. This is used for toolchain manager API calls.
@@ -265,6 +263,16 @@ public class BuildSignaturesMojo extends AbstractMojo {
      */
     @Parameter(defaultValue = "java-boot-classpath-detector")
     private String jbcpdArtifactId;
+
+    @Inject
+    public BuildSignaturesMojo(
+            MavenProjectHelper projectHelper,
+            ToolchainManager toolchainManager,
+            ToolchainManagerPrivate toolchainManagerPrivate) {
+        this.projectHelper = projectHelper;
+        this.toolchainManager = toolchainManager;
+        this.toolchainManagerPrivate = toolchainManagerPrivate;
+    }
 
     public void execute() throws MojoExecutionException, MojoFailureException {
         if (includeJavaHome && (javaHomeClassPath == null || javaHomeClassPath.length == 0)) {
