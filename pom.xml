@@ -94,7 +94,7 @@
   </ciManagement>
 
   <properties>
-    <sisuVersion>1.0.0</sisuVersion>
+    <sisuVersion>1.1.1</sisuVersion>
     <!-- run the ITs in parallel -->
     <invoker.parallelThreads>1C</invoker.parallelThreads>
     <scmpublish.content>${project.build.directory}/staging/animal-sniffer-parent</scmpublish.content>
@@ -109,7 +109,7 @@
       <dependency>
         <groupId>org.ow2.asm</groupId>
         <artifactId>asm</artifactId>
-        <version>9.11</version>
+        <version>9.11.1</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
