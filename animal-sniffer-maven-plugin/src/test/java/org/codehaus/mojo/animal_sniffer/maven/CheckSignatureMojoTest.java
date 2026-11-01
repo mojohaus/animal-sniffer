@@ -27,17 +27,17 @@ package org.codehaus.mojo.animal_sniffer.maven;
 import java.util.Arrays;
 
 import org.apache.maven.model.Dependency;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
 
-public class CheckSignatureMojoTest {
+class CheckSignatureMojoTest {
     @Test
-    public void parsesUnclassifiedCoordinates() {
+    void parsesUnclassifiedCoordinates() {
         // Original short-form three-part command-line coordinates remain supported
-        CheckSignatureMojo mojo = new CheckSignatureMojo();
+        CheckSignatureMojo mojo = new CheckSignatureMojo(null);
 
         mojo.setSignature("test:api:1.0");
 
@@ -48,9 +48,9 @@ public class CheckSignatureMojoTest {
     }
 
     @Test
-    public void parsesClassifiedCoordinates() {
+    void parsesClassifiedCoordinates() {
         // Full coordinates select a classified signature
-        CheckSignatureMojo mojo = new CheckSignatureMojo();
+        CheckSignatureMojo mojo = new CheckSignatureMojo(null);
 
         mojo.setSignature("test:api:signature:test-classifier:2.0");
 
@@ -61,7 +61,7 @@ public class CheckSignatureMojoTest {
     }
 
     @Test
-    public void matchesClassifierForVersionInference() {
+    void matchesClassifierForVersionInference() {
         // Version inference should not cross classified artifact variants
         Signature signature = new Signature();
         signature.setGroupId("test");
