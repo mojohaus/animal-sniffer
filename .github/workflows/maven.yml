@@ -19,7 +19,7 @@
 
 name: GitHub CI
 
-on: [push, pull_request]
+on: [push, pull_request, workflow_dispatch]
 
 permissions:
   contents: read
@@ -27,11 +27,4 @@ permissions:
 jobs:
   build:
     name: Verify
-    uses: apache/maven-gh-actions-shared/.github/workflows/maven-verify.yml@v5
-    with:
-      jdk-matrix: '["8", "11", "17", "21"]'
-      jdk-distribution-matrix: '["zulu"]'
-      ff-jdk: "17"
-      ff-maven: "3.9.8"                     # Maven version for fail-fast-build
-      maven-matrix: '[ "3.6.3", "3.9.8" ]'  # Maven versions matrix for verify builds
-
+    uses: mojohaus/.github/.github/workflows/maven-verify.yml@master
