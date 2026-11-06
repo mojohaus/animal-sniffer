@@ -1,76 +1,67 @@
- ~~ The MIT License
- ~~
- ~~ Copyright (c) 2009 codehaus.org.
- ~~
- ~~ Permission is hereby granted, free of charge, to any person obtaining a copy
- ~~ of this software and associated documentation files (the "Software"), to deal
- ~~ in the Software without restriction, including without limitation the rights
- ~~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- ~~ copies of the Software, and to permit persons to whom the Software is
- ~~ furnished to do so, subject to the following conditions:
- ~~
- ~~ The above copyright notice and this permission notice shall be included in
- ~~ all copies or substantial portions of the Software.
- ~~
- ~~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- ~~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- ~~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- ~~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- ~~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- ~~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- ~~ THE SOFTWARE.
- ~~
+# Introduction
 
- ------
- Introduction
- ------
- Stephen Connolly
- ------
- 2009-10-27
- ------
+<!--
+The MIT License
 
-Animal Sniffer Maven Plugin
+Copyright (c) 2009 codehaus.org.
 
-  The Animal Sniffer Plugin is used to build signatures of APIs and to check your classes 
-  against previously generated signatures.  This plugin is called animal sniffer because the 
-  principal signatures that are used are those of the Java Runtime, and since Sun 
-  traditionally names the different versions of its Java Runtimes after different animals,
-  the plugin that detects what Java Runtime your code requires was called "Animal Sniffer".
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
 
-* Goals Overview
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
 
-  The Animal Sniffer Plugin has the following goals.
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+-->
 
-  * {{{./build-mojo.html}animal-sniffer:build}} creates a signature of an API.
+# Animal Sniffer Maven Plugin
 
-  * {{{./check-mojo.html}animal-sniffer:check}} checks a project against an API signature.
+The Animal Sniffer Plugin is used to build signatures of APIs and to check your classes
+against previously generated signatures. This plugin is called animal sniffer because the
+principal signatures that are used are those of the Java Runtime, and since Sun
+traditionally names the different versions of its Java Runtimes after different animals,
+the plugin that detects what Java Runtime your code requires was called "Animal Sniffer".
 
-* Usage
+## Goals Overview
 
-  General instructions on how to use the Animal Sniffer Plugin can be found on the {{{./usage.html}usage page}}.
+The Animal Sniffer Plugin has the following goals.
 
-  In case you still have questions regarding the plugin's usage, please have a look at the {{{./faq.html}FAQ}} and feel
-  free to contact the {{{./mailing-lists.html}user mailing list}}. The posts to the mailing list are archived and could
-  already contain the answer to your question as part of an older thread. Hence, it is also worth browsing/searching
-  the {{{./mailing-lists.html}mail archive}}.
+* [animal-sniffer:build](./build-mojo.html) creates a signature of an API.
+* [animal-sniffer:check](./check-mojo.html) checks a project against an API signature.
 
-  If you feel like the plugin is missing a feature or has a defect, you can fill a feature request or bug report in our
-  {{{./issue-management.html}issue tracker}}. When creating a new issue, please provide a comprehensive description of your
-  concern. Especially for fixing bugs it is crucial that the developers can reproduce your problem. For this reason,
-  entire debug logs, POMs or most preferably little demo projects attached to the issue are very much appreciated.
-  Of course, patches are welcome, too. Contributors can check out the project from our
-  {{{./scm.html}source repository}} and will find supplementary information in the
-  {{{http://maven.apache.org/guides/development/guide-helping.html}guide to helping with Maven}}.
+## Usage
 
-* Examples
+General instructions on how to use the Animal Sniffer Plugin can be found on the [usage page](./usage.html).
 
-  To provide you with better understanding of some usages of Animal Sniffer,
-  you can take a look into the following examples:
+In case you still have questions regarding the plugin's usage, please have a look at the [FAQ](./faq.html) and feel
+free to contact the [user mailing list](./mailing-lists.html). The posts to the mailing list are archived and could
+already contain the answer to your question as part of an older thread. Hence, it is also worth browsing/searching
+the [mail archive](./mailing-lists.html).
 
-  * {{{./examples/generating-java-signatures.html}Generating signatures of the Java Runtime}}
+If you feel like the plugin is missing a feature or has a defect, you can fill a feature request or bug report in our
+[issue tracker](./issue-management.html). When creating a new issue, please provide a comprehensive description of your
+concern. Especially for fixing bugs it is crucial that the developers can reproduce your problem. For this reason,
+entire debug logs, POMs or most preferably little demo projects attached to the issue are very much appreciated.
+Of course, patches are welcome, too. Contributors can check out the project from our
+[source repository](./scm.html) and will find supplementary information in the
+[guide to helping with Maven](http://maven.apache.org/guides/development/guide-helping.html).
 
-  * {{{./examples/generating-other-api-signatures.html}Generating signatures of other APIs}}
+## Examples
 
-  * {{{./examples/checking-signatures.html}Checking a project against API signatures}}
+To provide you with better understanding of some usages of Animal Sniffer,
+you can take a look into the following examples:
 
-  []
+* [Generating signatures of the Java Runtime](./examples/generating-java-signatures.html)
+* [Generating signatures of other APIs](./examples/generating-other-api-signatures.html)
+* [Checking a project against API signatures](./examples/checking-signatures.html)
+

@@ -1,43 +1,40 @@
- ~~ The MIT License
- ~~
- ~~ Copyright (c) 2009 codehaus.org.
- ~~
- ~~ Permission is hereby granted, free of charge, to any person obtaining a copy
- ~~ of this software and associated documentation files (the "Software"), to deal
- ~~ in the Software without restriction, including without limitation the rights
- ~~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- ~~ copies of the Software, and to permit persons to whom the Software is
- ~~ furnished to do so, subject to the following conditions:
- ~~
- ~~ The above copyright notice and this permission notice shall be included in
- ~~ all copies or substantial portions of the Software.
- ~~
- ~~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- ~~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- ~~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- ~~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- ~~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- ~~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- ~~ THE SOFTWARE.
- ~~
+# Generating signatures of other APIs
 
- -----
- Generating signatures of other APIs
- -----
- Stephen Connolly
- ------
- 2010-03-10
- ------
+<!--
+The MIT License
+
+Copyright (c) 2009 codehaus.org.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+-->
 
 Generating signatures of other APIs
+===================================
 
-* Basic
+Basic
+-----
 
-  To generate signatures of any API, you simply construct a project with the appropriate
-  dependencies exposed by the API and then add an execution of the <<<animal-sniffer:build>>>
-  goal to your project, e.g.
+To generate signatures of any API, you simply construct a project with the appropriate
+dependencies exposed by the API and then add an execution of the `animal-sniffer:build`
+goal to your project, e.g.
 
----
+```xml
 <project>
   <modelVersion>4.0.0</modelVersion>
   <groupId>____</groupId>
@@ -65,21 +62,21 @@ Generating signatures of other APIs
     </plugins>
   </build>
 </project>
----
+```
 
-* Controlling the Java Runtime signatures in your API signature
+Controlling the Java Runtime signatures in your API signature
+-------------------------------------------------------------
 
-  By default, the signatures of the Java Runtime that you use to build with will
-  be included in the signatures of the API.  Since the Java Runtime forms
-  part of any Java API (as your API extends <<<java.lang.Object>>>) in general
-  the Java Runtime signatures should form part of your API's signatures.
+By default, the signatures of the Java Runtime that you use to build with will
+be included in the signatures of the API. Since the Java Runtime forms
+part of any Java API (as your API extends `java.lang.Object`) in general
+the Java Runtime signatures should form part of your API's signatures.
 
-  If you want different Java Runtime signatures used, you can either use the
-  techniques described in {{{./generating-java-signatures.html}Generating
-  signatures of the Java Runtime}} to control what Java Runtime to include or
-  you can base your API off an existing Java Runtime signature.  For example:
+If you want different Java Runtime signatures used, you can either use the
+techniques described in [Generating signatures of the Java Runtime](./generating-java-signatures.html) to control what Java Runtime to include or
+you can base your API off an existing Java Runtime signature. For example:
 
----
+```xml
 <project>
   ...
   <build>
@@ -112,24 +109,25 @@ Generating signatures of other APIs
   </build>
   ...
 </project>
----
+```
 
-  <<Note:>> You can include multiple signatures, and the signatures you include do
-  not have to include a Java Runtime (but ultimately if you are checking against
-  a signature which does not include the Java Runtime, your check will always fail).
+**Note:** You can include multiple signatures, and the signatures you include do
+not have to include a Java Runtime (but ultimately if you are checking against
+a signature which does not include the Java Runtime, your check will always fail).
 
-* Excluding dependencies from signatures
+Excluding dependencies from signatures
+--------------------------------------
 
-  Sometimes you may not want to include your module dependencies in the signature.
-  For example, your module might define the public API but depend on the private
-  implementations of that API.  In that case you would use either the
-  <<<includeDependencies>>> to define the subset of module dependencies to include or
-  <<<excludeDependencies>>> to define the subset of module dependencies to exclude (or
-  a combination of the two. Note: includes are processed before excludes).  For example,
-  to include all artifacts with groupId <<<com.mycompany>>> and the servlet-api version 2.5
-  you would use something like:
+Sometimes you may not want to include your module dependencies in the signature.
+For example, your module might define the public API but depend on the private
+implementations of that API. In that case you would use either the
+`includeDependencies` to define the subset of module dependencies to include or
+`excludeDependencies` to define the subset of module dependencies to exclude (or
+a combination of the two. Note: includes are processed before excludes). For example,
+to include all artifacts with groupId `com.mycompany` and the servlet-api version 2.5
+you would use something like:
 
----
+```xml
 <project>
   ...
   <build>
@@ -157,15 +155,16 @@ Generating signatures of other APIs
   </build>
   ...
 </project>
----
+```
 
-* Excluding module classes from signatures
+Excluding module classes from signatures
+----------------------------------------
 
-  In some cases you may not want to include your module classes in the generated
-  signature.  To exclude module classes from the generated signature set the
-  <<<includeModuleClasses>>> to <<<false>>> for example:
+In some cases you may not want to include your module classes in the generated
+signature. To exclude module classes from the generated signature set the
+`includeModuleClasses` to `false` for example:
 
----
+```xml
 <project>
   ...
   <build>
@@ -190,21 +189,22 @@ Generating signatures of other APIs
   </build>
   ...
 </project>
----
+```
 
-* Tuning exactly which classes are part of the signatures
+Tuning exactly which classes are part of the signatures
+-------------------------------------------------------
 
-  The above examples generate signatures of all the classes in scope. In some
-  situations you may want to only include specific classes from the dependencies
-  or your module.  This can be achieved using the <<<includeClasses>>> and
-  <<<excludeClasses>>> configuration options.
+The above examples generate signatures of all the classes in scope. In some
+situations you may want to only include specific classes from the dependencies
+or your module. This can be achieved using the `includeClasses` and
+`excludeClasses` configuration options.
 
-** Inclusion based tuning
+#[[### Inclusion based tuning]]#
 
-  One technique is to only include those classes which you want to be part of the
-  API signature.  For example:
+One technique is to only include those classes which you want to be part of the
+API signature. For example:
 
----
+```xml
 <project>
   ...
   <build>
@@ -234,14 +234,14 @@ Generating signatures of other APIs
   </build>
   ...
 </project>
----
+```
 
-** Exclusion based tuning
+#[[### Exclusion based tuning]]#
 
-  The other technique is to specify which classes are not to be included.
-  Note that a combination of the two can also be used. For example:
+The other technique is to specify which classes are not to be included.
+Note that a combination of the two can also be used. For example:
 
----
+```xml
 <project>
   ...
   <build>
@@ -270,5 +270,4 @@ Generating signatures of other APIs
   </build>
   ...
 </project>
----
-
+```
