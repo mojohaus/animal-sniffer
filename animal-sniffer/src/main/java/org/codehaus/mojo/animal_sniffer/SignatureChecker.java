@@ -31,6 +31,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.nio.CharBuffer;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -380,7 +381,11 @@ public class SignatureChecker extends ClassFileVisitor {
                 @Override
                 public void visitMethodInsn(int opcode, String owner, String name, String desc, boolean itf) {
                     checkType(Type.getReturnType(desc), ignoreError);
-                    check(owner, name + desc, ignoreError);
+                    if (isSignaturePolymorphic(owner, name)) {
+                        checkSignaturePolymorphic(owner, name, ignoreError);
+                    } else {
+                        check(owner, name + desc, ignoreError);
+                    }
                 }
 
                 @Override
@@ -470,6 +475,43 @@ public class SignatureChecker extends ClassFileVisitor {
             error(owner, sig);
         }
 
+        /**
+         * Signature polymorphic methods (JLS 15.12.3) are called with the descriptor of the call site, which is never
+         * the declared one, {@code ([Ljava/lang/Object;)Ljava/lang/Object;} for {@code MethodHandle.invokeExact}.
+         * So the call is checked against the method of that name, not against the descriptor.
+         */
+        private void checkSignaturePolymorphic(String owner, String name, boolean ignoreError) {
+            if (shouldBeIgnored(owner, ignoreError)) {
+                return;
+            }
+            if (findPolymorphic(classes.get(owner), name + "([Ljava/lang/Object;)")) {
+                return; // found it
+            }
+            error(owner, name + "([Ljava/lang/Object;)Ljava/lang/Object;");
+        }
+
+        private boolean findPolymorphic(Clazz c, String signaturePrefix) {
+            if (c == null) {
+                return false;
+            }
+            for (String signature : c.getSignatures()) {
+                if (signature.startsWith(signaturePrefix)) {
+                    return true;
+                }
+            }
+            if (findPolymorphic(classes.get(c.getSuperClass()), signaturePrefix)) {
+                return true;
+            }
+            if (c.getSuperInterfaces() != null) {
+                for (String superInterface : c.getSuperInterfaces()) {
+                    if (findPolymorphic(classes.get(superInterface), signaturePrefix)) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
         private boolean shouldBeIgnored(String type, boolean ignoreError) {
             if (ignoreError) {
                 return true; // warning suppressed in this context
@@ -533,6 +575,53 @@ public class SignatureChecker extends ClassFileVisitor {
             }
             logger.error(name + location + ": Undefined reference: " + toSourceForm(type, sig));
         }
+    }
+
+    private static final String METHOD_HANDLE = "java/lang/invoke/MethodHandle";
+
+    private static final String VAR_HANDLE = "java/lang/invoke/VarHandle";
+
+    private static final Set<String> VAR_HANDLE_ACCESS_MODES = new HashSet<>(Arrays.asList(
+            "get",
+            "set",
+            "getVolatile",
+            "setVolatile",
+            "getOpaque",
+            "setOpaque",
+            "getAcquire",
+            "setRelease",
+            "compareAndSet",
+            "compareAndExchange",
+            "compareAndExchangeAcquire",
+            "compareAndExchangeRelease",
+            "weakCompareAndSetPlain",
+            "weakCompareAndSet",
+            "weakCompareAndSetAcquire",
+            "weakCompareAndSetRelease",
+            "getAndSet",
+            "getAndSetAcquire",
+            "getAndSetRelease",
+            "getAndAdd",
+            "getAndAddAcquire",
+            "getAndAddRelease",
+            "getAndBitwiseOr",
+            "getAndBitwiseOrAcquire",
+            "getAndBitwiseOrRelease",
+            "getAndBitwiseAnd",
+            "getAndBitwiseAndAcquire",
+            "getAndBitwiseAndRelease",
+            "getAndBitwiseXor",
+            "getAndBitwiseXorAcquire",
+            "getAndBitwiseXorRelease"));
+
+    /**
+     * The methods of {@code MethodHandle} and {@code VarHandle} that the compiler treats as signature polymorphic.
+     */
+    static boolean isSignaturePolymorphic(String owner, String name) {
+        if (METHOD_HANDLE.equals(owner)) {
+            return "invoke".equals(name) || "invokeExact".equals(name);
+        }
+        return VAR_HANDLE.equals(owner) && VAR_HANDLE_ACCESS_MODES.contains(name);
     }
 
     static String toSourceForm(String type, String sig) {
