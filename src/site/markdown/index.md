@@ -29,8 +29,10 @@ THE SOFTWARE.
 Animal Sniffer provides tools to assist verifying that classes compiled with a newer JDK/API are compatible with an
 older JDK/API.
 
-Please note this plugin is now in maintenance level as the exact same feature can be now easily achieved using the
-`--release` flag from Javac see <https://openjdk.java.net/jeps/247>
+Please note that for checking against a JDK version, the `--release` flag from Javac achieves the same, see
+<https://openjdk.java.net/jeps/247>, and the plugin is in maintenance level for that use. The flag only knows JDK
+APIs: Animal Sniffer remains the tool for checking against other APIs, such as Android API levels, or against a custom
+signature.
 
 ## Introduction
 
