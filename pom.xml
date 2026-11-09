@@ -32,7 +32,7 @@
   </parent>
 
   <artifactId>animal-sniffer-parent</artifactId>
-  <version>1.29.1</version>
+  <version>1.29.2-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <name>Animal Sniffer</name>
@@ -79,7 +79,7 @@
   <scm>
     <connection>scm:git:https://github.com/mojohaus/animal-sniffer.git</connection>
     <developerConnection>scm:git:ssh://git@github.com/mojohaus/animal-sniffer.git</developerConnection>
-    <tag>1.29.1</tag>
+    <tag>1.23</tag>
     <url>https://github.com/mojohaus/animal-sniffer/tree/master</url>
   </scm>
 
@@ -98,7 +98,7 @@
     <!-- run the ITs in parallel -->
     <invoker.parallelThreads>1C</invoker.parallelThreads>
     <scmpublish.content>${project.build.directory}/staging/animal-sniffer-parent</scmpublish.content>
-    <project.build.outputTimestamp>2026-11-09T20:46:51Z</project.build.outputTimestamp>
+    <project.build.outputTimestamp>2026-11-09T20:47:34Z</project.build.outputTimestamp>
     <mavenVersion>3.9.16</mavenVersion>
     <resolverVersion>1.9.27</resolverVersion>
     <minimalMavenBuildVersion>3.9.0</minimalMavenBuildVersion>
