@@ -35,6 +35,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -325,8 +326,8 @@ public class CheckSignatureMojo extends AbstractMojo {
             if (StringUtils.isBlank(d.getVersion())) {
                 continue;
             }
-            if (StringUtils.equals(d.getGroupId(), signature.getGroupId())
-                    && StringUtils.equals(d.getArtifactId(), signature.getArtifactId())
+            if (Objects.equals(d.getGroupId(), signature.getGroupId())
+                    && Objects.equals(d.getArtifactId(), signature.getArtifactId())
                     && classifiersMatch(d.getClassifier(), signature.getClassifier())) {
                 if ("signature".equals(d.getType())) {
                     // this is a perfect match
@@ -355,7 +356,7 @@ public class CheckSignatureMojo extends AbstractMojo {
         if (StringUtils.isBlank(signatureClassifier)) {
             return StringUtils.isBlank(dependencyClassifier);
         }
-        return StringUtils.equals(dependencyClassifier, signatureClassifier);
+        return Objects.equals(dependencyClassifier, signatureClassifier);
     }
 
     /**
