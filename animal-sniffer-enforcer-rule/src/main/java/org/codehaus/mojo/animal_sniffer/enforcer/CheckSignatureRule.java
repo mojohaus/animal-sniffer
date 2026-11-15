@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Random;
 import java.util.Set;
 
@@ -231,8 +232,8 @@ public class CheckSignatureRule implements EnforcerRule {
             if (StringUtils.isEmpty(d.getVersion())) {
                 continue;
             }
-            if (StringUtils.equals(d.getGroupId(), signature.getGroupId())
-                    && StringUtils.equals(d.getArtifactId(), signature.getArtifactId())) {
+            if (Objects.equals(d.getGroupId(), signature.getGroupId())
+                    && Objects.equals(d.getArtifactId(), signature.getArtifactId())) {
                 if ("signature".equals(d.getType())) {
                     // this is a perfect match
                     match = d;

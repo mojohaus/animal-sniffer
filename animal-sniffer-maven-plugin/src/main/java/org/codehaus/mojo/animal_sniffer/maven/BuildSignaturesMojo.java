@@ -39,6 +39,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 
 import org.apache.commons.lang3.JavaVersion;
 import org.apache.commons.lang3.SystemUtils;
@@ -402,8 +403,8 @@ public class BuildSignaturesMojo extends AbstractMojo {
         while (i.hasNext() && javaBootClasspathDetector == null) {
             Artifact candidate = i.next();
 
-            if (StringUtils.equals(jbcpdGroupId, candidate.getGroupId())
-                    && StringUtils.equals(jbcpdArtifactId, candidate.getArtifactId())
+            if (Objects.equals(jbcpdGroupId, candidate.getGroupId())
+                    && Objects.equals(jbcpdArtifactId, candidate.getArtifactId())
                     && candidate.getFile() != null
                     && candidate.getFile().isFile()) {
                 javaBootClasspathDetector = candidate;
@@ -531,7 +532,7 @@ public class BuildSignaturesMojo extends AbstractMojo {
     private InputStream[] getBaseSignatures() throws FileNotFoundException {
         List<InputStream> baseSignatures = new ArrayList<>();
         for (Artifact artifact : (Iterable<Artifact>) project.getArtifacts()) {
-            if (StringUtils.equals("signature", artifact.getType())) {
+            if (Objects.equals("signature", artifact.getType())) {
                 getLog().info("Importing sigantures from " + artifact.getFile());
                 baseSignatures.add(new FileInputStream(artifact.getFile()));
             }
