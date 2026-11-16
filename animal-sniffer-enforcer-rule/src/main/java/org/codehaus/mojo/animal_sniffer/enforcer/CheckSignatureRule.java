@@ -51,7 +51,6 @@ import org.codehaus.mojo.animal_sniffer.SignatureChecker;
 import org.codehaus.mojo.animal_sniffer.logging.Logger;
 import org.codehaus.plexus.component.configurator.expression.ExpressionEvaluationException;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
-import org.codehaus.plexus.util.StringUtils;
 import org.eclipse.aether.RepositorySystem;
 import org.eclipse.aether.resolution.ArtifactRequest;
 import org.eclipse.aether.resolution.ArtifactResolutionException;
@@ -149,7 +148,7 @@ public class CheckSignatureRule implements EnforcerRule {
 
             MavenSession session = (MavenSession) helper.evaluate("${session}");
 
-            if (StringUtils.isEmpty(signature.getVersion())) {
+            if (signature.getVersion() == null || signature.getVersion().isEmpty()) {
                 helper.getLog()
                         .debug("Resolving signature " + signature.getGroupId() + ":" + signature.getArtifactId()
                                 + " version from dependencies");
@@ -229,7 +228,7 @@ public class CheckSignatureRule implements EnforcerRule {
     private static Dependency findMatchingDependency(Signature signature, List<Dependency> dependencies) {
         Dependency match = null;
         for (Dependency d : dependencies) {
-            if (StringUtils.isEmpty(d.getVersion())) {
+            if (d.getVersion() == null || d.getVersion().isEmpty()) {
                 continue;
             }
             if (Objects.equals(d.getGroupId(), signature.getGroupId())
