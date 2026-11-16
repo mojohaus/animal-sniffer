@@ -317,8 +317,7 @@ public class BuildSignaturesMojo extends AbstractMojo {
                     if (!detectJavaBootClasspath(jvm)) {
                         return;
                     }
-                } else if (tc != null
-                        && StringUtils.equalsIgnoreCase("jdk", tc.getType())) // tc instanceof JavaToolChain )
+                } else if (tc != null && "jdk".equalsIgnoreCase(tc.getType())) // tc instanceof JavaToolChain )
                 {
                     getLog().info("Toolchain in animal-sniffer-maven-plugin: " + tc);
 
