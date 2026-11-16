@@ -24,11 +24,7 @@ public class Annotation {
 
         Annotation annotation = (Annotation) o;
 
-        if (className != null ? !className.equals(annotation.className) : annotation.className != null) {
-            return false;
-        }
-
-        return true;
+        return className != null ? className.equals(annotation.className) : annotation.className == null;
     }
 
     public int hashCode() {

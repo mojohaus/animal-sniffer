@@ -111,7 +111,7 @@ public class CheckSignatureRule implements EnforcerRule {
      * //parameter
      * @since 1.12
      */
-    private String[] includeDependencies = null;
+    private String[] includeDependencies;
 
     /**
      * A list of artifact patterns to exclude. Patterns can include <code>*</code> as a wildcard match for any
@@ -127,7 +127,7 @@ public class CheckSignatureRule implements EnforcerRule {
      * //parameter
      * @since 1.12
      */
-    private String[] excludeDependencies = null;
+    private String[] excludeDependencies;
 
     /**
      * Should test classes be checked.
@@ -135,7 +135,7 @@ public class CheckSignatureRule implements EnforcerRule {
      * //parameter default-value="false"
      * @since 1.19
      */
-    private boolean checkTestClasses = false;
+    private boolean checkTestClasses;
 
     public void execute(EnforcerRuleHelper helper) throws EnforcerRuleException {
         try {

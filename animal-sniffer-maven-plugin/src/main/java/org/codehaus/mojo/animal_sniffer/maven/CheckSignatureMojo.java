@@ -167,7 +167,7 @@ public class CheckSignatureMojo extends AbstractMojo {
      * @since 1.12
      */
     @Parameter
-    private String[] includeDependencies = null;
+    private String[] includeDependencies;
 
     /**
      * A list of artifact patterns to exclude. Patterns can include <code>*</code> as a wildcard match for any
@@ -183,7 +183,7 @@ public class CheckSignatureMojo extends AbstractMojo {
      * @since 1.12
      */
     @Parameter
-    private String[] excludeDependencies = null;
+    private String[] excludeDependencies;
 
     /**
      * Should signature checking be skipped?
@@ -223,7 +223,12 @@ public class CheckSignatureMojo extends AbstractMojo {
             return;
         }
 
-        if (signature == null || StringUtils.isBlank(signature.getGroupId()) || signature.getGroupId() == "null") {
+        if (signature == null) {
+            getLog().info("No signature configured, skipping the check.");
+            return;
+        }
+
+        if (StringUtils.isBlank(signature.getGroupId())) {
             getLog().info("Signature version is: " + signature.getVersion());
             return;
         }

@@ -171,7 +171,7 @@ public abstract class ClassFileVisitor {
                 if (!name.endsWith(".class")) {
                     continue; // uninteresting to log even at debug
                 }
-                if (name.startsWith("META-INF/") || name.equals("module-info.class")) {
+                if (name.startsWith("META-INF/") || "module-info.class".equals(name)) {
                     logger.debug("Ignoring " + name);
                     continue;
                 }

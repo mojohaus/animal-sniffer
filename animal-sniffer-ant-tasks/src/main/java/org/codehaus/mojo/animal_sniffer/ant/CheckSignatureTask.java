@@ -214,7 +214,7 @@ public class CheckSignatureTask extends Task {
         if (signature == null) {
             throw new BuildException("signature not set");
         }
-        if (paths.size() < 1) {
+        if (paths.isEmpty()) {
             throw new BuildException("path not set");
         }
     }

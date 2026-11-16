@@ -52,11 +52,7 @@ public class Ignore {
 
         Ignore ignore = (Ignore) o;
 
-        if (className != null ? !className.equals(ignore.className) : ignore.className != null) {
-            return false;
-        }
-
-        return true;
+        return className != null ? className.equals(ignore.className) : ignore.className == null;
     }
 
     public int hashCode() {

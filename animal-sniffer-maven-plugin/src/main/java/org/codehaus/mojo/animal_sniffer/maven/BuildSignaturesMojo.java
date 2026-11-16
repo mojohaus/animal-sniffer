@@ -109,7 +109,7 @@ public class BuildSignaturesMojo extends AbstractMojo {
      * @since 1.3
      */
     @Parameter
-    private String[] includeClasses = null;
+    private String[] includeClasses;
 
     /**
      * Classes to exclude from generating signatures of.
@@ -117,7 +117,7 @@ public class BuildSignaturesMojo extends AbstractMojo {
      * @since 1.3
      */
     @Parameter
-    private String[] excludeClasses = null;
+    private String[] excludeClasses;
 
     /**
      * A list of artifact patterns to include. Patterns can include <code>*</code> as a wildcard match for any
@@ -133,7 +133,7 @@ public class BuildSignaturesMojo extends AbstractMojo {
      * @since 1.3
      */
     @Parameter
-    private String[] includeDependencies = null;
+    private String[] includeDependencies;
 
     /**
      * A list of artifact patterns to exclude. Patterns can include <code>*</code> as a wildcard match for any
@@ -149,7 +149,7 @@ public class BuildSignaturesMojo extends AbstractMojo {
      * @since 1.3
      */
     @Parameter
-    private String[] excludeDependencies = null;
+    private String[] excludeDependencies;
 
     /**
      * The java home to generate the signatures of, if not specified only the signatures of dependencies will be
@@ -580,7 +580,7 @@ public class BuildSignaturesMojo extends AbstractMojo {
             try {
                 final ToolchainPrivate[] tcp = getToolchains("jdk");
                 for (ToolchainPrivate toolchainPrivate : tcp) {
-                    if (toolchainPrivate.getType().equals("jdk") /* MNG-5716 */
+                    if ("jdk".equals(toolchainPrivate.getType()) /* MNG-5716 */
                             && toolchainPrivate.matchesRequirements(jdk.getParameters())) {
                         return toolchainPrivate;
                     }
