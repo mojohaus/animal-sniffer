@@ -47,6 +47,7 @@ public class JdkToolchain {
         this.parameters = parameters;
     }
 
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -60,10 +61,12 @@ public class JdkToolchain {
         return parameters != null ? parameters.equals(that.parameters) : that.parameters == null;
     }
 
+    @Override
     public int hashCode() {
         return parameters != null ? parameters.hashCode() : 0;
     }
 
+    @Override
     public String toString() {
         return "JdkToolchain{" + "parameters=" + parameters + '}';
     }

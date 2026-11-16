@@ -136,6 +136,7 @@ public class CheckSignatureRule implements EnforcerRule {
      */
     private boolean checkTestClasses;
 
+    @Override
     public void execute(EnforcerRuleHelper helper) throws EnforcerRuleException {
         try {
             File outputDirectory = new File((String) helper.evaluate("${project.build.outputDirectory}"));
@@ -327,14 +328,17 @@ public class CheckSignatureRule implements EnforcerRule {
         }
     }
 
+    @Override
     public boolean isCacheable() {
         return false;
     }
 
+    @Override
     public boolean isResultValid(EnforcerRule enforcerRule) {
         return false;
     }
 
+    @Override
     public String getCacheId() {
         return getClass().getName() + new Random().nextLong();
     }

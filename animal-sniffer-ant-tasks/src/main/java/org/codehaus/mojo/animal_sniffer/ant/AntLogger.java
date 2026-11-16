@@ -42,34 +42,42 @@ public final class AntLogger implements Logger {
         this.delegate = delegate;
     }
 
+    @Override
     public void info(String message) {
         delegate.log(message, Project.MSG_INFO);
     }
 
+    @Override
     public void info(String message, Throwable t) {
         delegate.log(message, t, Project.MSG_INFO);
     }
 
+    @Override
     public void debug(String message) {
         delegate.log(message, Project.MSG_DEBUG);
     }
 
+    @Override
     public void debug(String message, Throwable t) {
         delegate.log(message, t, Project.MSG_DEBUG);
     }
 
+    @Override
     public void warn(String message) {
         delegate.log(message, Project.MSG_WARN);
     }
 
+    @Override
     public void warn(String message, Throwable t) {
         delegate.log(message, t, Project.MSG_WARN);
     }
 
+    @Override
     public void error(String message) {
         delegate.log(message, Project.MSG_ERR);
     }
 
+    @Override
     public void error(String message, Throwable t) {
         delegate.log(message, t, Project.MSG_ERR);
     }

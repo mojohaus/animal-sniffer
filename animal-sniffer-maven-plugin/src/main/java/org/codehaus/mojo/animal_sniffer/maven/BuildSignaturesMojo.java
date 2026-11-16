@@ -275,6 +275,7 @@ public class BuildSignaturesMojo extends AbstractMojo {
         this.toolchainManagerPrivate = toolchainManagerPrivate;
     }
 
+    @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
         if (includeJavaHome && (javaHomeClassPath == null || javaHomeClassPath.length == 0)) {
             if (javaHome != null) {

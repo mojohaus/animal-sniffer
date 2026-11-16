@@ -100,6 +100,7 @@ public class Main extends ClassFileVisitor {
         return Paths.get(s);
     }
 
+    @Override
     protected void process(String name, InputStream image) throws IOException {
         DataInputStream dis = new DataInputStream(image);
         byte[] buf = new byte[8];

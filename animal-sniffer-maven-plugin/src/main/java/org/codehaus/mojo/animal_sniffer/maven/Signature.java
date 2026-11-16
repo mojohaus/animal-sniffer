@@ -87,6 +87,7 @@ public class Signature {
         return new DefaultArtifact(groupId, artifactId, classifier, "signature", version);
     }
 
+    @Override
     public String toString() {
         if (classifier == null || classifier.isEmpty()) {
             return groupId + ":" + artifactId + ":" + version;
