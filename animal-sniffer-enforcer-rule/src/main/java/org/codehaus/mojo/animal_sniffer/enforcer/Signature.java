@@ -69,6 +69,7 @@ public class Signature {
         return new DefaultArtifact(groupId, artifactId, "signature", version);
     }
 
+    @Override
     public String toString() {
         return groupId + ":" + artifactId + ":" + version;
     }

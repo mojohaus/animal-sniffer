@@ -37,6 +37,7 @@ public class Signature {
         this.src = src;
     }
 
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -50,10 +51,12 @@ public class Signature {
         return src != null ? src.equals(signature.src) : signature.src == null;
     }
 
+    @Override
     public int hashCode() {
         return src != null ? src.hashCode() : 0;
     }
 
+    @Override
     public String toString() {
         return "Signature{" + "src=" + src + '}';
     }

@@ -42,6 +42,7 @@ public class Ignore {
         this.className = className;
     }
 
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -55,10 +56,12 @@ public class Ignore {
         return className != null ? className.equals(ignore.className) : ignore.className == null;
     }
 
+    @Override
     public int hashCode() {
         return 0;
     }
 
+    @Override
     public String toString() {
         return "Ignore{" + "className='" + className + '\'' + '}';
     }

@@ -56,11 +56,13 @@ public class ClassListBuilder extends ClassFileVisitor {
         this(new HashSet<>(), logger);
     }
 
+    @Override
     protected void process(String name, InputStream image) throws IOException {
         try {
             ClassReader cr = new ClassReader(image);
             cr.accept(
                     new ClassVisitor(Opcodes.ASM9) {
+                        @Override
                         public void visit(
                                 int version,
                                 int access,

@@ -106,6 +106,7 @@ public class BuildSignaturesTask extends Task {
         }
     }
 
+    @Override
     public void execute() throws BuildException {
         validate();
         try {

@@ -42,30 +42,38 @@ public final class PrintWriterLogger implements Logger {
         this.destination = destination;
     }
 
+    @Override
     public void info(String message) {
         output("[INFO]", message, null);
     }
 
+    @Override
     public void info(String message, Throwable t) {
         output("[INFO]", message, t);
     }
 
+    @Override
     public void debug(String message) {}
 
+    @Override
     public void debug(String message, Throwable t) {}
 
+    @Override
     public void warn(String message) {
         output("[WARN]", message, null);
     }
 
+    @Override
     public void warn(String message, Throwable t) {
         output("[WARN]", message, t);
     }
 
+    @Override
     public void error(String message) {
         output("[ERROR]", message, null);
     }
 
+    @Override
     public void error(String message, Throwable t) {
         output("[ERROR]", message, t);
     }

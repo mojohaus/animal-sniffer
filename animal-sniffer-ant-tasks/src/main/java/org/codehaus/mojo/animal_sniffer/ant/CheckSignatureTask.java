@@ -136,6 +136,7 @@ public class CheckSignatureTask extends Task {
         this.failOnError = failOnError;
     }
 
+    @Override
     public void execute() throws BuildException {
         validate();
         try {

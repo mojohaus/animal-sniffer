@@ -14,6 +14,7 @@ public class Annotation {
         this.className = className;
     }
 
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -27,10 +28,12 @@ public class Annotation {
         return className != null ? className.equals(annotation.className) : annotation.className == null;
     }
 
+    @Override
     public int hashCode() {
         return 0;
     }
 
+    @Override
     public String toString() {
         return "Annotation{" + "className='" + className + '\'' + '}';
     }
