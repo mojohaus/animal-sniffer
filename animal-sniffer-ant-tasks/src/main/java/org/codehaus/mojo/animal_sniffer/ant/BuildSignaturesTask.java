@@ -83,7 +83,7 @@ public class BuildSignaturesTask extends Task {
         if (destfile == null) {
             throw new BuildException("destfile not set");
         }
-        if (paths.size() < 1) {
+        if (paths.isEmpty()) {
             throw new BuildException("path not set");
         }
         for (Signature signature : signatures) {

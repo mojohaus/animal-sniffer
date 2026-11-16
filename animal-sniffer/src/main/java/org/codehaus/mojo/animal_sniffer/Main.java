@@ -41,7 +41,7 @@ import java.util.Map;
  * @author Kohsuke Kawaguchi
  */
 public class Main extends ClassFileVisitor {
-    private boolean humanReadableName = false;
+    private boolean humanReadableName;
 
     private String maximumVersion = "00.0";
 
@@ -56,13 +56,13 @@ public class Main extends ClassFileVisitor {
         Main m = new Main();
         String threshold = null;
 
-        List<Path> files = new ArrayList<Path>();
+        List<Path> files = new ArrayList<>();
         for (int i = 0; i < args.length; i++) {
-            if (args[i].equals("-h")) {
+            if ("-h".equals(args[i])) {
                 m.humanReadableName = true;
                 continue;
             }
-            if (args[i].equals("-t")) {
+            if ("-t".equals(args[i])) {
                 threshold = args[++i];
                 for (Map.Entry<String, String> entry : HUMAN_READABLE_NAME.entrySet()) {
                     if (entry.getValue().equals(threshold)) {
@@ -90,7 +90,7 @@ public class Main extends ClassFileVisitor {
             URI uri = new URI(s);
             String scheme = uri.getScheme();
             // Only allow certain schemes to prevent treating (mistyped) file path unintentionally as URI
-            if (scheme.equalsIgnoreCase("file") || scheme.equalsIgnoreCase("jrt")) {
+            if ("file".equalsIgnoreCase(scheme) || "jrt".equalsIgnoreCase(scheme)) {
                 return Paths.get(uri);
             }
             // Fall through

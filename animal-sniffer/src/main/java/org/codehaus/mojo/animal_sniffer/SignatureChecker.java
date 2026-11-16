@@ -87,7 +87,7 @@ public class SignatureChecker extends ClassFileVisitor {
 
     private final Set<String> ignoredOuterClassesOrMethods = new HashSet<>();
 
-    private boolean hadError = false;
+    private boolean hadError;
 
     private List<File> sourcePath;
 
@@ -242,11 +242,11 @@ public class SignatureChecker extends ClassFileVisitor {
 
         private String packagePrefix;
         private int line;
-        private String currentFieldName = null;
+        private String currentFieldName;
         private String name;
         private String internalName;
 
-        private boolean ignoreClass = false;
+        private boolean ignoreClass;
 
         public CheckingVisitor(String name) {
             super(Opcodes.ASM9);
@@ -336,7 +336,7 @@ public class SignatureChecker extends ClassFileVisitor {
                  */
                 boolean ignoreError = ignoreClass;
 
-                Label label = null;
+                Label label;
                 Map<Label, Set<String>> exceptions = new HashMap<>();
 
                 @Override
@@ -640,7 +640,7 @@ public class SignatureChecker extends ClassFileVisitor {
             if (rparen != -1) {
                 StringBuilder b = new StringBuilder();
                 String returnType = sig.substring(rparen + 1);
-                if (returnType.equals("V")) {
+                if ("V".equals(returnType)) {
                     b.append("void");
                 } else {
                     b.append(toSourceType(CharBuffer.wrap(returnType)));
