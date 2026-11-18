@@ -70,7 +70,7 @@ remains licensed under CDDL.
 
 This version (by virtue of belonging to mojo.codehaus.org) has the
 advantage of being available in the
-[Maven Central repository](http://repo1.maven.org)
+[Maven Central repository](https://repo1.maven.org)
 which means that projects which publish to the Maven Central
 repository can use this version in their `pom.xml`.
 **Note:** Projects which publish to the Maven Central repository must
