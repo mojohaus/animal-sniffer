@@ -93,7 +93,7 @@ the maven-enforcer-plugin and then configure the maven-enforcer-plugin to run th
 ```
 
 The example above configures the signature for JRE 1.5. For a list of other ready-made signatures, please visit the
-[Animal Scents subproject](http://mojo.codehaus.org/signatures/).
+[Animal Scents subproject](https://www.mojohaus.org/signatures/).
 
 Once you have configured your project with details of the signature to check, maven-enforcer will be able to
 throw a build error if your any of your classes reference a class, a method, or a field which is not in either
