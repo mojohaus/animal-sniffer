@@ -96,11 +96,13 @@ public class BuildSignaturesMojo extends AbstractMojo {
     private boolean skipIfNoJavaHome;
 
     /**
-     * Should the signatures from this module's classes be included..
+     * Should the signatures from this module's classes be included. Set on the command line with
+     * <code>-DincludeModuleClasses</code>. Earlier versions bound this parameter to
+     * <code>-DincludeJavaHome</code>, which no longer changes it.
      *
      * @since 1.3
      */
-    @Parameter(property = "includeJavaHome", defaultValue = "true")
+    @Parameter(property = "includeModuleClasses", defaultValue = "true")
     private boolean includeModuleClasses;
 
     /**

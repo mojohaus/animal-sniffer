@@ -187,6 +187,11 @@ signature. To exclude module classes from the generated signature set the
 </project>
 ```
 
+You can also set it on the command line with `-DincludeModuleClasses=false`.
+Earlier versions bound this option to the `includeJavaHome` user property, so
+`-DincludeJavaHome=false` also excluded the module classes. It no longer does:
+pass both properties if you relied on that.
+
 Tuning exactly which classes are part of the signatures
 -------------------------------------------------------
 
