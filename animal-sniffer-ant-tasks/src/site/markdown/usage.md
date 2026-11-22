@@ -33,7 +33,7 @@ goals for generating signatures of APIs.
 Basic Usage
 -----------
 
-#[[### Defining the ANT Tasks]]#
+### Defining the ANT Tasks
 
 Before you can use the Animal Sniffer ANT Tasks you need to inform ANT about these tasks.
 There are several techniques for defining custom tasks in ANT. Our preferred technique (and the
@@ -54,7 +54,7 @@ Note: if you want to use any of the other techniques for importing ANT tasks, we
 assume that you (ANT developer) know how to convert our examples into the technique you are using.
 This namespace based techique is the way the authors of this document know.
 
-#[[### Checking a classes against an API signature]]#
+### Checking a classes against an API signature
 
 In order to check your classes against an API signature, you use the `check-signature` task:
 
@@ -105,7 +105,7 @@ For more detailed examples of how to configure this task see:
 
 * [Checking signatures](./examples/checking-signatures.html).
 
-#[[### Generating API signatures]]#
+### Generating API signatures
 
 To generate the signatures of an API, simply invoke the `build-signatures` tasks providing
 the path of the API you want to generate the signatures for, e.g.
@@ -130,3 +130,4 @@ the path of the API you want to generate the signatures for, e.g.
 For more detailed examples of how to configure this goal see:
 
 * [Generating signatures](./examples/generating-signatures.html)
+

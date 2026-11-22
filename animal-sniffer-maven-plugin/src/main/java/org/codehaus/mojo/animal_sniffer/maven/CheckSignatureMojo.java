@@ -97,7 +97,10 @@ public class CheckSignatureMojo extends AbstractMojo {
     protected boolean checkTestClasses;
 
     /**
-     * Signature module to use.
+     * The signature artifact to check against, given by its <code>groupId</code>, <code>artifactId</code> and
+     * <code>version</code>, and by an optional <code>classifier</code> for a signature published with one. It is
+     * resolved from the repositories like any other artifact. On the command line use
+     * <code>-Danimal.sniffer.signature</code>, see {@link #setSignature(String)}.
      */
     @Parameter(required = true, property = "animal.sniffer.signature")
     protected Signature signature;

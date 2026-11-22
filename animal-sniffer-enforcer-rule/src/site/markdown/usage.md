@@ -32,7 +32,7 @@ The enforcer rule offers a rule for checking projects against the signatures of 
 Basic Usage
 -----------
 
-#[[### Checking a project against an API signature]]#
+### Checking a project against an API signature
 
 In order to check your project against an API signature, you must add the enforcer rule as a dependency to
 the maven-enforcer-plugin and then configure the maven-enforcer-plugin to run the rule:
@@ -51,9 +51,9 @@ the maven-enforcer-plugin and then configure the maven-enforcer-plugin to run th
         <dependencies>
             ...
             <dependency>
-                <groupId>${project.groupId}</groupId>
-                <artifactId>${project.artifactId}</artifactId>
-                <version>${project.version}</version>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>animal-sniffer-enforcer-rule</artifactId>
+                <version><!-- latest release --></version>
             </dependency>
             ...
         </dependencies>

@@ -33,7 +33,7 @@ goals for generating signatures of APIs.
 Basic Usage
 -----------
 
-#[[### Checking a project against an API signature]]#
+### Checking a project against an API signature
 
 In order to check your project against an API signature, you must configure your
 `pom.xml` to reference the signature to check against:
@@ -46,9 +46,9 @@ In order to check your project against an API signature, you must configure your
     <plugins>
       ...
       <plugin>
-        <groupId>${project.groupId}</groupId>
-        <artifactId>${project.artifactId}</artifactId>
-        <version>${project.version}</version>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>animal-sniffer-maven-plugin</artifactId>
+        <version><!-- latest release --></version>
         ...
         <configuration>
           ...
@@ -71,6 +71,9 @@ In order to check your project against an API signature, you must configure your
 
 The example above configures the signature for JRE 1.5. For a list of other ready-made signatures, please visit the
 [Animal Scents subproject](https://www.mojohaus.org/signatures/).
+A signature that is published with a classifier takes an additional `<classifier>` element next to the version.
+On the command line, name it with `-Danimal.sniffer.signature=groupId:artifactId:version`, for example
+`mvn animal-sniffer:check -Danimal.sniffer.signature=org.codehaus.mojo.signature:java17:1.0`.
 
 In order to check your project against the signature you have just configured, either
 invoke the `animal-sniffer:check` goal directly, e.g.
@@ -90,9 +93,8 @@ configuration, e.g.
     <plugins>
       ...
       <plugin>
-        <groupId>${project.groupId}</groupId>
-        <artifactId>${project.artifactId}</artifactId>
-        <version>${project.version}</version>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>animal-sniffer-maven-plugin</artifactId>
         <executions>
           ...
           <execution>
@@ -125,7 +127,7 @@ want.
 
 [Some more detailed examples of the `check` goal](./examples/checking-signatures.html).
 
-#[[### Generating API signatures]]#
+### Generating API signatures
 
 To generate the signatures of an API, simply construct a project with the appropriate
 dependencies exposed by the API and then add an execution of the `animal-sniffer:build`
@@ -139,9 +141,8 @@ goal to your project, e.g.
     <plugins>
       ...
       <plugin>
-        <groupId>${project.groupId}</groupId>
-        <artifactId>${project.artifactId}</artifactId>
-        <version>${project.version}</version>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>animal-sniffer-maven-plugin</artifactId>
         <executions>
           ...
           <execution>
@@ -169,3 +170,4 @@ For more detailed examples of how to configure this goal see:
 
 * [Generating signatures of the Java Runtime](./examples/generating-java-signatures.html)
 * [Generating signatures of other APIs](./examples/generating-other-api-signatures.html)
+

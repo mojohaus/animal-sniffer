@@ -40,8 +40,7 @@ The Animal Sniffer ANT Tasks include the following tasks.
 
 General instructions on how to use the Animal Sniffer ANT Tasks can be found on the [usage page](./usage.html). Some more
 specific use cases are described in the examples given below. Last but not least, users occasionally contribute
-additional examples, tips or errata to the
-[ANT Tasks's wiki page](http://docs.codehaus.org/display/MAVENUSER/Animal+Sniffer+ANT+Tasks).
+additional examples and tips through the [issue tracker](./issue-management.html).
 
 In case you still have questions regarding the ANT Tasks's usage, please feel
 free to contact the [user mailing list](./mailing-lists.html). The posts to the mailing list are archived and could
@@ -54,7 +53,7 @@ concern. Especially for fixing bugs it is crucial that the developers can reprod
 entire debug logs, `build.xml`s or most preferably little demo projects attached to the issue are very much appreciated.
 Of course, patches are welcome, too. Contributors can check out the project from our
 [source repository](./scm.html) and will find supplementary information in the
-[guide to helping with Maven](http://maven.apache.org/guides/development/guide-helping.html).
+[guide to helping with Maven](https://maven.apache.org/guides/development/guide-helping.html).
 
 ## Examples
 

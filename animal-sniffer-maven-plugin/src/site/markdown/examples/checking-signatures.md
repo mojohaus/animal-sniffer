@@ -41,9 +41,8 @@ In order to check your project against an API signature, you must configure your
     <plugins>
       ...
       <plugin>
-        <groupId>${project.groupId}</groupId>
-        <artifactId>${project.artifactId}</artifactId>
-        <version>${project.version}</version>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>animal-sniffer-maven-plugin</artifactId>
         ...
         <configuration>
           ...
@@ -92,9 +91,8 @@ of the signatures from the `dependencies` or `dependencyManagement` section of y
     <plugins>
       ...
       <plugin>
-        <groupId>${project.groupId}</groupId>
-        <artifactId>${project.artifactId}</artifactId>
-        <version>${project.version}</version>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>animal-sniffer-maven-plugin</artifactId>
         ...
         <configuration>
           ...
@@ -132,7 +130,6 @@ check your classes against this signature:
   ```sh
   mvn animal-sniffer:check -Danimal.sniffer.signature=groupId:artifactId:signature:classifier:version
   ```
-
 * Make the checks part of your build process add an execution to your
   configuration, e.g.
 
@@ -144,9 +141,8 @@ check your classes against this signature:
       <plugins>
         ...
         <plugin>
-          <groupId>${project.groupId}</groupId>
-          <artifactId>${project.artifactId}</artifactId>
-          <version>${project.version}</version>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>animal-sniffer-maven-plugin</artifactId>
           <executions>
             ...
             <execution>
@@ -220,9 +216,8 @@ blocks or their equivalent, you can tell animal-sniffer to ignore the class, e.g
     <plugins>
       ...
       <plugin>
-        <groupId>${project.groupId}</groupId>
-        <artifactId>${project.artifactId}</artifactId>
-        <version>${project.version}</version>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>animal-sniffer-maven-plugin</artifactId>
         ...
         <configuration>
           ...
@@ -255,9 +250,8 @@ and `javax.servlet.*` you would use a configuration like:
     <plugins>
       ...
       <plugin>
-        <groupId>${project.groupId}</groupId>
-        <artifactId>${project.artifactId}</artifactId>
-        <version>${project.version}</version>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>animal-sniffer-maven-plugin</artifactId>
         ...
         <configuration>
           ...
@@ -295,9 +289,9 @@ incorrectly written Maven plugins, you may end up using scope provided.
   <dependencies>
     ...
     <dependency>
-      <groupId>${project.parent.groupId}</groupId>
+      <groupId>org.codehaus.mojo</groupId>
       <artifactId>animal-sniffer-annotations</artifactId>
-      <version>${project.parent.version}</version>
+      <version><!-- latest release --></version>
       <optional>true</optional>
       <!-- if you are using badly written Maven plugins then blame them and add
       <scope>provided</scope>
@@ -363,9 +357,8 @@ a configuration like:
     <plugins>
       ...
       <plugin>
-        <groupId>${project.groupId}</groupId>
-        <artifactId>${project.artifactId}</artifactId>
-        <version>${project.version}</version>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>animal-sniffer-maven-plugin</artifactId>
           ...
           <configuration>
             ...
@@ -407,9 +400,8 @@ default behaviour, e.g.
     <plugins>
       ...
       <plugin>
-        <groupId>${project.groupId}</groupId>
-        <artifactId>${project.artifactId}</artifactId>
-        <version>${project.version}</version>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>animal-sniffer-maven-plugin</artifactId>
         ...
         <configuration>
           ...
@@ -425,3 +417,4 @@ default behaviour, e.g.
   ...
 </project>
 ```
+

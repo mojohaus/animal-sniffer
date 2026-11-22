@@ -113,9 +113,9 @@ incorrectly written maven plugins, you may end up using scope provided) e.g.
   <dependencies>
     ...
     <dependency>
-      <groupId>${project.groupId}</groupId>
-      <artifactId>${project.artifactId}</artifactId>
-      <version>${project.version}</version>
+      <groupId>org.codehaus.mojo</groupId>
+      <artifactId>animal-sniffer-annotations</artifactId>
+      <version><!-- latest release --></version>
       <optional>true</optional>
       <!-- if you are using badly written maven plugins then blame them and add
       <scope>provided</scope>
@@ -144,3 +144,4 @@ incorrectly written maven plugins, you may end up using scope provided) e.g.
   ...
 </project>
 ```
+

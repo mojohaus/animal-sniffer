@@ -45,9 +45,8 @@ dependencies, e.g.
   <build>
     <plugins>
       <plugin>
-        <groupId>${project.groupId}</groupId>
-        <artifactId>${project.artifactId}</artifactId>
-        <version>${project.version}</version>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>animal-sniffer-maven-plugin</artifactId>
         <executions>
           <execution>
             <id>___id of execution___</id>
@@ -83,9 +82,8 @@ that you want to generate the signatures of. In these cases you have a number of
       <plugins>
         ...
         <plugin>
-          <groupId>${project.groupId}</groupId>
-          <artifactId>${project.artifactId}</artifactId>
-          <version>${project.version}</version>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>animal-sniffer-maven-plugin</artifactId>
           ...
           <configuration>
             ...
@@ -104,7 +102,6 @@ that you want to generate the signatures of. In these cases you have a number of
     ...
   </project>
   ```
-
 * Use the `javaHome` parameter to specify the Java Home that you want to generate the signatures of.
   This will use automatic boot classpath detection, which does not work for Java 1.1 or earlier and
   may not work on some exotic Java Runtimes.
@@ -119,9 +116,8 @@ that you want to generate the signatures of. In these cases you have a number of
       <plugins>
         ...
         <plugin>
-          <groupId>${project.groupId}</groupId>
-          <artifactId>${project.artifactId}</artifactId>
-          <version>${project.version}</version>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>animal-sniffer-maven-plugin</artifactId>
           ...
           <configuration>
             ...
@@ -137,7 +133,6 @@ that you want to generate the signatures of. In these cases you have a number of
     ...
   </project>
   ```
-
 * Use the `javaHomeClassPath` parameter to specify the exact classpath to generate the signatures of.
   This is the only way to specify the Java Runtime when automatic boot classpath detection fails.
 
@@ -151,9 +146,8 @@ that you want to generate the signatures of. In these cases you have a number of
       <plugins>
         ...
         <plugin>
-          <groupId>${project.groupId}</groupId>
-          <artifactId>${project.artifactId}</artifactId>
-          <version>${project.version}</version>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>animal-sniffer-maven-plugin</artifactId>
           ...
           <configuration>
             ...
@@ -187,7 +181,7 @@ In order to ensure that the Java signatures you generate only include those
 classes which are officially published by the JRE, you will need to tune
 your signatures.
 
-#[[### Inclusion based tuning]]#
+### Inclusion based tuning
 
 One technique is to only include those classes which you know are part of the
 JRE public specification. For example:
@@ -200,9 +194,8 @@ JRE public specification. For example:
     <plugins>
       ...
       <plugin>
-        <groupId>${project.groupId}</groupId>
-        <artifactId>${project.artifactId}</artifactId>
-        <version>${project.version}</version>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>animal-sniffer-maven-plugin</artifactId>
         ...
         <configuration>
           ...
@@ -232,7 +225,7 @@ JRE public specification. For example:
 This requires that you known exactly what classes are part of the JRE
 specification.
 
-#[[### Exclusion based tuning]]#
+### Exclusion based tuning
 
 The other technique is to specify which classes are not to be included.
 Note that a combination of the two can also be used. For example:
@@ -245,9 +238,8 @@ Note that a combination of the two can also be used. For example:
     <plugins>
       ...
       <plugin>
-        <groupId>${project.groupId}</groupId>
-        <artifactId>${project.artifactId}</artifactId>
-        <version>${project.version}</version>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>animal-sniffer-maven-plugin</artifactId>
         ...
         <configuration>
           ...
@@ -291,9 +283,8 @@ at least three times and setting the `skipIfNoJavaHome` option to
     <plugins>
       ...
       <plugin>
-        <groupId>${project.groupId}</groupId>
-        <artifactId>${project.artifactId}</artifactId>
-        <version>${project.version}</version>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>animal-sniffer-maven-plugin</artifactId>
         ...
         <configuration>
           ...
@@ -392,9 +383,8 @@ animal-sniffer to use this with the following:
     <plugins>
       ...
       <plugin>
-        <groupId>${project.groupId}</groupId>
-        <artifactId>${project.artifactId}</artifactId>
-        <version>${project.version}</version>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>animal-sniffer-maven-plugin</artifactId>
         ...
         <configuration>
           ...
@@ -421,3 +411,4 @@ animal-sniffer to use this with the following:
   ...
 </project>
 ```
+

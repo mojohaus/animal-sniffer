@@ -75,7 +75,7 @@ I then wrote a separate tool called "signature checker", which uses this signatu
 </plugin>
 ```
 
-The nested `<signature>` element specifies the signature list to use. In addition to java1.5, [java1.3, java1.4, and java1.6 available](http://maven.dyndns.org/2/org/jvnet/animal-sniffer/).
+The nested `<signature>` element specifies the signature list to use. In addition to java1.5, java1.3, java1.4 and java1.6 signatures are available under the `org.jvnet.animal-sniffer` group ID.
 
 # Running this less often
 

@@ -54,7 +54,7 @@ concern. Especially for fixing bugs it is crucial that the developers can reprod
 entire debug logs, POMs or most preferably little demo projects attached to the issue are very much appreciated.
 Of course, patches are welcome, too. Contributors can check out the project from our
 [source repository](./scm.html) and will find supplementary information in the
-[guide to helping with Maven](http://maven.apache.org/guides/development/guide-helping.html).
+[guide to helping with Maven](https://maven.apache.org/guides/development/guide-helping.html).
 
 ## Examples
 
