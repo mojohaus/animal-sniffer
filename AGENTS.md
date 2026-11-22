@@ -21,8 +21,8 @@ what the code and the POMs do not make obvious.
   build and checks it when the `CI` environment variable is set. It formats Java with
   palantir-java-format and also reformats Markdown, so run `mvn spotless:apply` after editing the
   README or this file.
-- The plugin and the enforcer rule compile against Maven 3.9.16 (`mavenVersion`). The plugin
-  declares a literal `<prerequisites><maven>3.9.0</maven>`; keep the two apart, so raising
+- The plugin and the enforcer rule compile against the latest Maven 3.9.x (`mavenVersion`). The
+  plugin declares a literal `<prerequisites><maven>3.9.0</maven>`; keep the two apart, so raising
   `mavenVersion` does not raise the prerequisite. Building the project itself needs Maven 3.9
   (`minimalMavenBuildVersion`).
 - `.github/workflows/maven.yml` calls the MojoHaus `maven-verify.yml` workflow in `mojohaus/.github`.
@@ -65,6 +65,23 @@ what the code and the POMs do not make obvious.
 
 - Deliberate pins in `.github/dependabot.yml`: the Maven artifacts stay below 3.10.0, the Maven
   3.9.x line being the plugin baseline.
+
+## Documentation updates
+
+A change that users or contributors can notice ships with the documentation it affects, in the
+same pull request. A refactor with no visible effect needs none.
+
+- A new goal, parameter or default of the plugin: the mojo Javadoc, which becomes the goal page, and
+  the goal list in `animal-sniffer-maven-plugin/src/site/markdown/index.md`.
+- New or changed usage: the module's `usage` page and examples under its `src/site/markdown`. The
+  pages are plain Markdown: in the first plugin declaration of a usage or index page write
+  `<version><!-- latest release --></version>`, and leave the version out of other snippets.
+- A page added, removed or renamed: the menu in that module's `src/site/site.xml`. Never rename a
+  published page; its URL is linked from elsewhere.
+- The Maven or Java requirement, or how to build and release: `README.md`.
+- A new convention, build gate or test fixture: this file.
+
+Check the result with `mvn site` and open `target/site/index.html`.
 
 ## Pull requests
 

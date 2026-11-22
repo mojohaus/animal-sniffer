@@ -40,13 +40,13 @@ The following sample project is based on the integration tests for this antlib
   <property environment="env"/>
 
   <path id="jre">
-    <fileset dir="\${java.home}" includes="lib/rt.jar"/>
-    <fileset dir="\${java.home}" includes="lib/jce.jar"/>
-    <fileset dir="\${java.home}" includes="lib/jsse.jar"/>
+    <fileset dir="${java.home}" includes="lib/rt.jar"/>
+    <fileset dir="${java.home}" includes="lib/jce.jar"/>
+    <fileset dir="${java.home}" includes="lib/jsse.jar"/>
   </path>
 
   <typedef uri="antlib:org.codehaus.mojo.animal_sniffer">
-    <classpath path="lib/${project.artifactId}-${project.version}.jar"/>
+    <classpath path="lib/animal-sniffer-ant-tasks-1.29.1.jar"/>
   </typedef>
 
   <target name="clean">
@@ -76,9 +76,9 @@ The following sample project is based on the integration tests for this antlib
   <target name="build-signatures">
     <as:build-signatures destfile="build/jdk.sig">
       <path>
-        <fileset dir="\${java.home}" includes="lib/rt.jar"/>
-        <fileset dir="\${java.home}" includes="lib/jce.jar"/>
-        <fileset dir="\${java.home}" includes="lib/jsse.jar"/>
+        <fileset dir="${java.home}" includes="lib/rt.jar"/>
+        <fileset dir="${java.home}" includes="lib/jce.jar"/>
+        <fileset dir="${java.home}" includes="lib/jsse.jar"/>
       </path>
     </as:build-signatures>
   </target>
@@ -147,3 +147,4 @@ The following sample project is based on the integration tests for this antlib
 
 </project>
 ```
+

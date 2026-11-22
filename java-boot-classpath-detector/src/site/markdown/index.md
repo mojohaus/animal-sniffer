@@ -42,7 +42,7 @@ Usage
 Just execute the jar file, e.g.
 
 ```sh
-java -jar ${project.artifactId}-${project.version}.jar
+java -jar java-boot-classpath-detector-1.29.1.jar
 ```
 
 If successful the process should return with exit code 0 and the output

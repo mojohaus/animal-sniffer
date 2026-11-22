@@ -44,7 +44,7 @@ When jar files are given, class files in it is examined.
 The tool produces output like the following, so use the grep command to filter out the list:
 
 ```sh
-% java -jar target/animal-sniffer-1.0-SNAPSHOT.jar tmp
+% java -jar animal-sniffer-<version>.jar tmp
 50.0 tmp/streambuffer-0.7.jar:com/sun/xml/stream/buffer/AbstractCreator.class
 50.0 tmp/streambuffer-0.7.jar:com/sun/xml/stream/buffer/AbstractCreatorProcessor.class
 50.0 tmp/streambuffer-0.7.jar:com/sun/xml/stream/buffer/AbstractProcessor.class

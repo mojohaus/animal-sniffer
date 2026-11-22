@@ -57,8 +57,7 @@ Usage
 
 General instructions on how to use the Animal Sniffer API can be found on the [usage page](./usage.html). Some more
 specific use cases are described in the examples given below. Last but not least, users occasionally contribute
-additional examples, tips or errata to the
-[animal-sniffer's wiki page](http://docs.codehaus.org/display/MAVENUSER/Animal_Sniffer).
+additional examples and tips through the [issue tracker](./issue-management.html).
 
 In case you still have questions regarding the plugin's usage, please have a look at the [FAQ](./faq.html) and feel
 free to contact the [user mailing list](./mailing-lists.html). The posts to the mailing list are archived and could
@@ -71,7 +70,7 @@ your concern. Especially for fixing bugs it is crucial that the developers can r
 reason, entire debug logs, POMs or most preferably little demo projects attached to the issue are very much
 appreciated. Of course, patches are welcome, too. Contributors can check out the project from our
 [source repository](./scm.html) and will find supplementary information in the
-[guide to helping with Maven](http://maven.apache.org/guides/development/guide-helping.html).
+[guide to helping with Maven](https://maven.apache.org/guides/development/guide-helping.html).
 
 Examples
 --------
@@ -88,7 +87,7 @@ When jar files are given, class files in it is examined.
 The tool produces output like the following, so use the grep command to filter out the list:
 
 ```sh
-% java -jar ${project.artifactId}-${project.version}.jar tmp
+% java -jar animal-sniffer-1.29.1.jar tmp
 50.0 tmp/streambuffer-0.7.jar:com/sun/xml/stream/buffer/AbstractCreator.class
 50.0 tmp/streambuffer-0.7.jar:com/sun/xml/stream/buffer/AbstractCreatorProcessor.class
 50.0 tmp/streambuffer-0.7.jar:com/sun/xml/stream/buffer/AbstractProcessor.class
@@ -98,3 +97,4 @@ The tool produces output like the following, so use the grep command to filter o
 50.0 tmp/streambuffer-0.7.jar:com/sun/xml/stream/buffer/XMLStreamBuffer.class
 50.0 tmp/streambuffer-0.7.jar:com/sun/xml/stream/buffer/XMLStreamBufferException.class
 ```
+

@@ -46,9 +46,8 @@ goal to your project, e.g.
   <build>
     <plugins>
       <plugin>
-        <groupId>${project.groupId}</groupId>
-        <artifactId>${project.artifactId}</artifactId>
-        <version>${project.version}</version>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>animal-sniffer-maven-plugin</artifactId>
         <executions>
           <execution>
             <id>___id of execution___</id>
@@ -84,9 +83,8 @@ you can base your API off an existing Java Runtime signature. For example:
     <plugins>
       ...
       <plugin>
-        <groupId>${project.groupId}</groupId>
-        <artifactId>${project.artifactId}</artifactId>
-        <version>${project.version}</version>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>animal-sniffer-maven-plugin</artifactId>
         ...
         <configuration>
           ...
@@ -135,9 +133,8 @@ you would use something like:
     <plugins>
       ...
       <plugin>
-        <groupId>${project.groupId}</groupId>
-        <artifactId>${project.artifactId}</artifactId>
-        <version>${project.version}</version>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>animal-sniffer-maven-plugin</artifactId>
         ...
         <configuration>
           ...
@@ -172,9 +169,8 @@ signature. To exclude module classes from the generated signature set the
     <plugins>
       ...
       <plugin>
-        <groupId>${project.groupId}</groupId>
-        <artifactId>${project.artifactId}</artifactId>
-        <version>${project.version}</version>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>animal-sniffer-maven-plugin</artifactId>
         ...
         <configuration>
           ...
@@ -199,7 +195,7 @@ situations you may want to only include specific classes from the dependencies
 or your module. This can be achieved using the `includeClasses` and
 `excludeClasses` configuration options.
 
-#[[### Inclusion based tuning]]#
+### Inclusion based tuning
 
 One technique is to only include those classes which you want to be part of the
 API signature. For example:
@@ -212,9 +208,8 @@ API signature. For example:
     <plugins>
       ...
       <plugin>
-        <groupId>${project.groupId}</groupId>
-        <artifactId>${project.artifactId}</artifactId>
-        <version>${project.version}</version>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>animal-sniffer-maven-plugin</artifactId>
         ...
         <configuration>
           ...
@@ -236,7 +231,7 @@ API signature. For example:
 </project>
 ```
 
-#[[### Exclusion based tuning]]#
+### Exclusion based tuning
 
 The other technique is to specify which classes are not to be included.
 Note that a combination of the two can also be used. For example:
@@ -249,9 +244,8 @@ Note that a combination of the two can also be used. For example:
     <plugins>
       ...
       <plugin>
-        <groupId>${project.groupId}</groupId>
-        <artifactId>${project.artifactId}</artifactId>
-        <version>${project.version}</version>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>animal-sniffer-maven-plugin</artifactId>
         ...
         <configuration>
           ...
@@ -271,3 +265,4 @@ Note that a combination of the two can also be used. For example:
   ...
 </project>
 ```
+

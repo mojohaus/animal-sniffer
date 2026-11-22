@@ -50,10 +50,20 @@ targetting? Well the answer depends on a number of things.
 
 If you are developing a project which must support running on JDK version 1.4, but your development system does not
 have a JDK version 1.4 available, it can be quite easy to accidentally use methods or classes that are only available
-in the newer version of the JDK. For example, if you are developing a plugin for Maven 2.0.x on a newer Macintosh.
+in the newer version of the JDK. For example, a Maven plugin that must run on an older Java version, developed
+on a machine with a newer JDK.
 
 Animal sniffer can check the classes and method signatures that your compiled code uses and verify that you have
 use only those classes and signatures available in the API you are targetting.
+
+## What is checked
+
+The checker reports every class, method and field that your classes reference and that the signature does not
+contain. Since 1.29 it also checks the types of the declared method parameters, so a method that accepts a type
+missing from the target API is reported even when its body never uses the type. Since 1.29.1, calls to
+signature-polymorphic methods, such as `MethodHandle.invoke` and the `VarHandle` access modes, are matched by method
+name on the owner and its super types, so they pass the check. `@IgnoreJRERequirement` and the other configured
+annotations suppress the reports for what they annotate.
 
 ## Why the name?
 

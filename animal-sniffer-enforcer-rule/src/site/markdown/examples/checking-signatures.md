@@ -47,9 +47,8 @@ the maven-enforcer-plugin and then configure your the maven-enforcer-plugin to r
         <dependencies>
             ...
             <dependency>
-                <groupId>${project.groupId}</groupId>
-                <artifactId>${project.artifactId}</artifactId>
-                <version>${project.version}</version>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>animal-sniffer-enforcer-rule</artifactId>
             </dependency>
             ...
         </dependencies>
@@ -145,9 +144,8 @@ blocks or their equivalent, you can tell animal-sniffer to ignore the class, e.g
         <dependencies>
             ...
             <dependency>
-                <groupId>${project.groupId}</groupId>
-                <artifactId>${project.artifactId}</artifactId>
-                <version>${project.version}</version>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>animal-sniffer-enforcer-rule</artifactId>
             </dependency>
             ...
         </dependencies>
@@ -204,9 +202,8 @@ and `javax.servlet.*` you would use a configuration like:
         <dependencies>
             ...
             <dependency>
-                <groupId>${project.groupId}</groupId>
-                <artifactId>${project.artifactId}</artifactId>
-                <version>${project.version}</version>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>animal-sniffer-enforcer-rule</artifactId>
             </dependency>
             ...
         </dependencies>
@@ -262,9 +259,9 @@ incorrectly written maven plugins, you may end up using scope provided) e.g.
   <dependencies>
     ...
     <dependency>
-      <groupId>${project.parent.groupId}</groupId>
+      <groupId>org.codehaus.mojo</groupId>
       <artifactId>animal-sniffer-annotations</artifactId>
-      <version>${project.parent.version}</version>
+      <version><!-- latest release --></version>
       <optional>true</optional>
       <!-- if you are using badly written maven plugins then blame them and add
       <scope>provided</scope>
@@ -348,9 +345,8 @@ default behaviour, e.g.
         <dependencies>
             ...
             <dependency>
-                <groupId>${project.groupId}</groupId>
-                <artifactId>${project.artifactId}</artifactId>
-                <version>${project.version}</version>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>animal-sniffer-enforcer-rule</artifactId>
             </dependency>
             ...
         </dependencies>
@@ -384,3 +380,4 @@ default behaviour, e.g.
   ...
 </project>
 ```
+

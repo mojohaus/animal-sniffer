@@ -60,7 +60,7 @@ detects the "scent" of each of these "animals" it got the name
 ### Which is the "official" animal-sniffer host: Codehaus or java.net?
 
 This project is the "official" project. The
-[java.net](https://animal-sniffer.dev.java.net) project
+java.net project (animal-sniffer.dev.java.net, no longer online)
 was started by Kohsuke Kawaguchi before he was granted commit access
 to the mojo project. Since Kohsuke was granted commit access in part
 to allow the migration of animal-sniffer to Codehaus, he has decreed
@@ -68,7 +68,7 @@ the Codehaus version the "official" version as well as re-licensed
 the Codehaus version under the MIT License. The java.net version
 remains licensed under CDDL.
 
-This version (by virtue of belonging to mojo.codehaus.org) has the
+This version (by virtue of belonging to MojoHaus) has the
 advantage of being available in the
 [Maven Central repository](https://repo1.maven.org)
 which means that projects which publish to the Maven Central
