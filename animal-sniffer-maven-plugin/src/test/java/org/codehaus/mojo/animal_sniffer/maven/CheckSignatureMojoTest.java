@@ -27,11 +27,14 @@ package org.codehaus.mojo.animal_sniffer.maven;
 import java.util.Arrays;
 
 import org.apache.maven.model.Dependency;
+import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.project.MavenProject;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class CheckSignatureMojoTest {
     @Test
@@ -74,6 +77,22 @@ class CheckSignatureMojoTest {
                 CheckSignatureMojo.findMatchingDependency(signature, Arrays.asList(unclassified, classified));
 
         assertSame(classified, match);
+    }
+
+    @Test
+    void failsWhenSignatureVersionCannotBeInferred() {
+        // issue-24: neither the configuration nor the project's dependencies give a version
+        CheckSignatureMojo mojo = new CheckSignatureMojo(null);
+        mojo.project = new MavenProject();
+        mojo.signature = new Signature();
+        mojo.signature.setGroupId("org.codehaus.mojo.signature");
+        mojo.signature.setArtifactId("java14");
+
+        MojoExecutionException e = assertThrows(MojoExecutionException.class, mojo::execute);
+
+        assertEquals(
+                "For artifact {org.codehaus.mojo.signature:java14:signature:}: The version cannot be empty.",
+                e.getMessage());
     }
 
     private static Dependency dependency(String classifier, String version) {
