@@ -1,4 +1,4 @@
-def logFile = new File( basedir, 'build.log' )
+def logFile = new File(basedir, 'build.log')
 assert logFile.exists()
 
 def buildLog = logFile.getText('UTF-8')

@@ -38,7 +38,9 @@ for (s in expected) {
     assert buildLog.contains(s) : "Failed to find: " + s
 }
 // The debug log lists every compiled source file, so check the violations, not the whole log
-def undefinedReferences = buildLog.readLines().findAll { it.contains("Undefined reference") }
+def undefinedReferences = buildLog.readLines().findAll {
+    it.contains("Undefined reference")
+}
 for (line in undefinedReferences) {
     assert line.contains("Bad.java:") : "Only Bad.java should have violations: " + line
 }
