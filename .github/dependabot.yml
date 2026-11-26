@@ -3,8 +3,7 @@ updates:
   - package-ecosystem: "maven"
     directory: "/"
     exclude-paths:
-      - "src/it/**"
-      - "src/it-repo/**"
+      - "**/src/it/**"
     schedule:
       interval: "monthly"
     groups:
